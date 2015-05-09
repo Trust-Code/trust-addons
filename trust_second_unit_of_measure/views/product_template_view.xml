@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="trust_second_uom_product_template_form_view" model="ir.ui.view">
+			<field name="name">trust_second_uom_product_template_form_view</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_form_view" />
+            <field name="arch" type="xml">
+      			<field name="uom_id" position="after">
+      				<field name="second_uom_id" groups="trust_second_unit_of_measure.group_second_uom" />
+      			</field>
+      			<field name="active" position="after">
+      				<field name="use_dimension" groups="trust_second_unit_of_measure.group_second_uom" />
+      			</field>
+      		</field>
+      	</record>
+
+	</data>
+</openerp>
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+			    
+    <record id="group_second_uom" model="res.groups">
+        <field name="name">Manage Second Units of Measure</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+    
+	</data>
+</openerp>

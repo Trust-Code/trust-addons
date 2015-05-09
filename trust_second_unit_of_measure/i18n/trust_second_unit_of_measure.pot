@@ -1,0 +1,37 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* trust_second_unit_of_measure
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-07 17:02+0000\n"
+"PO-Revision-Date: 2015-05-07 17:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: trust_second_unit_of_measure
+#: field:sale.config.settings,group_second_uom:0
+msgid "Allow using second unit of measure"
+msgstr ""
+
+#. module: trust_second_unit_of_measure
+#: help:sale.config.settings,group_second_uom:0
+msgid "Allows you to select and maintain the second unit of measure for products."
+msgstr ""
+
+#. module: trust_second_unit_of_measure
+#: model:res.groups,name:trust_second_unit_of_measure.group_second_uom
+msgid "Manage Second Units of Measure"
+msgstr ""
+
+#. module: trust_second_unit_of_measure
+#: model:ir.model,name:trust_second_unit_of_measure.model_product_template
+msgid "Product Template"
+msgstr ""
+

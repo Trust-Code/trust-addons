@@ -1,0 +1,68 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* trust_sales_order_followup
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-14 01:22+0000\n"
+"PO-Revision-Date: 2015-02-14 01:22+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: trust_sales_order_followup
+#: view:sale.order:trust_sales_order_followup.trust_sales_order_followup_form
+msgid "Calls"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: model:ir.model,name:trust_sales_order_followup.model_calendar_event
+msgid "Event"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: view:sale.order:trust_sales_order_followup.trust_sales_order_followup_form
+msgid "Meetings"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: model:ir.model,name:trust_sales_order_followup.model_crm_phonecall
+msgid "Phonecall"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: field:calendar.event,sale_order_id:0
+#: field:crm.phonecall,sale_order_id:0
+msgid "Sale Order"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: view:calendar.event:trust_sales_order_followup.sales_order_view_calendar_event_search
+msgid "Sales"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: model:ir.model,name:trust_sales_order_followup.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: field:calendar.event,related_to_sales:0
+msgid "Sales Related?"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: view:sale.order:trust_sales_order_followup.trust_sales_order_followup_form
+msgid "Schedule/Log"
+msgstr ""
+
+#. module: trust_sales_order_followup
+#: view:crm.phonecall:trust_sales_order_followup.trust_sales_order_followup_phone_call_form
+msgid "{ 'invisible': [('sale_order_id', '!=', False)] }"
+msgstr ""
+

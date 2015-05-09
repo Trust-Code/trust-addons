@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="l10n_br_pricelist" model="ir.ui.view">
+            <field name="name">l10n_br.pricelist</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <field name="price_include" position="before">
+					<field name="tax_in_price" />
+				</field>
+			</field>
+		</record>
+
+	</data>
+</openerp>

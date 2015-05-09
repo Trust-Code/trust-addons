@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="second_uom_mrp_bom_form_view" model="ir.ui.view">
+            <field name="name">second.uom.mrp.bom.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+				<xpath expr="//field[@name='bom_line_ids']/tree/field[@name='type']" position="after">
+					<field name="unidades" attrs="{'invisible': [('product_id', '=', False)] }" />
+					<field name="comprimento" attrs="{'invisible': [('product_id', '=', False)] }" />
+					<field name="largura" attrs="{'invisible': [('product_id', '=', False)] }" />
+				</xpath>
+			</field>
+		</record>
+		
+		<record id="second_uom_mrp_production_product_tree_view" model="ir.ui.view">
+            <field name="name">second.uom.mrp.production.product.line.tree</field>
+            <field name="model">mrp.production.product.line</field>
+            <field name="inherit_id" ref="mrp.mrp_production_product_tree_view"/>
+            <field name="arch" type="xml">
+            	<field name="product_uos" position="after">
+            		<field name="unidades" />
+            		<field name="comprimento" />
+            		<field name="largura" />
+            	</field>
+			</field>
+		</record>
+		
+		<record id="second_uom_mrp_production_product_form_view" model="ir.ui.view">
+            <field name="name">second.uom.mrp.production.product.line.form</field>
+            <field name="model">mrp.production.product.line</field>
+            <field name="inherit_id" ref="mrp.mrp_production_product_form_view"/>
+            <field name="arch" type="xml">
+            	<field name="product_uos" position="after">
+            		<field name="unidades" />
+            		<field name="comprimento" />
+            		<field name="largura" />
+            	</field>
+            </field>
+        </record>
+        
+        <record id="second_uom_view_move_form" model="ir.ui.view">
+            <field name="name">second.uom.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+            	<field name="name" position="after">
+            		<field name="unidades" />
+            		<field name="comprimento" />
+            		<field name="largura" />
+            	</field>
+            </field>
+        </record>
+		
+		<template id="report_header_custom" inherit_id="mrp.report_mrporder">
+			<xpath expr="//div[@class='page']/table" position="replace">
+				
+			  <table class="table table-condensed" t-if="o.move_lines or o.move_lines2">
+                    <thead>
+                        <tr>
+                            <th><strong>Product</strong></th>
+                            <th class="text-right"><strong>Quantity</strong></th>
+                            <th class="text-right"><strong>Unidades</strong></th>
+                			<th class="text-right"><strong>Comprimento</strong></th>
+                			<th class="text-right"><strong>Largura</strong></th>
+                            <th class="text-center" groups="stock.group_locations">
+                                <strong>Source Location</strong>
+                            </th>
+                            <th class="text-center" groups="stock.group_locations">
+                                <strong>Destination Location</strong>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-if="o.move_lines">
+                            <tr>
+                                <td colspan="4"><strong>Products to Consume</strong></td>
+                            </tr>
+                            <tr t-foreach="o.move_lines" t-as="line">
+                                <td>
+                                    <span t-field="line.product_id.code"/>
+                                    <span t-field="line.product_id.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="line.product_uom_qty"/>
+                                    <span t-field="line.product_uom.name" groups="product.group_uom"/>
+                                </td>
+                                 <td class="text-right">
+				                    <span t-field="line.unidades"/>                    
+								</td>
+								<td class="text-right">
+				                    <span t-field="line.comprimento"/>                    
+								</td>
+								<td class="text-right">
+				                    <span t-field="line.largura"/>                    
+								</td>
+                                <td class="text-center" groups="stock.group_locations">
+                                    <span t-field="line.location_id.name"/>
+                                </td>
+                                <td class="text-center" groups="stock.group_locations">
+                                    <span t-field="line.location_dest_id.name"/>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-if="o.move_lines2">
+                            <tr>
+                                <td colspan="4"><strong>Consumed Products</strong></td>
+                            </tr>
+                            <tr t-foreach="o.move_lines2" t-as="line2">>
+                                <td>
+                                    <span t-field="line2.product_id.code"/>
+                                    <span t-field="line2.product_id.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="line2.product_uom_qty"/>
+                                    <span t-field="line2.product_uom.name"/>
+                                </td>
+                                 <td class="text-right">
+				                    <span t-field="line2.unidades"/>                    
+								</td>
+								<td class="text-right">
+				                    <span t-field="line2.comprimento"/>                    
+								</td>
+								<td class="text-right">
+				                    <span t-field="line2.largura"/>                    
+								</td>
+                                <td class="text-center" groups="stock.group_locations">
+                                    <span t-field="line2.location_id.name"/>
+                                </td>
+                                <td class="text-center" groups="stock.group_locations">
+                                    <span t-field="line2.location_dest_id.name"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>				
+			</xpath>						
+         
+        </template>
+		
+	</data>
+</openerp>
