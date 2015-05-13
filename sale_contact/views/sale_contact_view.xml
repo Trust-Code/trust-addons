@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="view_reforce_contact_form" model="ir.ui.view">
+            <field name="name">reforce.contact</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_shipping_id" position="after">
+					<field name="partner_contact_id" string="Contato"/>
+				</field>
+			</field>
+		</record>
+
+	</data>
+</openerp>
