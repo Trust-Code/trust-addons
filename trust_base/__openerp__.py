@@ -33,6 +33,7 @@
     ],
     'data': [
         'views/module_view.xml',
+        'views/trust_base.xml',
         'data/base_data.xml'
     ],    
     'application':True,
