@@ -16,7 +16,11 @@
 #You should have received a copy of the GNU General Public License            #
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
-import models.res_partner
-import models.sale_order
-import models.account_fiscal_rule
-import models.l10n_br_base_city
+from openerp import models, fields
+
+class L10n_brBaseCity(models.Model):
+    _inherit = 'l10n_br_base.city'
+    
+    ibge_code = fields.Char(string=u'Código IBGE', size=7, copy=False, required=True)
+    
+    
