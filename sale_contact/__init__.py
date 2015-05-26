@@ -17,4 +17,4 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.        #
 ###############################################################################
 
-import sale_contact
+import models.sale_contact
