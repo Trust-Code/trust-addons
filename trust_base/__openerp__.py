@@ -29,10 +29,15 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],    
     'depends': [        
-        'base'
+        'base',
+        'mail',
+        'sale',
+        'account_fiscal_position_rule',
+        'l10n_br_base'
     ],
     'data': [
         'views/module_view.xml',
+        'views/trust_base.xml',
         'data/base_data.xml'
     ],    
     'application':True,
