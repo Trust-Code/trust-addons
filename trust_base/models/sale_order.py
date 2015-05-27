@@ -15,4 +15,5 @@ class sale_order(models.Model):
                  required=True, domain="[('fiscal_category_id', '=', fiscal_category_id)]",
                  readonly=True, states={'draft': [('readonly', False)]})
     
+    delivery_after = fields.Integer(string='Prazo de entrega (dias)', default=30)
 

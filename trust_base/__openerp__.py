@@ -38,7 +38,8 @@
     'data': [
         'views/module_view.xml',
         'views/trust_base.xml',
-        'data/base_data.xml'
+        'data/base_data.xml',
+        'views/sale_order_view.xml'
     ],    
     'application':True,
     'auto_install':False

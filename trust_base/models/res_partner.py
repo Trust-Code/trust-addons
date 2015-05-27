@@ -15,5 +15,5 @@ class res_partner(osv.Model):
     }
 
     _defaults = {
-        'notify_email': lambda *args: 'none'
-    }
+        'notify_email': lambda *args: 'none',
+   }
