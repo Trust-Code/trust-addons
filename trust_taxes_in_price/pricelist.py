@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import time
 from openerp.osv import orm, fields
+from openerp import exceptions
+from openerp.tools.translate import _
+
 
 class l10n_br_account_tax(orm.Model):
     _inherit = 'account.tax'
@@ -18,7 +22,7 @@ class l10n_br_sale_order_line (orm.Model):
         context = context or {}
         lang = lang or context.get('lang',False)
         if not  partner_id:
-            raise osv.except_osv(_('No Customer Defined!'), _('Before choosing a product,\n select a customer in the sales form.'))
+            raise exceptions.Warning(_('No Customer Defined!'), _('Before choosing a product,\n select a customer in the sales form.'))
         warning = {}
         product_uom_obj = self.pool.get('product.uom')
         partner_obj = self.pool.get('res.partner')
@@ -107,10 +111,10 @@ class l10n_br_sale_order_line (orm.Model):
                 amount_tax ['sum_amount'] = 0.0
                 
             price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
-                    product, qty or 1.0, amount_tax, partner_id, {
+                    product, qty or 1.0, partner_id, context={
                         'uom': uom or result.get('product_uom'),
                         'date': date_order,
-                        })[pricelist]
+                        }, amount_tax=amount_tax["sum_amount"])[pricelist]
             if price is False:
                 warn_msg = _("Cannot find a pricelist line matching this product and quantity.\n"
                         "You have to change either the product, the quantity or the pricelist.")
@@ -129,7 +133,7 @@ class l10n_br_sale_order_line (orm.Model):
 class l10n_br_pricelist (orm.Model):
     _inherit = 'product.pricelist'
     
-    def price_get_multi(self, cr, uid, amount_tax, pricelist_ids, products_by_qty_by_partner, context=None):
+    def price_get_multi(self, cr, uid, pricelist_ids, products_by_qty_by_partner, context=None, amount_tax=0.0):
     
         """multi products 'price_get'.
            @param pricelist_ids:
@@ -177,7 +181,7 @@ class l10n_br_pricelist (orm.Model):
                                                         ('date_end', '>=', date),
                                                     ])
         if len(pricelist_ids) != len(pricelist_version_ids):
-            raise osv.except_osv(_('Warning!'), _("At least one pricelist has no active version !\nPlease create or activate one."))
+            raise exceptions.Warning(_('Warning!'), _("At least one pricelist has no active version !\nPlease create or activate one."))
     
         # product.product:
         product_ids = [i[0] for i in products_by_qty_by_partner]
@@ -282,7 +286,7 @@ class l10n_br_pricelist (orm.Model):
                                 surcharge = product_uom_obj._compute_price(cr, uid, uom.id, surcharge, context['uom'])
                             price_limit = price
                             
-                            price = price * (1 / ((1 / (1 + res['price_discount'] or 0.0)) - amount_tax['sum_amount']))
+                            price = price * (1 / ((1 / (1 + res['price_discount'] or 0.0)) - amount_tax))
                             if res['price_round']:
                                 price = tools.float_round(price, precision_rounding=res['price_round'])
                             price += surcharge
@@ -311,8 +315,8 @@ class l10n_br_pricelist (orm.Model):
 
         return results
     
-    def price_get(self, cr, uid, ids, prod_id, qty, amount_tax, partner=None, context=None):
-        res_multi = self.price_get_multi(cr, uid, amount_tax, pricelist_ids=ids, products_by_qty_by_partner=[(prod_id, qty, partner)], context=context)
+    def price_get(self, cr, uid, ids, prod_id, qty, partner=None, context=None, amount_tax=0.0):
+        res_multi = self.price_get_multi(cr, uid, pricelist_ids=ids, products_by_qty_by_partner=[(prod_id, qty, partner)], context=context, amount_tax=amount_tax)
         res = res_multi[prod_id]
         res.update({'item_id': {ids[-1]: res_multi.get('item_id', ids[-1])}})
         return res
