@@ -21,19 +21,19 @@
     'name': 'Base Data - TrustCode',
     'summary': """Base Data for TrustCode""",
     'version': '8.0',
-    'category': 'Tools',  
+    'category': 'Tools',
     'author': 'TrustCode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-            ],    
+            ],
     'depends': [        
         'base',
     ],
     'data': [
         'data/base_data.xml',
-    ],    
+    ],
     'application':True,
     'auto_install':False
 }
