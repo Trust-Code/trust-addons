@@ -18,8 +18,8 @@
 ###############################################################################
 
 {
-    'name': 'Base Module - TrustCode',
-    'summary': """Base Module for TrustCode""",
+    'name': 'Base Data - TrustCode',
+    'summary': """Base Data for TrustCode""",
     'version': '8.0',
     'category': 'Tools',  
     'author': 'TrustCode',
@@ -27,19 +27,12 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],    
+            ],    
     'depends': [        
         'base',
-        'mail',
-        'sale',
-        'account_fiscal_position_rule',
-        'l10n_br_base'
     ],
     'data': [
-        'views/module_view.xml',
-        'views/trust_base.xml',
         'data/base_data.xml',
-        'views/sale_order_view.xml'
     ],    
     'application':True,
     'auto_install':False

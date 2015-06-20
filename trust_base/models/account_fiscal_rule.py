@@ -1,11 +1,23 @@
-'''
-Created on May 24, 2015
+# -*- encoding: utf-8 -*-
+###############################################################################
+#                                                                             #
+# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+#                                                                             #
+# This program is free software: you can redistribute it and/or modify        #
+# it under the terms of the GNU Affero General Public License as published by #
+# the Free Software Foundation, either version 3 of the License, or           #
+# (at your option) any later version.                                         #
+#                                                                             #
+# This program is distributed in the hope that it will be useful,             #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
+# GNU General Public License for more details.                                #
+#                                                                             #
+# You should have received a copy of the GNU General Public License           #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
+###############################################################################
 
-@author: danimar
-'''
-
-from openerp import fields, api, models
-from openerp.osv import osv
+from openerp import fields, models
 
 
 class account_fiscal_rule(models.Model):
@@ -14,5 +26,3 @@ class account_fiscal_rule(models.Model):
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string='Fiscal Position',
         domain="[('company_id','=',company_id)]", select=True, required=True)
-    
-
