@@ -21,14 +21,14 @@ from openerp import fields, api, models
 
 
 class SaleOrder(models.Model):
-    _inherit = 'sale.order'  
-    
+    _inherit = 'sale.order'
+
     ind_final = fields.Selection([
-            ('0', u'Não'),
-            ('1', u'Consumidor final')], 
-            string=u'Operação com Consumidor final', required=False,
-            help=u'Indica operação com Consumidor final.', default='0')
-    
+        ('0', u'Não'),
+        ('1', u'Consumidor final')],
+        string=u'Operação com Consumidor final', required=False,
+        help=u'Indica operação com Consumidor final.', default='0')
+
     @api.multi
     def onchange_partner_id(self, partner_id, **kwargs):
         result = super(SaleOrder, self).onchange_partner_id(partner_id)
@@ -36,12 +36,12 @@ class SaleOrder(models.Model):
         ind_final = partner.ind_final
         if not ind_final:
             ind_final = '0' if partner.is_company else '1'
-        result['value']['ind_final'] = ind_final      
+        result['value']['ind_final'] = ind_final
         return result
-    
+
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
         result = super(SaleOrder, self)._prepare_invoice(
             cr, uid, order, lines, context)
-        
+
         result['ind_final'] = order.ind_final
         return result

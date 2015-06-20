@@ -23,11 +23,11 @@
     'license': 'AGPL-3',
     'author': 'Mackilem Van der Laan',
     'website': 'http://www.trustcode.com.br',
-    'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',                     
-                 'Danimar Ribeiro <danimaribeiro@gmail.com>'
-                 ], 
+    'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
+                     'Danimar Ribeiro <danimaribeiro@gmail.com>'
+                     ],
     'version': '1.0',
-    'depends': ['sale',],
-    'data': ['views/sale_contact_view.xml',],   
+    'depends': ['sale', ],
+    'data': ['views/sale_contact_view.xml', ],
     'installable': True,
 }

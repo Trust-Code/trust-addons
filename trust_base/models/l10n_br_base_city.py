@@ -19,7 +19,9 @@
 
 from openerp import models, fields
 
+
 class L10n_brBaseCity(models.Model):
     _inherit = 'l10n_br_base.city'
 
-    ibge_code = fields.Char(string=u'Código IBGE', size=7, copy=False, required=True)
+    ibge_code = fields.Char(
+        string=u'Código IBGE', size=7, copy=False, required=True)

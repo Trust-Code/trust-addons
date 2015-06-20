@@ -22,13 +22,13 @@
     'description': 'Insere botão para tornar possível retornar de enviado para provisório',
     'category': 'Sales',
     'license': 'AGPL-3',
-    'author': 'Trust-Code', 
+    'author': 'Trust-Code',
     'website': 'www.trustcode.com.br',
-    'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',                     
-                 'Danimar Ribeiro <danimaribeiro@gmail.com>'
-                 ], 
+    'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
+                     'Danimar Ribeiro <danimaribeiro@gmail.com>'
+                     ],
     'version': '8.0',
-    'depends': ['sale'],    
+    'depends': ['sale'],
     'data': ['views/sale_order_view.xml', 'views/sale_workflow.xml'],
     'installable': True,
     'active': False,

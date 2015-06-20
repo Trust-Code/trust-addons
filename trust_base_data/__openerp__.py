@@ -27,13 +27,13 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-            ],
-    'depends': [        
+                     ],
+    'depends': [
         'base',
     ],
     'data': [
         'data/base_data.xml',
     ],
-    'application':True,
-    'auto_install':False
+    'application': True,
+    'auto_install': False
 }

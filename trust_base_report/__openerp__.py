@@ -21,19 +21,19 @@
     'name': 'Base Report - TrustCode',
     'summary': """Base Reports - TrustCode""",
     'version': '8.0',
-    'category': 'Tools',  
+    'category': 'Tools',
     'author': 'TrustCode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],    
-    'depends': [        
+                     ],
+    'depends': [
         'base', 'report', 'l10n_br_base'
     ],
     'data': [
         'report/report_base.xml',
-    ],    
-    'application':True,
-    'auto_install':True
+    ],
+    'application': True,
+    'auto_install': True
 }

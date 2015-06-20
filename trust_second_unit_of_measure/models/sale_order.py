@@ -22,8 +22,7 @@ from openerp import models, fields
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-    
-    largura = fields.Float(string="Largura", digits=(16,6))
-    comprimento = fields.Float(string="Comprimento", digits=(16,6))
-    altura = fields.Float(string="Altura", digits=(16,6))
-    
+
+    largura = fields.Float(string="Largura", digits=(16, 6))
+    comprimento = fields.Float(string="Comprimento", digits=(16, 6))
+    altura = fields.Float(string="Altura", digits=(16, 6))

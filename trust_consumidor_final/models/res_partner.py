@@ -24,11 +24,11 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     ind_final = fields.Selection([
-            ('0', u'Não'),
-            ('1', u'Consumidor final')], 
-            string=u'Operação com Consumidor final', required=False,
-            help=u'Indica operação com Consumidor final.', default='0')
-    
+        ('0', u'Não'),
+        ('1', u'Consumidor final')],
+        string=u'Operação com Consumidor final', required=False,
+        help=u'Indica operação com Consumidor final.', default='0')
+
     @api.onchange('is_company')
     def onchange_is_company(self):
         if self.is_company:

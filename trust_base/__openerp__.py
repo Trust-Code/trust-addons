@@ -21,14 +21,14 @@
     'name': 'Base Module - TrustCode',
     'summary': """Base Module for TrustCode""",
     'version': '8.0',
-    'category': 'Tools',  
+    'category': 'Tools',
     'author': 'TrustCode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],    
-    'depends': [        
+                     ],
+    'depends': [
         'base',
         'mail',
         'sale',
@@ -40,7 +40,7 @@
         'views/trust_base.xml',
         'data/base_data.xml',
         'views/sale_order_view.xml'
-    ],    
-    'application':True,
-    'auto_install':False
+    ],
+    'application': True,
+    'auto_install': False
 }

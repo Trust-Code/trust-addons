@@ -22,13 +22,13 @@
     'summary': """In the industry segment is very important to control the stock of 
         a product with two unit of measures. """,
     'version': '8.0',
-    'category': 'MRP',  
+    'category': 'MRP',
     'author': 'TrustCode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
-                     ],    
+                     ],
     'depends': [
             'product', 'sale', 'mrp'
     ],
@@ -38,6 +38,6 @@
         'views/sale_order_view.xml',
         'views/mrp_bom_view.xml',
         'security/second_unit_security.xml',
-    ],    
-    'application':True,    
+    ],
+    'application': True,
 }

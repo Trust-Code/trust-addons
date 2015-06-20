@@ -21,8 +21,8 @@ from openerp import fields, models
 
 
 class account_fiscal_rule(models.Model):
-    _inherit = 'account.fiscal.position.rule'    
-    
+    _inherit = 'account.fiscal.position.rule'
+
     fiscal_position_id = fields.Many2one(
         'account.fiscal.position', string='Fiscal Position',
         domain="[('company_id','=',company_id)]", select=True, required=True)

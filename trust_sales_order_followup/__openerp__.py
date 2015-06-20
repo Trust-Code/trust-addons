@@ -21,7 +21,7 @@
     'name': 'Sales Order Follow-Up',
     'summary': "Add follow-up capabilities to sales order like in the leads",
     'version': '1.0',
-    'category': 'Sales',  
+    'category': 'Sales',
     'author': 'TrustCode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
@@ -39,6 +39,6 @@
         'views/sales_order_followup.xml',
     ],
     'installable': True,
-    'application':True,
+    'application': True,
     'active': False,
 }

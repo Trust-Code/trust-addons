@@ -21,14 +21,14 @@
     'name': 'Indicador Consumidor Final',
     'summary': """Cria indicador de consumidor final resultando na inclusão do IPI na base do ICMS""",
     'version': '8.0',
-    'category': 'Tools',  
+    'category': 'Tools',
     'author': 'TrustCode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],    
-    'depends': [        
+                     ],
+    'depends': [
         'base',
         'sale',
         'l10n_br_base',
@@ -37,7 +37,7 @@
     'data': [
         'views/partner_view.xml',
         'views/sale_order_view.xml',
-    ],    
-    'application':True,
-    'auto_install':False
+    ],
+    'application': True,
+    'auto_install': False
 }
