@@ -45,5 +45,5 @@ class Test_SalesOrderFollowUp(common.TransactionCase):
              'stop_datetime': time.strftime(DEFAULT_SERVER_DATE_FORMAT)}
         )
 
-        self.assertEqual(self.order.meeting_count, 2,
-                         "Número de reuniões para o pedido inválido")
+        self.assertEqual(self.order.meeting_count, 1,
+                         u"Numero de reunioes para o pedido invalido")
