@@ -39,7 +39,7 @@ class Test_SalesOrderFollowUp(common.TransactionCase):
         self.assertEqual(res['type'], u'ir.actions.act_window')
 
     def test_record_count(self):
-        evento = self.env['calendar.event'].create(
+        self.env['calendar.event'].create(
             {'name': 'Evento', 'sale_order_id': self.order.id,
              'start_datetime': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
              'stop_datetime': time.strftime(DEFAULT_SERVER_DATE_FORMAT)}
