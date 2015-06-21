@@ -46,7 +46,7 @@ class sale_order_followup(models.Model):
     @api.multi
     def action_create_meeting(self):
         """
-        Open meeting's calendar view to schedule meeting on current opportunity.
+        Open meeting's calendar view to schedule meeting on current opportunity
         :return dict: dictionary value for created Meeting view
         """
         res = self.env['ir.actions.act_window'].for_xml_id(
@@ -55,7 +55,8 @@ class sale_order_followup(models.Model):
         if self.partner_id:
             partner_ids.append(self.partner_id.id)
         res['context'] = {
-            'default_partner_id': self.partner_id and self.partner_id.id or False,
+            'default_partner_id': self.partner_id
+                                and self.partner_id.id or False,
             'default_partner_ids': partner_ids,
             'default_sale_order_id': self.id,
             'default_related_to_sales': True,

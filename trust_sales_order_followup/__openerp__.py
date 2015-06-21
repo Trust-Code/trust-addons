@@ -28,8 +28,8 @@
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'],
     'description': """
-          This module allows to register phone-calls, schedule them for a specific sales order
-          or for a customer.
+          This module allows to register phone-calls, schedule them for a
+          specific sales order or for a customer.
     """,
     'depends': [
         'crm',

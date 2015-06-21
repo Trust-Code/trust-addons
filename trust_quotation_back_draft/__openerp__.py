@@ -19,7 +19,8 @@
 
 {
     'name': 'Button Back to Draft (Sent to Draft)',
-    'description': 'Insere botão para tornar possível retornar de enviado para provisório',
+    'description': """Insere botão para tornar possível retornar de enviado
+                    para provisório""",
     'category': 'Sales',
     'license': 'AGPL-3',
     'author': 'Trust-Code',

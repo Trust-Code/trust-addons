@@ -19,8 +19,8 @@
 
 {
     'name': 'Product Configurator for Manufacturing',
-    'summary': """Create flexibility adding attributes to products that allow to generate dynamic 
-            manufacturing orders""",
+    'summary': """Create flexibility adding attributes to products that allow
+                to generate dynamic manufacturing orders""",
     'version': '1.0',
     'category': 'MRP',
     'author': 'TrustCode',

@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License           #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
-
 {
     'name': 'Indicador Consumidor Final',
-    'summary': """Cria indicador de consumidor final resultando na inclusão do IPI na base do ICMS""",
+    'summary': """Cria indicador de consumidor final resultando na inclusão 
+                do IPI na base do ICMS""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'TrustCode',
