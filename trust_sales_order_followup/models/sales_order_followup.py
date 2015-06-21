@@ -56,7 +56,7 @@ class sale_order_followup(models.Model):
             partner_ids.append(self.partner_id.id)
         res['context'] = {
             'default_partner_id': self.partner_id
-                                and self.partner_id.id or False,
+            and self.partner_id.id or False,
             'default_partner_ids': partner_ids,
             'default_sale_order_id': self.id,
             'default_related_to_sales': True,

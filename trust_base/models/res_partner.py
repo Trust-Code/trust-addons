@@ -24,7 +24,7 @@ class res_partner(osv.Model):
     _inherit = 'res.partner'
 
     _columns = {
-        'state_id': fields.many2one("res.country.state", 'State', 
+        'state_id': fields.many2one("res.country.state", 'State',
                                     ondelete='restrict', required=True),
     }
 

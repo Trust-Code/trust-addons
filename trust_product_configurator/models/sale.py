@@ -47,7 +47,7 @@ class sale_product_configurator(orm.Model):
             ('write', 'Write'),
             ('special', 'Special'),
         ], 'Color', readonly=False, select=True, required=True),
-        'special color': fields.char('Special Color', size=20, 
+        'special color': fields.char('Special Color', size=20,
                                      help='Insert here the special color.'),
     }
 

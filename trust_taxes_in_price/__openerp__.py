@@ -19,7 +19,7 @@
 
 {
     'name': 'trust_taxes_in_price',
-    'description': '''Este módulo cria a possibilidade de incluir qualquer imposto ao preço de 
+    'description': '''Este módulo cria a possibilidade de incluir qualquer imposto ao preço de
                 vendas dos produtos, quando estiver sendo utilizado listas de preço.''',
     'category': 'sale',
     'license': 'AGPL-3',

@@ -23,11 +23,17 @@ from openerp import models, api, fields
 class mrp_bom(models.Model):
     _inherit = 'mrp.bom'
 
-    def _bom_explode(self, cr, uid, bom, product, factor, properties=None, level=0, routing_id=False, previous_products=None, master_bom=None, context=None):
+    def _bom_explode(self, cr, uid, bom, product, factor, properties=None,
+                     level=0, routing_id=False, previous_products=None,
+                     master_bom=None, context=None):
 
-        res = super(mrp_bom, self)._bom_explode(cr, uid, bom, product, factor, properties=properties,
-                                                level=level, routing_id=routing_id, previous_products=previous_products,
-                                                master_bom=master_bom, context=context)
+        res = super(mrp_bom, self)._bom_explode(
+            cr, uid, bom, product, factor,
+            properties=properties, level=level,
+            routing_id=routing_id,
+            previous_products=previous_products,
+            master_bom=master_bom, context=context
+        )
         results = res[0]  # product_lines
         results2 = res[1]  # workcenter_lines
         indice = 0
@@ -74,9 +80,12 @@ class mrp_production(models.Model):
     _inherit = 'mrp.production'
 
     def _make_production_consume_line(self, cr, uid, line, context=None):
-        move_id = super(mrp_production, self)._make_production_consume_line(
+        move_id = super(mrp_production, self)\
+            ._make_production_consume_line(
             cr, uid, line, context=context)
 
-        self.pool['stock.move'].write(cr, uid, move_id, {'unidades': line.unidades,
-                                                         'comprimento': line.comprimento, 'largura': line.largura})
+        self.pool['stock.move'].write(cr, uid, move_id,
+                                      {'unidades': line.unidades,
+                                       'comprimento': line.comprimento,
+                                       'largura': line.largura})
         return move_id

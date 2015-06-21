@@ -28,7 +28,11 @@ class l10n_br_account_tax(orm.Model):
     _inherit = 'account.tax'
 
     _columns = {
-        'tax_in_price': fields.boolean('Add Tax in Price', help='Select this field for add this tax in sale markup when used pricelists')
+        'tax_in_price': fields.boolean(
+            'Add Tax in Price',
+            help="Select this field for add this tax in sale "
+            "markup when used pricelists"
+        )
     }
 
 
@@ -36,13 +40,17 @@ class l10n_br_sale_order_line (orm.Model):
     _inherit = 'sale.order.line'
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
-                          uom=False, qty_uos=0, uos=False, name='', partner_id=False,
-                          lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=None):
+                          uom=False, qty_uos=0, uos=False, name='',
+                          partner_id=False, lang=False, update_tax=True,
+                          date_order=False, packaging=False,
+                          fiscal_position=False, flag=False, context=None):
         context = context or {}
         lang = lang or context.get('lang', False)
         if not partner_id:
-            raise exceptions.Warning(_('No Customer Defined!'), _(
-                'Before choosing a product,\n select a customer in the sales form.'))
+            raise exceptions.Warning(
+                _('No Customer Defined!'),
+                _("Before choosing a product,\n select a customer in "
+                  "the sales form."))
         warning = {}
         product_uom_obj = self.pool.get('product.uom')
         partner_obj = self.pool.get('res.partner')
@@ -53,8 +61,9 @@ class l10n_br_sale_order_line (orm.Model):
 
         if not product:
             return {'value': {'th_weight': 0,
-                              'product_uos_qty': qty}, 'domain': {'product_uom': [],
-                                                                  'product_uos': []}}
+                              'product_uos_qty': qty},
+                    'domain': {'product_uom': [],
+                               'product_uos': []}}
         if not date_order:
             date_order = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
@@ -75,8 +84,8 @@ class l10n_br_sale_order_line (orm.Model):
                     uos = False
             else:
                 uos = False
-        fpos = fiscal_position and self.pool.get(
-            'account.fiscal.position').browse(cr, uid, fiscal_position) or False
+        fpos = fiscal_position and self.pool.get('account.fiscal.position') \
+            .browse(cr, uid, fiscal_position) or False
 
         result['tax_id'] = self.pool.get('account.fiscal.position').map_tax(
             cr, uid, fpos, product_obj.taxes_id, context)
@@ -126,7 +135,8 @@ class l10n_br_sale_order_line (orm.Model):
         # get unit price
 
         if not pricelist:
-            warn_msg = _('You have to select a pricelist or a customer in the sales form !\n'
+            warn_msg = _("You have to select a pricelist or a customer in "
+                         "the sales form !\n"
                          'Please set one before choosing a product.')
             warning_msgs += _("No Pricelist ! : ") + warn_msg + "\n\n"
         else:
@@ -134,19 +144,24 @@ class l10n_br_sale_order_line (orm.Model):
             amount_tax = {"sum_amount": 0.0}
             if len(taxes) > 0:
                 cr.execute(
-                    'SELECT sum(amount) AS sum_amount FROM account_tax WHERE id in %s AND tax_in_price = %s ', (taxes, 't'))
+                    "SELECT sum(amount) AS sum_amount FROM account_tax WHERE "
+                    "id in %s AND tax_in_price = %s ", (taxes, 't'))
                 amount_tax = cr.dictfetchone()
             if amount_tax['sum_amount'] == None:
                 amount_tax['sum_amount'] = 0.0
 
-            price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
-                                                                 product, qty or 1.0, partner_id, context={
-                'uom': uom or result.get('product_uom'),
-                'date': date_order,
-            }, amount_tax=amount_tax["sum_amount"])[pricelist]
+            price = self.pool.get('product.pricelist').price_get(
+                cr, uid, [pricelist],
+                product, qty or 1.0, partner_id, context={
+                    'uom': uom or result.get('product_uom'),
+                    'date': date_order,
+                },
+                amount_tax=amount_tax["sum_amount"])[pricelist]
             if price is False:
-                warn_msg = _("Cannot find a pricelist line matching this product and quantity.\n"
-                             "You have to change either the product, the quantity or the pricelist.")
+                warn_msg = _("Cannot find a pricelist line matching this "
+                             "product and quantity.\n"
+                             "You have to change either the product, "
+                             "the quantity or the pricelist.")
 
                 warning_msgs += _("No valid pricelist line found ! :") + \
                     warn_msg + "\n\n"
@@ -163,14 +178,17 @@ class l10n_br_sale_order_line (orm.Model):
 class l10n_br_pricelist (orm.Model):
     _inherit = 'product.pricelist'
 
-    def price_get_multi(self, cr, uid, pricelist_ids, products_by_qty_by_partner, context=None, amount_tax=0.0):
+    def price_get_multi(self, cr, uid, pricelist_ids,
+                        products_by_qty_by_partner, context=None,
+                        amount_tax=0.0):
         """multi products 'price_get'.
            @param pricelist_ids:
            @param products_by_qty:
            @param partner:
            @param context: {
-             'date': Date of the pricelist (%Y-%m-%d),}
-           @return: a dict of dict with product_id as key and a dict 'price by pricelist' as value
+            'date': Date of the pricelist (%Y-%m-%d),}
+           @return: a dict of dict with product_id as key and a dict
+            'price by pricelist' as value
         """
 
         def _create_parent_category_list(id, lst):
@@ -201,26 +219,27 @@ class l10n_br_pricelist (orm.Model):
             pricelist_ids = self.pool.get('product.pricelist').search(
                 cr, uid, [], context=context)
 
-        pricelist_version_ids = self.pool.get('product.pricelist.version').search(cr, uid, [
-            ('pricelist_id', 'in', pricelist_ids),
-            '|',
-            ('date_start',
-             '=', False),
-            ('date_start',
-             '<=', date),
-            '|',
-            ('date_end',
-             '=', False),
-            ('date_end',
-             '>=', date),
-        ])
+        pricelist_version_ids = self.pool.get('product.pricelist.version') \
+            .search(cr, uid, [
+                ('pricelist_id', 'in', pricelist_ids),
+                '|',
+                ('date_start',
+                 '=', False),
+                ('date_start',
+                 '<=', date),
+                '|',
+                ('date_end',
+                 '=', False),
+                ('date_end',
+                 '>=', date),
+            ])
         if len(pricelist_ids) != len(pricelist_version_ids):
             raise exceptions.Warning(_('Warning!'), _(
-                "At least one pricelist has no active version !\nPlease create or activate one."))
+                "At least one pricelist has no active version !\n"
+                "Please create or activate one."))
 
         # product.product:
         product_ids = [i[0] for i in products_by_qty_by_partner]
-        #products = dict([(item['id'], item) for item in product_obj.read(cr, uid, product_ids, ['categ_id', 'product_tmpl_id', 'uos_id', 'uom_id'])])
         products = product_obj.browse(cr, uid, product_ids, context=context)
         products_dict = dict([(item.id, item) for item in products])
 
@@ -229,18 +248,19 @@ class l10n_br_pricelist (orm.Model):
         product_categories = product_category_obj.read(
             cr, uid, product_category_ids, ['parent_id'])
         product_category_tree = dict(
-            [(item['id'], item['parent_id'][0]) for item in product_categories if item['parent_id']])
+            [(item['id'], item['parent_id'][0]) for item in product_categories
+             if item['parent_id']])
 
         results = {}
         for product_id, qty, partner in products_by_qty_by_partner:
             for pricelist_id in pricelist_ids:
                 price = False
 
-                tmpl_id = products_dict[product_id].product_tmpl_id and products_dict[
-                    product_id].product_tmpl_id.id or False
+                tmpl_id = products_dict[product_id].product_tmpl_id \
+                    and products_dict[product_id].product_tmpl_id.id or False
 
-                categ_id = products_dict[product_id].categ_id and products_dict[
-                    product_id].categ_id.id or False
+                categ_id = products_dict[product_id].categ_id \
+                    and products_dict[product_id].categ_id.id or False
                 categ_ids = _create_parent_category_list(categ_id, [categ_id])
                 if categ_ids:
                     categ_where = '(categ_id IN (' + \
@@ -249,7 +269,8 @@ class l10n_br_pricelist (orm.Model):
                     categ_where = '(categ_id IS NULL)'
 
                 if partner:
-                    partner_where = 'base <> -2 OR %s IN (SELECT name FROM product_supplierinfo WHERE product_id = %s) '
+                    partner_where = 'base <> -2 OR %s IN (SELECT name FROM "\
+                                "product_supplierinfo WHERE product_id = %s)'
                     partner_args = (partner, tmpl_id)
                 else:
                     partner_where = 'base <> -2 '
@@ -267,7 +288,8 @@ class l10n_br_pricelist (orm.Model):
                     'AND (min_quantity IS NULL OR min_quantity <= %s) '
                     'AND i.price_version_id = v.id AND v.pricelist_id = pl.id '
                     'ORDER BY sequence',
-                    (tmpl_id, product_id) + partner_args + (pricelist_version_ids[0], qty))
+                    (tmpl_id, product_id) + partner_args +
+                    (pricelist_version_ids[0], qty))
                 res1 = cr.dictfetchall()
                 uom_price_already_computed = False
                 for res in res1:
@@ -276,44 +298,64 @@ class l10n_br_pricelist (orm.Model):
                             if not res['base_pricelist_id']:
                                 price = 0.0
                             else:
-                                price_tmp = self.price_get(cr, uid,
-                                                           [res[
-                                                               'base_pricelist_id']], product_id,
-                                                           qty, context=context)[res['base_pricelist_id']]
+                                price_tmp = self.price_get(
+                                    cr, uid,
+                                    [res[
+                                        'base_pricelist_id']], product_id,
+                                    qty, context=context)[
+                                    res['base_pricelist_id']
+                                ]
                                 ptype_src = self.browse(
-                                    cr, uid, res['base_pricelist_id']).currency_id.id
+                                    cr, uid, res['base_pricelist_id']
+                                ).currency_id.id
                                 uom_price_already_computed = True
-                                price = currency_obj.compute(cr, uid,
-                                                             ptype_src, res[
-                                                                 'currency_id'],
-                                                             price_tmp, round=False,
-                                                             context=context)
+                                price = currency_obj.compute(
+                                    cr, uid,
+                                    ptype_src, res[
+                                        'currency_id'],
+                                    price_tmp, round=False,
+                                    context=context
+                                )
                         elif res['base'] == -2:
                             # this section could be improved by moving the
                             # queries outside the loop:
                             where = []
                             if partner:
                                 where = [('name', '=', partner)]
-                            sinfo = supplierinfo_obj.search(cr, uid,
-                                                            [('product_id', '=', tmpl_id)] + where)
+                            sinfo = supplierinfo_obj.search(
+                                cr, uid,
+                                [('product_id', '=', tmpl_id)] + where
+                            )
                             price = 0.0
                             if sinfo:
                                 qty_in_product_uom = qty
-                                from_uom = context.get('uom') or product_obj.read(
-                                    cr, uid, [product_id], ['uom_id'])[0]['uom_id'][0]
+                                from_uom = context.get('uom') or \
+                                    product_obj.read(
+                                        cr, uid, [product_id], ['uom_id']
+                                )[0]['uom_id'][0]
+
                                 supplier = supplierinfo_obj.browse(
                                     cr, uid, sinfo, context=context)[0]
-                                seller_uom = supplier.product_uom and supplier.product_uom.id or False
-                                if seller_uom and from_uom and from_uom != seller_uom:
-                                    qty_in_product_uom = product_uom_obj._compute_qty(
-                                        cr, uid, from_uom, qty, to_uom_id=seller_uom)
+                                seller_uom = supplier.product_uom and \
+                                    supplier.product_uom.id or False
+
+                                if seller_uom and from_uom and \
+                                        from_uom != seller_uom:
+                                    qty_in_product_uom = \
+                                        product_uom_obj._compute_qty(
+                                            cr, uid, from_uom, qty,
+                                            to_uom_id=seller_uom
+                                        )
                                 else:
                                     uom_price_already_computed = True
-                                cr.execute('SELECT * '
-                                           'FROM pricelist_partnerinfo '
-                                           'WHERE suppinfo_id IN %s'
-                                           'AND min_quantity <= %s '
-                                           'ORDER BY min_quantity DESC LIMIT 1', (tuple(sinfo), qty_in_product_uom,))
+                                cr.execute(
+                                    'SELECT * '
+                                    'FROM pricelist_partnerinfo '
+                                    'WHERE suppinfo_id IN %s'
+                                    'AND min_quantity <= %s '
+                                    'ORDER BY min_quantity DESC LIMIT 1',
+                                    (tuple(sinfo), qty_in_product_uom,)
+                                )
                                 res2 = cr.dictfetchone()
                                 if res2:
                                     price = res2['price']
@@ -321,11 +363,16 @@ class l10n_br_pricelist (orm.Model):
                             price_type = price_type_obj.browse(
                                 cr, uid, int(res['base']))
                             uom_price_already_computed = True
-                            price = currency_obj.compute(cr, uid,
-                                                         price_type.currency_id.id, res[
-                                                             'currency_id'],
-                                                         product_obj.price_get(cr, uid, [product_id],
-                                                                               price_type.field, context=context)[product_id], round=False, context=context)
+                            price = currency_obj.compute(
+                                cr, uid,
+                                price_type.currency_id.id,
+                                res['currency_id'],
+                                product_obj.price_get(
+                                    cr, uid, [product_id],
+                                    price_type.field, context=context
+                                )[product_id],
+                                round=False, context=context
+                            )
 
                         if price is not False:
                             surcharge = res['price_surcharge'] or 0.0
@@ -338,21 +385,29 @@ class l10n_br_pricelist (orm.Model):
 
                             price = price * \
                                 (1 /
-                                 ((1 / (1 + res['price_discount'] or 0.0)) - amount_tax))
+                                 ((1 / (1 + res['price_discount'] or 0.0)) -
+                                  amount_tax))
                             if res['price_round']:
                                 price = tools.float_round(
-                                    price, precision_rounding=res['price_round'])
+                                    price,
+                                    precision_rounding=res['price_round']
+                                )
                             price += surcharge
                             if res['price_min_margin']:
                                 price = max(
-                                    price, price_limit + res['price_min_margin'])
+                                    price,
+                                    price_limit + res['price_min_margin']
+                                )
                             if res['price_max_margin']:
                                 price = min(
-                                    price, price_limit + res['price_max_margin'])
+                                    price,
+                                    price_limit + res['price_max_margin']
+                                )
                             break
 
                     else:
-                        # False means no valid line found ! But we may not raise an
+                        # False means no valid line found !
+                        # But we may not raise an
                         # exception here because it breaks the search
                         price = False
 
@@ -371,9 +426,13 @@ class l10n_br_pricelist (orm.Model):
 
         return results
 
-    def price_get(self, cr, uid, ids, prod_id, qty, partner=None, context=None, amount_tax=0.0):
-        res_multi = self.price_get_multi(cr, uid, pricelist_ids=ids, products_by_qty_by_partner=[
-                                         (prod_id, qty, partner)], context=context, amount_tax=amount_tax)
+    def price_get(self, cr, uid, ids, prod_id, qty,
+                  partner=None, context=None, amount_tax=0.0):
+        res_multi = self.price_get_multi(
+            cr, uid, pricelist_ids=ids,
+            products_by_qty_by_partner=[(prod_id, qty, partner)],
+            context=context, amount_tax=amount_tax
+        )
         res = res_multi[prod_id]
         res.update({'item_id': {ids[-1]: res_multi.get('item_id', ids[-1])}})
         return res
