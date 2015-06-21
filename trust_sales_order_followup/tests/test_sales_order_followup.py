@@ -17,5 +17,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
 
-from . import models
-from . import tests
+import time
+from openerp.tests import common
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+
+
+class Test_SalesOrderFollowUp(common.TransactionCase):
+
+    def setUp(self):
+        super(Test_SalesOrderFollowUp, self).setUp()
+        self.partner = self.env['res.partner'].create(
+                {'name': 'Danimar Ribeiro'})
+        self.order = self.env['sale.order'].create({'partner_id': self.partner.id})
+
+    def test_action_create_meeting(self):
+        res = self.order.action_create_meeting()
+
+        self.assertEqual(res['context']['default_partner_id'], self.partner.id)
+        self.assertEqual(res['res_model'], u'calendar.event')
+        self.assertEqual(res['type'], u'ir.actions.act_window')
+    
+    def test_record_count(self):
+        evento = self.env['calendar.event'].create(
+            {'name':'Evento', 'sale_order_id': self.order.id, 
+             'start_datetime':time.strftime(DEFAULT_SERVER_DATE_FORMAT), 
+             'stop_datetime':time.strftime(DEFAULT_SERVER_DATE_FORMAT) }
+        )
+        
+        self.assertEqual(self.order.meeting_count, 2, 
+                         "Número de reuniões para o pedido inválido")
