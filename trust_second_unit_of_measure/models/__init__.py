@@ -16,3 +16,8 @@
 # You should have received a copy of the GNU General Public License           #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
+
+from . import mrp_bom
+from . import product
+from . import res_config
+from . import sale_order

@@ -147,7 +147,7 @@ class l10n_br_sale_order_line (orm.Model):
                     "SELECT sum(amount) AS sum_amount FROM account_tax WHERE "
                     "id in %s AND tax_in_price = %s ", (taxes, 't'))
                 amount_tax = cr.dictfetchone()
-            if amount_tax['sum_amount'] == None:
+            if amount_tax['sum_amount'] is None:
                 amount_tax['sum_amount'] = 0.0
 
             price = self.pool.get('product.pricelist').price_get(

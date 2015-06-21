@@ -16,3 +16,8 @@
 # You should have received a copy of the GNU General Public License           #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
+
+from . import account_fiscal_rule
+from . import l10n_br_base_city
+from . import res_partner
+from . import sale_order

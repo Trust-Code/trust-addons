@@ -17,7 +17,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
 
-import models.res_partner
-import models.sale_order
-import models.account_fiscal_rule
-import models.l10n_br_base_city
+from . import models
