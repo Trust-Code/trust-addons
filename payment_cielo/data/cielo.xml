@@ -12,7 +12,6 @@
 <p>You will be redirected to the Cielo Checkout after clicking on the payment button.</p>]]></field>
             <field name="cielo_merchant_id">GUID provided by CIELO</field>            
         </record>
-
-        <function model="payment.acquirer" name="_migrate_paypal_account"/>
+                
     </data>
 </openerp>
