@@ -73,8 +73,9 @@ class AcquirerCielo(models.Model):
         entrega = pedido.partner_shipping_id
 
         partner_values.update({
-            'zip': entrega.zip, 'street': entrega.street, 'number': entrega.number,
-            'district': entrega.district, 'complement': entrega.street2,
+            'zip': entrega.zip, 'street': entrega.street,
+            'number': entrega.number, 'district': entrega.district,
+            'complement': entrega.street2,
             'city': entrega.l10n_br_city_id.name, 'state': entrega.state_id
         })
         lines = []
@@ -82,7 +83,8 @@ class AcquirerCielo(models.Model):
         for line in pedido.order_line:
             lines.append({
                 'name': re.sub(
-                    '[^a-zA-z0-9 ]', '', line.name[:80]).replace('[', '').replace(']', ''),
+                    '[^a-zA-z0-9 ]', '',
+                    line.name[:80]).replace('[', '').replace(']', ''),
                 'price': '{:.0f}'.format(line.price_unit * 100),
                 'quantity': '{:.0f}'.format(line.product_uom_qty),
                 'zip': re.sub('[^0-9]', '', entrega.zip),
@@ -94,7 +96,7 @@ class AcquirerCielo(models.Model):
 
     def cielo_form_generate_values(
             self, cr, uid, id, partner_values, tx_values, context=None):
-        base_url = self.pool['ir.config_parameter'].get_param(
+        self.pool['ir.config_parameter'].get_param(
             cr,
             SUPERUSER_ID,
             'web.base.url')
@@ -118,8 +120,10 @@ class AcquirerCielo(models.Model):
 
             'partner_name': partner_values.get('name', ''),
             'partner_email': partner_values.get('email', ''),
-            'partner_cpf': re.sub('[^0-9]', '', partner_values.get('cpf', '-')),
-            'partner_phone': re.sub('[^0-9]', '', partner_values.get('phone', '-')),
+            'partner_cpf': re.sub('[^0-9]', '',
+                                  partner_values.get('cpf', '-')),
+            'partner_phone': re.sub('[^0-9]', '',
+                                    partner_values.get('phone', '-')),
         })
         if acquirer.fees_active:
             cielo_tx_values['handling'] = '%.2f' % cielo_tx_values.pop(
