@@ -22,8 +22,7 @@ import logging
 import pprint
 import werkzeug
 
-from openerp import http, SUPERUSER_ID
-from openerp.http import request
+from openerp import http
 
 _logger = logging.getLogger(__name__)
 
@@ -53,7 +52,7 @@ class CieloController(http.Controller):
             'Beginning Paypal DPN form_feedback with post data %s',
             pprint.pformat(post))  # debug
         self.cielo_validate_data(**post)
-        return werkzeug.utils.redirect(_return_url)
+        return werkzeug.utils.redirect(self._return_url)
 
     @http.route('/cielo/status/', type='http', auth="none")
     def cielo_cancel(self, **post):
