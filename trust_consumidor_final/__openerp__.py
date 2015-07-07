@@ -31,6 +31,7 @@
     'depends': [
         'base',
         'sale',
+        'sale_contact',
         'l10n_br_base',
         'l10n_br_account_product'
     ],

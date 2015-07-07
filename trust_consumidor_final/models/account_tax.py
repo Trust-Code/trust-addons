@@ -23,29 +23,3 @@ from openerp import api, models
 class AccountTax(models.Model):
     """Implement computation method in taxes"""
     _inherit = 'account.tax'
-
-    @api.v7
-    def compute_all(self, cr, uid, taxes, price_unit, quantity,
-                    product=None, partner=None, force_excluded=False,
-                    fiscal_position=False, insurance_value=0.0,
-                    freight_value=0.0, other_costs_value=0.0):
-        # if fiscal_position:
-        #    fiscal_position.asset_operation = True
-
-        return super(AccountTax, self).compute_all(
-            cr, uid, taxes, price_unit, quantity,
-            product=product, partner=partner, force_excluded=force_excluded,
-            fiscal_position=fiscal_position, insurance_value=insurance_value,
-            freight_value=freight_value, other_costs_value=other_costs_value)
-
-    @api.v8
-    def compute_all(self, price_unit, quantity,
-                    product=None, partner=None, force_excluded=False,
-                    fiscal_position=False, insurance_value=0.0,
-                    freight_value=0.0, other_costs_value=0.0):
-
-        return self._model.compute_all(
-            self._cr, self._uid, self, price_unit, quantity,
-            product=product, partner=partner, force_excluded=force_excluded,
-            fiscal_position=fiscal_position, insurance_value=insurance_value,
-            freight_value=freight_value, other_costs_value=other_costs_value)
