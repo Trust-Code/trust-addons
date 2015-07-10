@@ -50,9 +50,9 @@ class mrp_bom(models.Model):
 class mrp_bom_line(models.Model):
     _inherit = 'mrp.bom.line'
 
-    largura = fields.Integer(string="Largura")
-    comprimento = fields.Integer(string="Comprimento")
-    unidades = fields.Integer(string="Unidades")
+    largura = fields.Float(string="Largura", digits=(16, 6))
+    comprimento = fields.Float(string="Comprimento", digits=(16, 6))
+    unidades = fields.Float(string="Unidades", digits=(16, 6))
 
     @api.onchange('largura', 'comprimento', 'unidades')
     def compute_quantity(self):
@@ -63,17 +63,17 @@ class mrp_bom_line(models.Model):
 class mrp_production_product_line(models.Model):
     _inherit = 'mrp.production.product.line'
 
-    largura = fields.Integer(string="Largura")
-    comprimento = fields.Integer(string="Comprimento")
-    unidades = fields.Integer(string="Unidades")
+    largura = fields.Float(string="Largura", digits=(16, 6))
+    comprimento = fields.Float(string="Comprimento", digits=(16, 6))
+    unidades = fields.Float(string="Unidades", digits=(16, 6))
 
 
 class stock_move(models.Model):
     _inherit = 'stock.move'
 
-    largura = fields.Integer(string="Largura")
-    comprimento = fields.Integer(string="Comprimento")
-    unidades = fields.Integer(string="Unidades")
+    largura = fields.Float(string="Largura", digits=(16, 6))
+    comprimento = fields.Float(string="Comprimento", digits=(16, 6))
+    unidades = fields.Float(string="Unidades", digits=(16, 6))
 
 
 class mrp_production(models.Model):

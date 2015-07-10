@@ -270,7 +270,7 @@ class l10n_br_pricelist (orm.Model):
 
                 if partner:
                     partner_where = "base <> -2 OR %s IN (SELECT name FROM "\
-                                "product_supplierinfo WHERE product_id = %s)"
+                        "product_supplierinfo WHERE product_id = %s)"
                     partner_args = (partner, tmpl_id)
                 else:
                     partner_where = 'base <> -2 '
