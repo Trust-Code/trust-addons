@@ -30,14 +30,20 @@ class account_invoice_line(models.Model):
     def _compute_price(self):
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = self.invoice_line_tax_id.compute_all(
-            price, self.quantity, product=self.product_id,
-            partner=self.invoice_id.partner_id,
-            fiscal_position=self.fiscal_position,
-            consumidor=self.invoice_id.ind_final)
-        self.price_subtotal = taxes['total'] - taxes['total_tax_discount']
-        self.price_total = taxes['total']
+                    price, self.quantity,
+                    product=self.product_id, 
+                    partner=self.invoice_id.partner_id,
+                    fiscal_position=self.fiscal_position,
+                    insurance_value=self.insurance_value,
+                    freight_value=self.freight_value,
+                    other_costs_value=self.other_costs_value,
+                    consumidor=self.invoice_id.ind_final)
+
         if self.invoice_id:
+            price_gross = self.invoice_id.currency_id.round(
+                    self.price_unit * self.quantity)
+            self.price_total = taxes['total']
             self.price_subtotal = self.invoice_id.currency_id.round(
-                self.price_subtotal)
-            self.price_total = self.invoice_id.currency_id.round(
-                self.price_total)
+                taxes['total'] - taxes['total_tax_discount'])
+            self.price_gross = price_gross
+            self.discount_value = price_gross - taxes['total']
