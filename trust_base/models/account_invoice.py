@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015  Danimar Ribeiro www.trustcode.com.br                    #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
 # it under the terms of the GNU Affero General Public License as published by #
@@ -11,37 +11,16 @@
 # This program is distributed in the hope that it will be useful,             #
 # but WITHOUT ANY WARRANTY; without even the implied warranty of              #
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU General Public License for more details.                                #
+# GNU Affero General Public License for more details.                         #
 #                                                                             #
-# You should have received a copy of the GNU General Public License           #
+# You should have received a copy of the GNU Affero General Public License    #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
+#                                                                             #
 ###############################################################################
+from openerp import models, fields, api
 
-{
-    'name': 'Base Module - TrustCode',
-    'summary': """Base Module for TrustCode""",
-    'version': '8.0',
-    'category': 'Tools',
-    'author': 'TrustCode',
-    'license': 'AGPL-3',
-    'website': 'http://www.trustcode.com.br',
-    'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
-                     'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],
-    'depends': [
-        'base',
-        'mail',
-        'sale',
-        'account_fiscal_position_rule',
-        'l10n_br_base'
-    ],
-    'data': [
-        'views/module_view.xml',
-        'views/trust_base.xml',
-        'data/base_data.xml',
-        'views/sale_order_view.xml',
-        'views/res_partner_view.xml'
-    ],
-    'application': True,
-    'auto_install': False
-}
+
+class AccountInvoice(models.Model):
+    _inherit = 'account.invoice'
+
+    _order = 'id desc'
