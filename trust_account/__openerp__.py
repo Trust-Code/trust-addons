@@ -18,8 +18,8 @@
 ###############################################################################
 
 {
-    'name': 'Base Module - TrustCode',
-    'summary': """Base Module for TrustCode""",
+    'name': 'Base Account Module - TrustCode',
+    'summary': """Account Base Module for TrustCode""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'TrustCode',
@@ -29,13 +29,9 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base',
+        'account',
     ],
     'data': [
-        'views/module_view.xml',
-        'views/trust_base.xml',
-        'data/base_data.xml',
-        'views/res_partner_view.xml'
     ],
     'application': True,
     'auto_install': False
