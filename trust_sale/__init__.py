@@ -17,30 +17,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
 
-{
-    'name': 'Base Module - TrustCode',
-    'summary': """Base Module for TrustCode""",
-    'version': '8.0',
-    'category': 'Tools',
-    'author': 'TrustCode',
-    'license': 'AGPL-3',
-    'website': 'http://www.trustcode.com.br',
-    'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
-                     'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],
-    'depends': [
-        'base',
-        'mail',
-        'sale',
-        'account_fiscal_position_rule',
-        'l10n_br_base'
-    ],
-    'data': [
-        'views/module_view.xml',
-        'views/trust_base.xml',
-        'data/base_data.xml',
-        'views/res_partner_view.xml'
-    ],
-    'application': True,
-    'auto_install': False
-}
+from . import models
