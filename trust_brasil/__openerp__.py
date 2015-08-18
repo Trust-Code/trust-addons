@@ -18,8 +18,8 @@
 ###############################################################################
 
 {
-    'name': 'Base Sales Module - TrustCode',
-    'summary': """Sales Base Module for TrustCode""",
+    'name': 'Base Brazil Module - TrustCode',
+    'summary': """Brazil Base Module for TrustCode""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'TrustCode',
@@ -29,10 +29,10 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'sale',
+        'account_fiscal_position_rule',
+        'l10n_br_base'
     ],
     'data': [
-        'views/sale_order_view.xml',
     ],
     'application': True,
     'auto_install': False
