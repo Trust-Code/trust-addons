@@ -21,6 +21,7 @@ install:
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - pip install unidecode
   - pip install boto
+  - pip install oerplib
   - travis_install_nightly
 
 script:
