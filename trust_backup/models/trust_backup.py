@@ -30,7 +30,6 @@ import zipfile
 import oerplib
 import logging
 from datetime import datetime
-from sys import exc_info
 
 _logger = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ class BackupExecuted(models.Model):
     def _generate_s3_link(self):
         return self.s3_id
 
-    configuration_id = fields.Many2one('opendb.backup', string="Configuração")
+    configuration_id = fields.Many2one('trust.backup', string="Configuração")
     backup_date = fields.Datetime(string="Data")
     s3_id = fields.Char(string="S3 Id")
     s3_url = fields.Char("Link S3", computed=_generate_s3_link)
@@ -67,26 +66,39 @@ class TrustBackup(models.Model):
     _name = 'trust.backup'
 
     @api.multi
-    @api.depends('interval', 'licenca.display_name')
+    @api.depends('interval', 'database_name')
     def name_get(self):
         result = []
         for backup in self:
             result.append(
                 (backup.id,
-                 backup.licenca.display_name +
+                 backup.database_name +
                  " - " +
                  backup.interval))
         return result
 
+    def _get_total_backups(self):
+        for item in self:
+            item.backup_count = self.env['backup.executed'].search_count(
+                [('configuration_id', '=', item.id)])
+
     host = fields.Char(string="Endereço", size=200, default='localhost')
     port = fields.Char(string="Porta", size=10, default='8069')
+    database_name = fields.Char(string='Banco de dados', size=100)
     interval = fields.Selection(
         string=u"Período",
         selection=[('hora', '1 hora'), ('seis', '6 horas'),
-                   ('doze', '12 horas'), ('diario', u'Diário')])    
+                   ('doze', '12 horas'), ('diario', u'Diário')])
 
     send_to_s3 = fields.Boolean('Enviar Amazon S3 ?')
+    aws_access_key = fields.Char(string="Chave API S3", size=100)
+    aws_secret_key = fields.Char(string="Chave Secreta API S3", size=100)
     backup_dir = fields.Char(string=u"Diretório", size=300)
+
+    next_backup = fields.Datetime(string=u"Próximo Backup", readonly=True)
+    backup_count = fields.Integer(
+        string=u"Nº Backups",
+        compute='_get_total_backups')
 
     _defaults = {
         'backup_dir': lambda *a: os.getcwd() + '/auto_bkp/DBbackups',
@@ -96,15 +108,16 @@ class TrustBackup(models.Model):
 
     @api.model
     def schedule_backup(self):
-        oerp = oerplib.OERP(
-            'localhost',
-            protocol='xmlrpc',
-            port=8069,
-            timeout=1200)
         confs = self.search([])
         for rec in confs:
+            oerp = oerplib.OERP(
+                rec.host,
+                protocol='xmlrpc',
+                port=rec.port,
+                timeout=1200)
+
             db_list = oerp.db.list()
-            database_name = rec.licenca.subdomain
+            database_name = rec.database_name
             if database_name in db_list:
                 try:
                     if not os.path.isdir(rec.backup_dir):
@@ -134,7 +147,7 @@ class TrustBackup(models.Model):
                 backup_env = self.env['backup.executed']
 
                 if rec.send_to_s3:
-                    key = self.send_for_amazon_s3(zip_path, zip_file)
+                    key = rec.send_for_amazon_s3(zip_path, zip_file)
                     backup_env.create({'backup_date': datetime.now(),
                                        'configuration_id': rec.id,
                                        's3_id': key,
@@ -148,13 +161,9 @@ class TrustBackup(models.Model):
 
     def send_for_amazon_s3(self, file_to_send, name_to_store):
         try:
-            env_settings = self.env['server.config.settings']
-            settings = env_settings.search_read(
-                [], [
-                    'aws_access_key', 'aws_secret_key'])
-            if len(settings) > 0:
-                access_key = settings[0]["aws_access_key"]
-                secret_key = settings[0]["aws_secret_key"]
+            if self.aws_access_key and self.aws_secret_key:
+                access_key = self.aws_access_key
+                secret_key = self.aws_secret_key
 
                 conexao = S3Connection(access_key, secret_key)
                 bucket = conexao.create_bucket('backups_pelican')
