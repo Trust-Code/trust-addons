@@ -29,7 +29,7 @@ import time
 import zipfile
 import oerplib
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -50,15 +50,17 @@ class BackupExecuted(models.Model):
     def _generate_s3_link(self):
         return self.s3_id
 
+    name = fields.Char('Arquivo', size=100)
     configuration_id = fields.Many2one('trust.backup', string="Configuração")
     backup_date = fields.Datetime(string="Data")
-    s3_id = fields.Char(string="S3 Id")
-    s3_url = fields.Char("Link S3", computed=_generate_s3_link)
+    local_path = fields.Char(string="Caminho Local", readonly=True)
+    s3_id = fields.Char(string="S3 Id", readonly=True)
+    s3_url = fields.Char("Link S3", compute='_generate_s3_link', readonly=True)
     state = fields.Selection(
         string="Estado", default='not_started',
         selection=[('not_started', 'Não iniciado'),
-                   ('executing',
-                    'Executando'), ('sending', 'Enviando'),
+                   ('executing', 'Executando'),
+                   ('sending', 'Enviando'),
                    ('error', 'Erro'), ('concluded', 'Concluído')])
 
 
@@ -95,7 +97,7 @@ class TrustBackup(models.Model):
     aws_secret_key = fields.Char(string="Chave Secreta API S3", size=100)
     backup_dir = fields.Char(string=u"Diretório", size=300)
 
-    next_backup = fields.Datetime(string=u"Próximo Backup", readonly=True)
+    next_backup = fields.Datetime(string=u"Próximo Backup")
     backup_count = fields.Integer(
         string=u"Nº Backups",
         compute='_get_total_backups')
@@ -106,56 +108,85 @@ class TrustBackup(models.Model):
         'port': lambda *a: '8069'
     }
 
+    def _set_next_backup(self):
+        if self.interval == 'hora':
+            self.next_backup = datetime.now() + timedelta(hours=1)
+        elif self.interval == 'seis':
+            self.next_backup = datetime.now() + timedelta(hours=6)
+        elif self.interval == 'seis':
+            self.next_backup = datetime.now() + timedelta(hours=12)
+        else:
+            self.next_backup = datetime.now() + timedelta(days=1)
+
+    @api.multi
+    def execute_backup(self):
+        self.write({'next_backup': datetime.now()})
+        self.schedule_backup()
+
     @api.model
     def schedule_backup(self):
         confs = self.search([])
         for rec in confs:
-            oerp = oerplib.OERP(
-                rec.host,
-                protocol='xmlrpc',
-                port=rec.port,
-                timeout=1200)
 
-            db_list = oerp.db.list()
-            database_name = rec.database_name
-            if database_name in db_list:
-                try:
-                    if not os.path.isdir(rec.backup_dir):
-                        os.makedirs(rec.backup_dir)
-                except:
-                    raise
-                bkp_file = '%s_%s.sql' % (
-                    database_name, time.strftime('%Y%m%d_%H_%M_%S'))
-                zip_file = '%s_%s.zip' % (
-                    database_name, time.strftime('%Y%m%d_%H_%M_%S'))
-                file_path = os.path.join(rec.backup_dir, bkp_file)
-                zip_path = os.path.join(rec.backup_dir, zip_file)
-                fp = open(file_path, 'wb')
-                try:
-                    dump_db(database_name, fp, backup_format='dump')
-                except Exception as ex:
-                    _logger.error(str(ex).decode('utf-8', 'ignore'),
-                                  exc_info=True)
-                    continue
+            if rec.next_backup:
+                next_backup = datetime.strptime(
+                    rec.next_backup,
+                    '%Y-%m-%d %H:%M:%S')
+            else:
+                next_backup = datetime.now()
+            if next_backup < datetime.now():
 
-                fp.close()
-                with zipfile.ZipFile(zip_path, 'w') as zipped:
-                    zipped.write(file_path)
-                zipped.close()
-                os.remove(file_path)
+                oerp = oerplib.OERP(
+                    rec.host,
+                    protocol='xmlrpc',
+                    port=rec.port,
+                    timeout=1200)
 
-                backup_env = self.env['backup.executed']
+                db_list = oerp.db.list()
+                database_name = rec.database_name
+                if database_name in db_list:
+                    try:
+                        if not os.path.isdir(rec.backup_dir):
+                            os.makedirs(rec.backup_dir)
+                    except:
+                        raise
+                    bkp_file = '%s_%s.sql' % (
+                        database_name, time.strftime('%Y%m%d_%H_%M_%S'))
+                    zip_file = '%s_%s.zip' % (
+                        database_name, time.strftime('%Y%m%d_%H_%M_%S'))
+                    file_path = os.path.join(rec.backup_dir, bkp_file)
+                    zip_path = os.path.join(rec.backup_dir, zip_file)
+                    fp = open(file_path, 'wb')
+                    try:
+                        dump_db(database_name, fp, backup_format='dump')
+                    except Exception as ex:
+                        _logger.error(str(ex).decode('utf-8', 'ignore'),
+                                      exc_info=True)
+                        continue
 
-                if rec.send_to_s3:
-                    key = rec.send_for_amazon_s3(zip_path, zip_file)
-                    backup_env.create({'backup_date': datetime.now(),
-                                       'configuration_id': rec.id,
-                                       's3_id': key,
-                                       'state': 'concluded'})
-                else:
-                    backup_env.create(
-                        {'backup_date': datetime.now(),
-                         'configuration_id': rec.id, 'state': 'concluded'})
+                    fp.close()
+                    with zipfile.ZipFile(zip_path, 'w') as zipped:
+                        zipped.write(file_path)
+                    zipped.close()
+                    os.remove(file_path)
+
+                    backup_env = self.env['backup.executed']
+
+                    if rec.send_to_s3:
+                        key = rec.send_for_amazon_s3(zip_path, zip_file)
+                        if not key:
+                            key = 'Erro ao enviar para o Amazon S3'
+                        backup_env.create({'backup_date': datetime.now(),
+                                           'configuration_id': rec.id,
+                                           's3_id': key, 'name': zip_file,
+                                           'state': 'concluded',
+                                           'local_path': zip_path})
+                    else:
+                        backup_env.create(
+                            {'backup_date': datetime.now(), 'name': zip_file,
+                             'configuration_id': rec.id, 'state': 'concluded',
+                             'local_path': zip_path})
+                    rec._set_next_backup()
             else:
                 pass
 
