@@ -34,8 +34,7 @@
     'depends': [
         'base',
     ],
-    'data': [
-        "views/trust_backup.xml", "security/ir.model.access.csv"
+    'data': [        
     ],
     'application': True,
     'auto_install': False

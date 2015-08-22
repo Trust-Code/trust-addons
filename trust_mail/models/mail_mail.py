@@ -36,7 +36,6 @@ class MailMail(models.Model):
             if user:
                 server_id = ir_mail_server.search(
                     [('smtp_user', '=', user.email)])
-                server_id = server_id and server_id[0] or False
                 if server_id:
                     email.mail_server_id = server_id.id
                     email.reply_to = email.email_from
