@@ -34,8 +34,6 @@
     'depends': [
         'base',
     ],
-    'data': [        
+    'data': [
     ],
-    'application': True,
-    'auto_install': False
 }

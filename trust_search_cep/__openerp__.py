@@ -2,6 +2,7 @@
 ###############################################################################
 #                                                                             #
 # Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+#              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
 # it under the terms of the GNU Affero General Public License as published by #
@@ -15,11 +16,13 @@
 #                                                                             #
 # You should have received a copy of the GNU General Public License           #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
+#                                                                             #
 ###############################################################################
 
+
 {
-    'name': 'Base Module - TrustCode',
-    'summary': """Base Module for TrustCode""",
+    'name': 'Search CEP online',
+    'summary': """Efetua a pesquisa de CEP no site viacep.com""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'TrustCode',
@@ -29,14 +32,6 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'disable_openerp_online'
+        'base', 'l10n_br_zip'
     ],
-    'data': [
-        'views/module_view.xml',
-        'views/trust_base.xml',
-        'data/base_data.xml',
-        'views/res_partner_view.xml'
-    ],
-    'application': True,
-    'auto_install': False
 }

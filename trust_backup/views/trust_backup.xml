@@ -14,7 +14,7 @@
 			<field eval="5" name="priority" />
 			<field eval="0" name="doall" />
 			<field eval="1" name="active" />
-			<field eval="&quot;&quot;&quot;opendb.backup&quot;&quot;&quot;"
+			<field eval="&quot;&quot;&quot;trust.backup&quot;&quot;&quot;"
 				name="model" />
 		</record>
 
