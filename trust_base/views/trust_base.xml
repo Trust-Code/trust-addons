@@ -6,5 +6,10 @@
                 <link rel="stylesheet" href="/trust_base/static/src/css/trust_base.css"/>                
             </xpath>
         </template>
+        <template id="trust_login_layout" name="Login Layout" inherit_id="web.login_layout">        
+              <t t-set="head">
+                  <link href="/trust_base/static/src/css/trust_base.css" rel="stylesheet"/>                  
+              </t>
+         </template>
     </data>
 </openerp>

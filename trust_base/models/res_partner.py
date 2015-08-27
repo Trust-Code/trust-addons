@@ -17,16 +17,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
 
-from openerp.osv import fields, osv
+
+from openerp import models, fields
 
 
-class res_partner(osv.Model):
+class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    _columns = {
-        'state_id': fields.many2one("res.country.state", 'State',
-                                    ondelete='restrict', required=True),
-    }
+    state_id = fields.Many2one("res.country.state", string='State',
+                               ondelete='restrict', required=True)
 
     _defaults = {
         'notify_email': lambda *args: 'none',
