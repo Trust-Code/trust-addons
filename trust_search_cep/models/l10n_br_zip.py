@@ -102,7 +102,7 @@ class L10nbrZip(models.Model):
                 district=district, street=street, zip_code=zip_code)
         else:
             return zip_ids
-        
+
     def set_result(self, zip_obj=None):
         if zip_obj:
             zip_code = zip_obj.zip

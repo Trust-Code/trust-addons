@@ -19,4 +19,4 @@
 #                                                                             #
 ###############################################################################
 
-from trust_search_cep.models import l10n_br_zip
+from . import l10n_br_zip
