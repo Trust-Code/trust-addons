@@ -53,7 +53,6 @@ class SaleOrder(models.Model):
                 item.unlink()
 
             for item in values[0]:
-                print item
                 parcel = {'due_date': datetime.strptime(item[0], '%Y-%m-%d'),
                           'payment_mode_id': self.payment_mode_id.id,
                           'amount': item[1], 'sale_order_id': self.id}

@@ -36,12 +36,18 @@ class crm_phonecall_followup(models.Model):
 class sale_order_followup(models.Model):
     _inherit = 'sale.order'
 
+    def _calls_count(self):
+        self.calls_count = self.env['crm.phonecall'].search_count(
+            [('sale_order_id', '=', self.id), ('state', '=', 'open')])
+
     def _meeting_count(self):
         self.meeting_count = self.env['calendar.event'].search_count(
             [('sale_order_id', '=', self.id)])
 
     meeting_count = fields.Integer(
         compute='_meeting_count', string='# Meetings')
+
+    calls_count = fields.Integer(compute='_calls_count', string="# Calls")
 
     @api.multi
     def action_create_meeting(self):
