@@ -11,5 +11,12 @@
                   <link href="/trust_base/static/src/css/trust_base.css" rel="stylesheet"/>                  
               </t>
          </template>
+         <template id="trust_menu_secondary" name="" inherit_id="web.menu_secondary">
+         	<xpath expr="div[@class='oe_footer']" position="inside">
+	        	<div class="oe_footer">	               
+	               Suporte via <a href="http://www.trustcode.com.br" target="_blank"><span style="color:#5F9EA0">TrustCode</span></a>
+	           	</div>
+         	</xpath>
+         </template> 
     </data>
 </openerp>

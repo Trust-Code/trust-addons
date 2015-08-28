@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="trust_installment_plans_sale_order_form" model="ir.ui.view">
+			<field name="name">trust_installment_plans.order.form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="account_payment_sale.view_order_form" />
+			<field name="arch" type="xml">
+				<field name="payment_mode_id" position="replace" />
+				<field name="payment_term" position="replace" />
+
+				<page string="Order Lines" position="after">
+					<page string="Opções de Pagamento">
+						<group>
+							<group>
+								<field name="payment_mode_id" domain="[('sale_ok', '=', True)]"
+									widget="selection" />
+								<field name="payment_term" options="{'no_create': True}" />
+								<field name="payment_installment_ids" editable="bottom"></field>
+							</group>
+							<group>
+								<button name="generate_installment" type="object"
+									string="Gerar Parcelas" states="draft,sent,manual"></button>
+							</group>
+						</group>
+					</page>
+				</page>
+
+			</field>
+		</record>
+
+		<record id="trust_installment_plans_payment_installment_tree"
+			model="ir.ui.view">
+			<field name="name">trust_installment_plans.payment.installment.tree
+			</field>
+			<field name="model">payment.installment</field>
+			<field name="arch" type="xml">
+				<tree string="Parcelamento" editable="bottom" create="false" delete="false">
+					<field name="payment_mode_id" />
+					<field name="due_date" />					
+					<field name="amount" />
+				</tree>
+			</field>
+		</record>
+
+	</data>
+</openerp>

@@ -22,7 +22,7 @@
 
 {
     'name': 'Installment Plans',
-    'summary': """Efetua a pesquisa de CEP no site viacep.com""",
+    'summary': """Cria parcelas de pagamento na tela de pedido de venda""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'TrustCode',
@@ -32,6 +32,9 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'l10n_br_zip'
+        'base', 'sale'
     ],
+    'data': [
+        'views/sale_order_view.xml'
+    ]
 }
