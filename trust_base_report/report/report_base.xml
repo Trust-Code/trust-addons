@@ -2,8 +2,8 @@
 <openerp>
 	<data>
 
-	<template id="report.external_layout">
-	    <!-- Multicompany -->
+<!-- 
+	<template id="report.external_layout">	    
 	    <t t-if="o and 'company_id' in o">
 	        <t t-set="company" t-value="o.company_id"></t>
 	    </t>
@@ -64,7 +64,7 @@
 	</template>
 	
 	<template id="report.internal_layout">
-	    <!-- Multicompany -->
+	    
 	    <t t-if="o and 'company_id' in o">
 	        <t t-set="company" t-value="o.company_id"></t>
 	    </t>
@@ -93,7 +93,7 @@
 	    </div>
 	    <t t-raw="0" />
 	</template>
-
+ -->
 	    	
 	</data>
 </openerp>

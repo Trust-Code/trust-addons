@@ -19,7 +19,7 @@
 
 {
     'name': 'Base Report - TrustCode',
-    'summary': """Base Reports - TrustCode""",
+    'summary': """Módulo base de relatórios - TrustCode""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'TrustCode',
