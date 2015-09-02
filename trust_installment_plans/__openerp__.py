@@ -35,6 +35,7 @@
         'base', 'sale'
     ],
     'data': [
-        'views/sale_order_view.xml'
+        'views/sale_order_view.xml',
+        'views/account_invoice_view.xml'
     ]
 }

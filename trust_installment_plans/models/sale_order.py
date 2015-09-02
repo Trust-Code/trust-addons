@@ -33,9 +33,11 @@ class PaymentInstallment(models.Model):
     payment_mode_id = fields.Many2one('payment.mode',
                                       string=u"Forma de pagamento")
     amount = fields.Float(u'Total', digits=(18, 2))
-
     sale_order_id = fields.Many2one('sale.order',
                                     string=u"Pedido de Venda")
+
+    account_invoice_id = fields.Many2one('account.invoice',
+                                         string=u"Fatura")
 
 
 class SaleOrder(models.Model):
@@ -60,3 +62,15 @@ class SaleOrder(models.Model):
 
         else:
             Warning(_(u'Choose a payment term first'))
+
+    def _prepare_invoice(self, cr, uid, order, lines, context=None):
+        result = super(SaleOrder, self)._prepare_invoice(
+            cr, uid, order, lines, context)
+
+        installments = []
+        for item in order.payment_installment_ids:
+            installments.append(
+                (0, False, {
+                    'due_date': item.due_date, 'amount': item.amount}))
+        result['payment_installment_ids'] = installments
+        return result
