@@ -32,7 +32,7 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base',
+        'base', 'mail'
     ],
     'data': [
     ],
