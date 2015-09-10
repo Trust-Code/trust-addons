@@ -32,7 +32,7 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'sale'
+        'base', 'sale', 'account_payment_sale'
     ],
     'data': [
         'views/sale_order_view.xml',

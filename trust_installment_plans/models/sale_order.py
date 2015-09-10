@@ -43,9 +43,28 @@ class PaymentInstallment(models.Model):
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    @api.depends('payment_installment_ids.amount')
+    def _compute_difference(self):
+        total = 0.0
+        for item in self.payment_installment_ids:
+            total += item.amount
+
+        self.amount_difference = self.amount_total - total
+
     payment_installment_ids = fields.One2many('payment.installment',
                                               'sale_order_id',
                                               string=u"Parcelamento")
+
+    amount_difference = fields.Float(u'Diferença', digits=(10, 2),
+                                     readonly=True,
+                                     compute='_compute_difference')
+
+    @api.one
+    @api.constrains('payment_installment_ids')
+    def _check_amount_difference(self):
+        if self.amount_difference != 0.0:
+            raise Warning(_(u'Verifique as parcelas de pagamento,\
+                            valor total difere das parcelas'))
 
     @api.one
     def generate_installment(self):

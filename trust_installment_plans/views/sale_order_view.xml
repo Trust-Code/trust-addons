@@ -18,12 +18,13 @@
 									widget="selection" />
 								<field name="payment_term" options="{'no_create': True}" />
 								<field name="payment_installment_ids" editable="bottom"></field>
+								<field name="amount_difference" class="oe_right" />
 							</group>
 							<group>
 								<button name="generate_installment" type="object"
 									string="Gerar Parcelas" states="draft,sent,manual"></button>
 							</group>
-						</group>
+						</group>						
 					</page>
 				</page>
 
