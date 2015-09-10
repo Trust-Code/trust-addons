@@ -21,13 +21,13 @@
 
 
 import simplejson
-from werkzeug import exceptions, url_decode
+from werkzeug import url_decode
 from werkzeug.test import Client
 from werkzeug.wrappers import BaseResponse
 from werkzeug.datastructures import Headers
 
 from openerp.tools import html_escape
-from openerp.addons.web.http import Controller, route, request
+from openerp.addons.web.http import route, request
 from openerp.addons.web.controllers.main import _serialize_exception
 from openerp.addons.report.controllers.main import ReportController
 
@@ -36,11 +36,11 @@ class TrustReportController(ReportController):
 
     @route()
     def report_download(self, data, token):
-        """This function is used by 'qwebactionmanager.js' in order to trigger the download of
-        a pdf/controller report.
+        """This function is used by 'qwebactionmanager.js' in order to trigger
+        the download of  a pdf/controller report.
 
-        :param data: a javascript array JSON.stringified containg report internal url ([0]) and
-        type [1]
+        :param data: a javascript array JSON.stringified containg report
+        internal url ([0]) and type [1]
         :returns: Response with a filetoken cookie and an attachment header
         """
         requestcontent = simplejson.loads(data)
@@ -55,35 +55,48 @@ class TrustReportController(ReportController):
 
                 if docids:
                     # Generic report:
-                    response = self.report_routes(reportname, docids=docids, converter='pdf')
+                    response = self.report_routes(reportname, docids=docids,
+                                                  converter='pdf')
                 else:
                     # Particular report:
-                    data = url_decode(url.split('?')[1]).items()  # decoding the args represented in JSON
-                    response = self.report_routes(reportname, converter='pdf', **dict(data))
+                    # decoding the args represented in JSON
+                    data = url_decode(url.split('?')[1]).items()
+                    response = self.report_routes(
+                        reportname, converter='pdf', **dict(data))
 
                 filename = None
                 if docids:
                     cr, uid = request.cr, request.uid
-                    report = request.registry['report']._get_report_from_name(cr, uid, reportname)
-                    obj = request.registry[report.model].browse(cr, uid, int(docids))
+                    report = request.registry['report']._get_report_from_name(
+                        cr, uid, reportname)
+                    obj = request.registry[report.model].browse(
+                        cr, uid, int(docids))
                     if report.attachment:
                         filename = eval(report.attachment, {'object': obj})
                     else:
                         filename = (report.name or reportname) + '.pdf'
-                
+
                 if not filename:
-                    filename = reportname + '.pdf'                
-                response.headers.add('Content-Disposition', 'attachment; filename=%s;' % filename)
+                    filename = reportname + '.pdf'
+                response.headers.add(
+                    'Content-Disposition',
+                    'attachment; filename=%s;' %
+                    filename)
                 response.set_cookie('fileToken', token)
                 return response
-            elif type =='controller':
+            elif type == 'controller':
                 reqheaders = Headers(request.httprequest.headers)
-                response = Client(request.httprequest.app, BaseResponse).get(url, headers=reqheaders, follow_redirects=True)
+                response = Client(
+                    request.httprequest.app,
+                    BaseResponse).get(
+                    url,
+                    headers=reqheaders,
+                    follow_redirects=True)
                 response.set_cookie('fileToken', token)
                 return response
             else:
                 return
-        except Exception, e:
+        except Exception as e:
             se = _serialize_exception(e)
             error = {
                 'code': 200,

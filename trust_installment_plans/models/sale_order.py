@@ -49,7 +49,7 @@ class SaleOrder(models.Model):
         for item in self.payment_installment_ids:
             total += item.amount
 
-        self.amount_difference = self.amount_total - total
+        self.amount_difference = total - self.amount_total
 
     payment_installment_ids = fields.One2many('payment.installment',
                                               'sale_order_id',
