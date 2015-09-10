@@ -19,3 +19,4 @@
 
 from . import account_fiscal_rule
 from . import l10n_br_base_city
+from . import res_company

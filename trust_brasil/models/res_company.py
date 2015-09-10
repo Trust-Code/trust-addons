@@ -20,12 +20,36 @@
 ###############################################################################
 
 
-from openerp import fields, models
+import re
+from openerp import api, fields, models
+from openerp.models import NewId
 
 
-class account_fiscal_rule(models.Model):
-    _inherit = 'account.fiscal.position.rule'
+class ResCompany(models.Model):
+    _inherit = 'res.company'
 
-    fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', string='Fiscal Position',
-        domain="[('company_id','=',company_id)]", select=True, required=True)
+    @api.depends('name')
+    def _get_nfe_folders(self):
+        name = 'empresa'
+        idCompany = 0
+        if not isinstance(self.id, NewId):
+            idCompany = self.id
+        if self.name:
+            name = self.name.lower()
+        name = re.sub('[^a-z0-9_]', '_', name)
+        print name
+        name = name[:20] + '_' + str(idCompany)
+        self.nfe_export_folder = '/opt/xml/exp/' + name
+        self.nfe_import_folder = '/opt/xml/imp/' + name
+        self.nfe_backup_folder = '/opt/xml/bkp/' + name
+
+    nfe_version = fields.Selection(
+        [('1.10', '1.10'), ('2.00', '2.00'), ('3.10', '3.10')],
+        string=u'Versão NFe', required=True, default="3.10", readonly=True)
+
+    nfe_import_folder = fields.Char('Pasta de Importação', size=254,
+                                    compute='_get_nfe_folders')
+    nfe_export_folder = fields.Char('Pasta de Exportação', size=254,
+                                    compute='_get_nfe_folders', readonly=True)
+    nfe_backup_folder = fields.Char('Pasta de Backup', size=254,
+                                    compute='_get_nfe_folders', readonly=True)

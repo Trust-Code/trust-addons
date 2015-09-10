@@ -32,7 +32,8 @@
                      ],
     'depends': [
         'account_fiscal_position_rule',
-        'l10n_br_base'
+        'l10n_br_base',
+        'l10n_br_account_product'
     ],
     'data': [
     ],
