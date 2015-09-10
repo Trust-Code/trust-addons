@@ -37,7 +37,6 @@ class ResCompany(models.Model):
         if self.name:
             name = self.name.lower()
         name = re.sub('[^a-z0-9_]', '_', name)
-        print name
         name = name[:20] + '_' + str(idCompany)
         self.nfe_export_folder = '/opt/xml/exp/' + name
         self.nfe_import_folder = '/opt/xml/imp/' + name

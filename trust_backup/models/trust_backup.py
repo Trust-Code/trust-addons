@@ -127,7 +127,6 @@ class TrustBackup(models.Model):
         except Exception as e:
             _logger.error(str(e).decode('utf-8', 'ignore'), exc_info=True)
             raise Warning(str(e))
-            
 
     @api.model
     def schedule_backup(self):
