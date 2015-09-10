@@ -20,6 +20,7 @@
 ###############################################################################
 
 from openerp import models, fields, api
+from openerp.exceptions import Warning
 from openerp.service.db import dump_db
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
@@ -103,7 +104,7 @@ class TrustBackup(models.Model):
         compute='_get_total_backups')
 
     _defaults = {
-        'backup_dir': lambda *a: os.getcwd() + '/auto_bkp/DBbackups',
+        'backup_dir': '/opt/backups/database/',
         'host': lambda *a: 'localhost',
         'port': lambda *a: '8069'
     }
@@ -120,8 +121,13 @@ class TrustBackup(models.Model):
 
     @api.multi
     def execute_backup(self):
-        self.write({'next_backup': datetime.now()})
-        self.schedule_backup()
+        try:
+            self.write({'next_backup': datetime.now()})
+            self.schedule_backup()
+        except Exception as e:
+            _logger.error(str(e).decode('utf-8', 'ignore'), exc_info=True)
+            raise Warning(str(e))
+            
 
     @api.model
     def schedule_backup(self):
@@ -158,7 +164,7 @@ class TrustBackup(models.Model):
                     zip_path = os.path.join(rec.backup_dir, zip_file)
                     fp = open(file_path, 'wb')
                     try:
-                        dump_db(database_name, fp, backup_format='dump')
+                        dump_db(database_name, fp, backup_format='zip')
                     except Exception as ex:
                         _logger.error(str(ex).decode('utf-8', 'ignore'),
                                       exc_info=True)

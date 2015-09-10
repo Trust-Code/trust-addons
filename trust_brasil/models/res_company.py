@@ -48,7 +48,7 @@ class ResCompany(models.Model):
         string=u'Versão NFe', required=True, default="3.10", readonly=True)
 
     nfe_import_folder = fields.Char('Pasta de Importação', size=254,
-                                    compute='_get_nfe_folders')
+                                    compute='_get_nfe_folders', readonly=True)
     nfe_export_folder = fields.Char('Pasta de Exportação', size=254,
                                     compute='_get_nfe_folders', readonly=True)
     nfe_backup_folder = fields.Char('Pasta de Backup', size=254,

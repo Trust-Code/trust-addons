@@ -33,9 +33,12 @@
     'depends': [
         'account_fiscal_position_rule',
         'l10n_br_base',
-        'l10n_br_account_product'
+        'l10n_br_account_product',
+        'nfe'
     ],
     'data': [
+        'views/res_company_view.xml',
+        'views/account_invoice_view.xml'
     ],
     'application': True,
     'auto_install': False

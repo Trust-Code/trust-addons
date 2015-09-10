@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="trust_brasil_res_company_form" model="ir.ui.view">
+			<field name="name">trust_brasil.res.company.form</field>
+			<field name="model">res.company</field>
+			<field name="inherit_id"
+				ref="l10n_br_account_product.view_l10n_br_account_company_form" />
+			<field name="arch" type="xml">
+				<field name="file_type" position="replace">
+					<field name="file_type" invisible="1" />
+				</field>
+				<field name="sign_xml" position="replace">
+					<field name="sign_xml" invisible="1" />
+				</field>
+				<field name="export_folder" position="replace">
+					<field name="export_folder" invisible="1" />
+				</field>
+			</field>
+		</record>
+
+	</data>
+</openerp>
+
+
+
