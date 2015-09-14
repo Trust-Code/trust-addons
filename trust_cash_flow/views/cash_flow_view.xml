@@ -8,8 +8,14 @@
 			<field name="arch" type="xml">
 				<tree string="Repositórios">
 					<field name="partner_id" />
+					<field name="account_id" />
+					<field name="journal_id" />
+					<field name="analytic_account_id" />
+					<field name="state" />
 					<field name="reference" />
 					<field name="date_maturity" />
+					<field name="date" />
+					<field name="date_created" />
 					<field name="debit" />
 					<field name="credit" />
 					<field name="total" />

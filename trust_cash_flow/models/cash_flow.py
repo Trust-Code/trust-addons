@@ -28,7 +28,7 @@ class CashFlow(osv.osv):
     _name = "cash.flow.report"
     _description = "Cash Flow Report"
     _auto = False
-    _order = 'date_maturity'
+    _order = 'date_maturity, id'
 
     _columns = {
         'date_created': fields.date('Create Date', readonly=True),
@@ -37,12 +37,14 @@ class CashFlow(osv.osv):
 
         'statement_id': fields.many2one('account_bank_statement',
                                         'Bank Statement', readonly=True),
-        'journal_id': fields.many2one('account.jornal', 'Journal',
+        'journal_id': fields.many2one('account.journal', 'Journal',
+                                      readonly=True),
+        'account_id': fields.many2one('account.account', 'Account',
                                       readonly=True),
 
-        'debit': fields.float(u'Débito', readonly=True),
-        'credit': fields.float(u'Crédito', readonly=True),
-        
+        'debit': fields.float(u'Receber', readonly=True),
+        'credit': fields.float(u'Pagar', readonly=True),
+
         'total': fields.float(u'Acumulado dia', readonly=True),
 
         'reference': fields.char('Reference', readonly=True),
@@ -70,17 +72,17 @@ class CashFlow(osv.osv):
             'account.analytic.account',
             'Analytic Account', readonly=True),
     }
-    _order = 'date desc'
 
     def _select(self):
         select_str = """
-            SELECT aml.id, statement_id, aml.company_id, date_maturity,
-                   partner_id, analytic_account_id,
-                   credit, journal_id,
-                   tax_code_id, state, debit, ref as reference, account_id, period_id,
-                   date_created, date, move_id, aml.name, reconcile_id, tax_amount,
-                   product_id, account_tax_id, product_uom_id, amount_currency,
-                   quantity
+            SELECT aml.id, statement_id, aml.company_id,
+            coalesce(date_maturity, date, date_created) as date_maturity,
+            partner_id, analytic_account_id,
+            credit, journal_id, tax_code_id, state, debit,
+            ref as reference, account_id, period_id,
+            date_created, date, move_id, aml.name, reconcile_id, tax_amount,
+            product_id, account_tax_id, product_uom_id, amount_currency,
+                quantity
         """
         return select_str
 
@@ -105,7 +107,8 @@ class CashFlow(osv.osv):
     def init(self, cr):
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
-            SELECT subq.*, sum(debit) OVER (ORDER BY date_maturity) as total
+            SELECT subq.*, sum(debit - credit)
+            OVER (ORDER BY date_maturity, id) as total
             FROM (
             %s FROM ( %s ) %s  %s order by date_maturity desc) as subq)""" % (
             self._table, self._select(), self._from(), self._where(),
