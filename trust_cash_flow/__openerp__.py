@@ -35,5 +35,6 @@
         'account'
     ],
     'data': [
+        'views/cash_flow_view.xml'
     ],
 }
