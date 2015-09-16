@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
-	
-		
+	<data>
+		<record id="base.main_partner" model="res.partner">
+			<field name="name">Trust-Code</field>
+			<field name="legal_name">Trust-Code</field>
+			<field name="email">info@isotelha.com</field>
+			<field name="street">Rua Severiano Rodrigues</field>
+			<field name="number">1092</field>
+			<field name="country_id" ref="base.br" />
+			<field name="district">Santa Rita</field>
+			<field name="zip">95099-190</field>
+		</record>
+
 	</data>
 </openerp>
