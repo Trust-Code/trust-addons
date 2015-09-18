@@ -9,8 +9,8 @@
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='payment_acquirer']" position="after">
                     <div>
-                        <field name="module_payment_cielo_checkout" class="oe_inline"/>
-                        <label for="module_payment_cielo_checkout"/>
+                        <field name="module_payment_cielo" class="oe_inline"/>
+                        <label for="module_payment_cielo"/>
                     </div>
                 </xpath>
             </field>

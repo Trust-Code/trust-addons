@@ -35,8 +35,13 @@ class CashFlow(osv.osv):
         'date': fields.date('Move Date', readonly=True),
         'date_maturity': fields.date('Due Date', readonly=True),
 
-        'statement_id': fields.many2one('account_bank_statement',
+        'statement_id': fields.many2one('account.bank.statement',                                        
                                         'Bank Statement', readonly=True),
+        'last_closing_balance': fields.related(
+                                        'statement_id',
+                                        'last_closing_balance',
+                                        type="float",                                        
+                                        string="Saldo", readonly=True),
         'journal_id': fields.many2one('account.journal', 'Journal',
                                       readonly=True),
         'account_id': fields.many2one('account.account', 'Account',
