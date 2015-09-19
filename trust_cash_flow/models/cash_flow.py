@@ -100,7 +100,7 @@ class CashFlow(osv.osv):
 
     def _where(self):
         where_str = """
-            where ac.type = 'receivable' or ac.type = 'payable'
+            where ac.type = 'receivable' or ac.type = 'payable' or ac.type = 'liquidity' 
         """
         return where_str
 
@@ -111,10 +111,38 @@ class CashFlow(osv.osv):
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, self._table)
-        cr.execute("""CREATE or REPLACE VIEW %s as (
-            SELECT subq.*, sum(debit - credit)
-            OVER (ORDER BY date_maturity, id) as total
-            FROM (
-            %s FROM ( %s ) %s  %s order by date_maturity desc) as subq)""" % (
-            self._table, self._select(), self._from(), self._where(),
-            self._group_by()))
+        
+        cr.execute(""" 
+        
+        CREATE or REPLACE VIEW %s as (
+        SELECT subq.*,  sum(subq.debit - subq.credit) OVER (ORDER BY subq.date_maturity, subq.id) AS total
+   FROM (select row_number() OVER ()  as id, null as statement_id, 1 as company_id, current_date as date_maturity, null as partner_id,  
+    null as analytic_account_id,  sum(credit)as credit, max(journal_id) as journal_id,  null as tax_code_id,   null as state,   
+    sum(debit) as debit,  aj.name AS reference,  aml.account_id,
+    null as period_id,  null as date_created, null as date,null as move_id, null as name, null as reconcile_id,null as tax_amount, null as product_id,
+    null as account_tax_id,    null as product_uom_id,    null as amount_currency,    null as quantity    
+    FROM account_move_line aml
+    JOIN account_account ac ON aml.account_id = ac.id
+    JOIN account_journal aj ON aml.journal_id = aj.id
+  WHERE ac.type = 'liquidity'
+  group by journal_id, reference, aml.account_id
+union all
+  SELECT aml.id,  aml.statement_id,   aml.company_id, COALESCE(aml.date_maturity, aml.date, aml.date_created) AS date_maturity,  aml.partner_id,
+    aml.analytic_account_id,  aml.credit,  aml.journal_id,    aml.tax_code_id,    aml.state,    aml.debit,    aml.ref AS reference,    aml.account_id,
+    aml.period_id,    aml.date_created,    aml.date,    aml.move_id,    aml.name,    aml.reconcile_id,    aml.tax_amount,    aml.product_id,
+    aml.account_tax_id,    aml.product_uom_id,    aml.amount_currency,    aml.quantity
+    FROM account_move_line aml
+   JOIN account_account ac ON aml.account_id = ac.id
+  WHERE (ac.type = 'receivable' OR ac.type = 'payable') and date_maturity >= current_date
+  ORDER BY date_maturity DESC) subq
+        )
+        
+        """ % self._table)
+        
+        #cr.execute("""CREATE or REPLACE VIEW %s as (
+        #    SELECT subq.*, sum(debit - credit)
+        #    OVER (ORDER BY date_maturity, id) as total
+        #    FROM (
+        #    %s FROM ( %s ) %s  %s order by date_maturity desc) as subq)""" % (
+        #    self._table, self._select(), self._from(), self._where(),
+        #    self._group_by()))
