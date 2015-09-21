@@ -144,3 +144,38 @@ class TransactionCielo(models.Model):
 
     cielo_transaction_id = fields.Char(string='Transaction ID')
     transaction_type = fields.Char(string='Transaction type')
+
+    def _cielo_form_get_tx_from_data(self, cr, uid, data, context=None):
+        acquirer_id = self.pool['payment.acquirer'].search(
+            cr, uid, [('provider', '=', 'cielo')], context=context)
+        acquirer = self.pool['payment.acquirer'].browse(
+            cr, uid, acquirer_id, context=context)
+
+        reference = data.get('order_number')
+        txn_id = data.get('checkout_cielo_order_number')
+        amount = float(data.get('amount')) / 100.0
+
+        sale_id = self.pool['sale.order'].search(
+            cr, uid, [('name', '=', reference)], context=context)
+        sale_order = self.pool['sale.order'].browse(
+            cr, uid, sale_id, context=context)
+
+        values = {
+            'reference': reference,
+            'amount': amount,
+            'currency_id': acquirer.company_id.currency_id.id,
+            'acquirer_id': acquirer.id,
+            'acquirer_reference': txn_id,
+            'partner_name': sale_order.partner_id.name,
+            'partner_address': sale_order.partner_id.street,
+            'partner_email': sale_order.partner_id.email,
+            'partner_lang': sale_order.partner_id.lang,
+            'partner_zip': sale_order.partner_id.zip,
+            'partner_city': sale_order.partner_id.l10n_br_city_id.name,
+            'partner_country_id': sale_order.partner_id.country_id.id,
+            'state': 'done',
+            'partner_id': sale_order.partner_id.id
+        }
+
+        payment_id = self.create(cr, uid, values, context=context)
+        return self.browse(cr, uid, payment_id, context=context)

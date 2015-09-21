@@ -24,7 +24,8 @@ import logging
 import pprint
 import werkzeug
 
-from openerp import http
+from openerp import http, SUPERUSER_ID
+from openerp.addons.web.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -59,11 +60,11 @@ class CieloController(http.Controller):
         payment_maskedcreditcard    636368******7691
         payment_installments    1
         payment_status    7
-        tid    200920152219370767        
-        """        
-        
-        pass
-        
+        tid    200920152219370767
+        """
+        cr, context = request.cr, request.context
+        request.registry['payment.transaction'].form_feedback(
+            cr, SUPERUSER_ID, post, 'cielo', context=context)
 
     @http.route('/cielo/retorno/', type='http', auth='none', methods=['POST'])
     def cielo_retorno(self, **post):
@@ -79,16 +80,16 @@ class CieloController(http.Controller):
     def cielo_notify(self, **post):
         """ Cielo Notify """
         _logger.info('Iniciando retorno de notificação cielo post-data: %s',
-            pprint.pformat(post))          
-        
+                     pprint.pformat(post))
+
         self.cielo_validate_data(**post)
         return "<status>OK</status>"
 
     @http.route('/cielo/status/', type='http', auth="none")
     def cielo_cancel(self, **post):
-        """ Quando o status de uma transação modifica essa url é chamada """        
+        """ Quando o status de uma transação modifica essa url é chamada """
         _logger.info(
             'Iniciando mudança de status de transação post-data: %s',
             pprint.pformat(post))  # debug
-        
+
         return "<status>OK</status>"
