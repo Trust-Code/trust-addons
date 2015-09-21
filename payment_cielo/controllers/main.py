@@ -22,7 +22,6 @@
 
 import logging
 import pprint
-import werkzeug
 
 from openerp import http, SUPERUSER_ID
 from openerp.addons.web.http import request

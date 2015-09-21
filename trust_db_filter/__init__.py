@@ -28,7 +28,7 @@ db_filter_orig = http.db_filter
 
 def db_filter(dbs, httprequest=None):
     dbs = db_filter_orig(dbs, httprequest)
-    
+
     return dbs
 
 http.db_filter = db_filter

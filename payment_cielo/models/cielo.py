@@ -50,19 +50,9 @@ class AcquirerCielo(models.Model):
                                currency_id, tx_id, partner_id,
                                partner_values, tx_values, context=None):
         partner_values, tx_values = super(
-            AcquirerCielo,
-            self).form_preprocess_values(
-            cr,
-            uid,
-            id,
-            reference,
-            amount,
-            currency_id,
-            tx_id,
-            partner_id,
-            partner_values,
-            tx_values,
-            context)
+            AcquirerCielo, self).form_preprocess_values(
+            cr, uid, id, reference, amount, currency_id,
+            tx_id, partner_id, partner_values, tx_values, context)
 
         parceiro = self.pool['res.partner'].browse(cr, uid, partner_id)
         partner_values.update({
@@ -96,12 +86,10 @@ class AcquirerCielo(models.Model):
 
         return partner_values, tx_values
 
-    def cielo_form_generate_values(
-            self, cr, uid, id, partner_values, tx_values, context=None):
+    def cielo_form_generate_values(self, cr, uid, id, partner_values,
+                                   tx_values, context=None):
         self.pool['ir.config_parameter'].get_param(
-            cr,
-            SUPERUSER_ID,
-            'web.base.url')
+            cr, SUPERUSER_ID, 'web.base.url')
         acquirer = self.browse(cr, uid, id, context=context)
 
         cielo_tx_values = dict(tx_values)
@@ -129,8 +117,7 @@ class AcquirerCielo(models.Model):
         })
         if acquirer.fees_active:
             cielo_tx_values['handling'] = '%.2f' % cielo_tx_values.pop(
-                'fees',
-                0.0)
+                'fees', 0.0)
 
         return partner_values, cielo_tx_values
 
@@ -143,10 +130,25 @@ class AcquirerCielo(models.Model):
 class TransactionCielo(models.Model):
     _inherit = 'payment.transaction'
 
-    cielo_transaction_id = fields.Char(string='Transaction ID')
-    transaction_type = fields.Char(string='Transaction type')
-    url_cielo = fields.Char(string="Cielo", size=60,
-                            default="https://www.cielo.com.br/VOL/areaProtegida/index.jsp")
+    cielo_transaction_id = fields.Char(string=u'ID Transação')
+    state_cielo = fields.Selection(
+        [('1', u'Pendente'), ('2', u'Pago'), ('3', u'Negado'),
+         ('5', u'Cancelado'), ('6', u'Não Finalizado'), ('7', u'Autorizado')],
+        string=u"Situação Cielo")
+    transaction_type = fields.Selection(
+        [('1', u'Cartão de Crédito'), ('2', u'Boleto Bancário'),
+         ('3', u'Débito Online'), ('4', u'Cartão de Débito')],
+        string=u'Tipo pagamento')
+    payment_installments = fields.Integer(u'Número de parcelas')
+    payment_method_brand = fields.Selection(
+        [('1', u'Visa'), ('2', u'Mastercard'), ('3', u'American Express'),
+         ('4', u'Diners'), ('5', u'Elo'), ('6', u'Aura'), ('7', u'JCB')],
+        string=u"Bandeira Cartão")
+    payment_boletonumber = fields.Char(string=u"Número boleto", size=100)
+
+    url_cielo = fields.Char(
+        string=u"Cielo", size=60,
+        default="https://www.cielo.com.br/VOL/areaProtegida/index.jsp")
 
     def _cielo_form_get_tx_from_data(self, cr, uid, data, context=None):
         acquirer_id = self.pool['payment.acquirer'].search(
@@ -156,12 +158,16 @@ class TransactionCielo(models.Model):
 
         reference = data.get('order_number')
         txn_id = data.get('checkout_cielo_order_number')
+        cielo_id = data.get('tid')
+        payment_type = data.get('payment_method_type')
         amount = float(data.get('amount')) / 100.0
+        state_cielo = data.get('payment_status')
 
         sale_id = self.pool['sale.order'].search(
             cr, uid, [('name', '=', reference)], context=context)
         sale_order = self.pool['sale.order'].browse(
             cr, uid, sale_id, context=context)
+        state = 'pending' if state_cielo == '1' else 'done'
 
         values = {
             'reference': reference,
@@ -176,10 +182,16 @@ class TransactionCielo(models.Model):
             'partner_zip': sale_order.partner_id.zip,
             'partner_city': sale_order.partner_id.l10n_br_city_id.name,
             'partner_country_id': sale_order.partner_id.country_id.id,
-            'state': 'done',
+            'state': state,
             'partner_id': sale_order.partner_id.id,
-            'date_validate': datetime.now()
-        }        
-        
+            'date_validate': datetime.now(),
+            'transaction_type': payment_type,
+            'cielo_transaction_id': cielo_id,
+            'payment_installments': int(data.get('payment_installments', '1')),
+            'payment_boletonumber': data.get('payment_boletonumber', ''),
+            'payment_method_brand': data.get('payment_method_brand', None),
+            'state_cielo': state_cielo
+        }
+
         payment_id = self.create(cr, uid, values, context=context)
         return self.browse(cr, uid, payment_id, context=context)
