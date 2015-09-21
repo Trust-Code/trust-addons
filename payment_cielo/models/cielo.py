@@ -124,7 +124,7 @@ class AcquirerCielo(models.Model):
             'partner_cpf': re.sub('[^0-9]', '',
                                   partner_values.get('cpf', '-')),
             'partner_phone': re.sub('[^0-9]', '',
-                                    partner_values.get('phone', '-')),
+                                    partner_values.get('phone', '') or ''),
         })
         if acquirer.fees_active:
             cielo_tx_values['handling'] = '%.2f' % cielo_tx_values.pop(

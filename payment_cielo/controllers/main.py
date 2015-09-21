@@ -35,7 +35,35 @@ class CieloController(http.Controller):
     _status_url = '/cielo/status/'
 
     def cielo_validate_data(self, **post):
+        """ Exemplo de retorno
+        order_number    SO001
+        amount    1600
+        checkout_cielo_order_number    708da2506ec44d64aade742c11509459
+        created_date    20/09/2015 22:19:36
+        customer_name    João Silva
+        customer_phone    4898016226
+        customer_identity    46317632480
+        customer_email    joao_silva0123@gmail.com
+        shipping_type    2
+        shipping_name    Servico da Loja
+        shipping_price    500
+        shipping_address_zipcode    88032050
+        shipping_address_district    Saco Grande
+        shipping_address_city    Florianópolis
+        shipping_address_state    SC
+        shipping_address_line1    Rua Donícia Maria da Costa
+        shipping_address_line2    ap02
+        shipping_address_number    83
+        payment_method_type    1
+        payment_method_brand    5
+        payment_maskedcreditcard    636368******7691
+        payment_installments    1
+        payment_status    7
+        tid    200920152219370767        
+        """        
+        
         pass
+        
 
     @http.route('/cielo/retorno/', type='http', auth='none', methods=['POST'])
     def cielo_retorno(self, **post):
@@ -44,24 +72,23 @@ class CieloController(http.Controller):
             'Beginning Paypal IPN form_feedback with post data %s',
             pprint.pformat(post))  # debug
         self.cielo_validate_data(**post)
-        return ''
+        return "<status>OK</status>"
 
     @http.route(
         '/cielo/notificacao/', type='http', auth="none", methods=['POST'])
     def cielo_notify(self, **post):
-        """ Paypal DPN """
-        _logger.info(
-            'Beginning Paypal DPN form_feedback with post data %s',
-            pprint.pformat(post))  # debug
+        """ Cielo Notify """
+        _logger.info('Iniciando retorno de notificação cielo post-data: %s',
+            pprint.pformat(post))          
+        
         self.cielo_validate_data(**post)
-        return werkzeug.utils.redirect(self._return_url)
+        return "<status>OK</status>"
 
     @http.route('/cielo/status/', type='http', auth="none")
     def cielo_cancel(self, **post):
-        """ When the user cancels its Paypal payment: GET on this route """
-        # cr, uid, context = request.cr, SUPERUSER_ID, request.context
+        """ Quando o status de uma transação modifica essa url é chamada """        
         _logger.info(
-            'Beginning Paypal cancel with post data %s',
+            'Iniciando mudança de status de transação post-data: %s',
             pprint.pformat(post))  # debug
-        return_url = self._get_return_url(**post)
-        return werkzeug.utils.redirect(return_url)
+        
+        return "<status>OK</status>"
