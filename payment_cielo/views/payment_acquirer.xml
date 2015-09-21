@@ -32,6 +32,9 @@
                         </group>
                     </page>
                 </xpath>
+                <field name="acquirer_reference" position="after">
+                	<field name="url_cielo" widget="url" />
+                </field>
             </field>
         </record>
 

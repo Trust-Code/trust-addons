@@ -22,6 +22,7 @@
 
 import re
 from openerp import models, fields, SUPERUSER_ID
+from datetime import datetime
 
 
 class AcquirerCielo(models.Model):
@@ -144,6 +145,8 @@ class TransactionCielo(models.Model):
 
     cielo_transaction_id = fields.Char(string='Transaction ID')
     transaction_type = fields.Char(string='Transaction type')
+    url_cielo = fields.Char(string="Cielo", size=60,
+                            default="https://www.cielo.com.br/VOL/areaProtegida/index.jsp")
 
     def _cielo_form_get_tx_from_data(self, cr, uid, data, context=None):
         acquirer_id = self.pool['payment.acquirer'].search(
@@ -174,8 +177,9 @@ class TransactionCielo(models.Model):
             'partner_city': sale_order.partner_id.l10n_br_city_id.name,
             'partner_country_id': sale_order.partner_id.country_id.id,
             'state': 'done',
-            'partner_id': sale_order.partner_id.id
-        }
-
+            'partner_id': sale_order.partner_id.id,
+            'date_validate': datetime.now()
+        }        
+        
         payment_id = self.create(cr, uid, values, context=context)
         return self.browse(cr, uid, payment_id, context=context)
