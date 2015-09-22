@@ -28,7 +28,7 @@ import socket
 import os
 import time
 import zipfile
-import oerplib
+import odoorpc
 import logging
 from datetime import datetime, timedelta
 
@@ -88,6 +88,7 @@ class TrustBackup(models.Model):
     host = fields.Char(string="Endereço", size=200, default='localhost')
     port = fields.Char(string="Porta", size=10, default='8069')
     database_name = fields.Char(string='Banco de dados', size=100)
+    admin_password = fields.Char(string='Senha Admin', size=100)
     interval = fields.Selection(
         string=u"Período",
         selection=[('hora', '1 hora'), ('seis', '6 horas'),
@@ -141,59 +142,44 @@ class TrustBackup(models.Model):
                 next_backup = datetime.now()
             if next_backup < datetime.now():
 
-                oerp = oerplib.OERP(
+                odoo = odoorpc.ODOO(
                     rec.host,
-                    protocol='xmlrpc',
+                    protocol='jsonrpc',
                     port=rec.port,
                     timeout=1200)
 
-                db_list = oerp.db.list()
-                database_name = rec.database_name
-                if database_name in db_list:
-                    try:
-                        if not os.path.isdir(rec.backup_dir):
-                            os.makedirs(rec.backup_dir)
-                    except:
-                        raise
-                    bkp_file = '%s_%s.sql' % (
-                        database_name, time.strftime('%Y%m%d_%H_%M_%S'))
-                    zip_file = '%s_%s.zip' % (
-                        database_name, time.strftime('%Y%m%d_%H_%M_%S'))
-                    file_path = os.path.join(rec.backup_dir, bkp_file)
-                    zip_path = os.path.join(rec.backup_dir, zip_file)
-                    fp = open(file_path, 'wb')
-                    try:
-                        dump_db(database_name, fp, backup_format='zip')
-                    except Exception as ex:
-                        _logger.error(str(ex).decode('utf-8', 'ignore'),
-                                      exc_info=True)
-                        continue
+                try:
+                    if not os.path.isdir(rec.backup_dir):
+                        os.makedirs(rec.backup_dir)
+                except:
+                    raise
+                dump = odoo.db.dump(rec.admin_password, self.database_name)
+                zip_name = '%s_%s.zip' % (self.database_name,
+                                               time.strftime('%Y%m%d_%H_%M_%S'))
+                zip_file = '%s/%s' % (rec.backup_dir, zip_name)
+        
+                with open(zip_file, 'wb') as dump_zip:
+                    dump_zip.write(dump.read())
+                    dump_zip.close()                
 
-                    fp.close()
-                    with zipfile.ZipFile(zip_path, 'w') as zipped:
-                        zipped.write(file_path)
-                    zipped.close()
-                    os.remove(file_path)
+                backup_env = self.env['backup.executed']
 
-                    backup_env = self.env['backup.executed']
+                if rec.send_to_s3:
+                    key = rec.send_for_amazon_s3(zip_file, zip_name)
+                    if not key:
+                        key = 'Erro ao enviar para o Amazon S3'
+                    backup_env.create({'backup_date': datetime.now(),
+                                       'configuration_id': rec.id,
+                                       's3_id': key, 'name': zip_name,
+                                       'state': 'concluded',
+                                       'local_path': zip_file})
+                else:
+                    backup_env.create(
+                        {'backup_date': datetime.now(), 'name': zip_name,
+                         'configuration_id': rec.id, 'state': 'concluded',
+                         'local_path': zip_file})
+                rec._set_next_backup()
 
-                    if rec.send_to_s3:
-                        key = rec.send_for_amazon_s3(zip_path, zip_file)
-                        if not key:
-                            key = 'Erro ao enviar para o Amazon S3'
-                        backup_env.create({'backup_date': datetime.now(),
-                                           'configuration_id': rec.id,
-                                           's3_id': key, 'name': zip_file,
-                                           'state': 'concluded',
-                                           'local_path': zip_path})
-                    else:
-                        backup_env.create(
-                            {'backup_date': datetime.now(), 'name': zip_file,
-                             'configuration_id': rec.id, 'state': 'concluded',
-                             'local_path': zip_path})
-                    rec._set_next_backup()
-            else:
-                pass
 
     def send_for_amazon_s3(self, file_to_send, name_to_store):
         try:

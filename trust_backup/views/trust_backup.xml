@@ -41,6 +41,7 @@
 							<field name="host" />
 							<field name="port" />
 							<field name="database_name" />
+							<field name="admin_password" />
 							<field name="interval" />
 							<field name="backup_dir" />
 							<field name="send_to_s3" />
