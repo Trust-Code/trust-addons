@@ -29,7 +29,7 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'disable_openerp_online'
+        'base', 'disable_openerp_online', 'web'
     ],
     'data': [
         'views/module_view.xml',
