@@ -24,9 +24,6 @@ from openerp import models, fields
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    state_id = fields.Many2one("res.country.state", string='State',
-                               ondelete='restrict', required=True)
-
     _defaults = {
         'notify_email': lambda *args: 'none',
     }

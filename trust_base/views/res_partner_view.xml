@@ -2,16 +2,18 @@
 <openerp>
 	<data>
 
-        <record id="view_trust_base_res_partner" model="ir.ui.view">
-            <field name="name">view.trust.base.res.partner</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="arch" type="xml">
+		<record id="view_trust_base_res_partner" model="ir.ui.view">
+			<field name="name">view.trust.base.res.partner</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml">
 				<page string="Contacts" position="attributes">
 					<attribute name="attrs">{'invisible': 0}</attribute>
 					<attribute name="string">Endereços</attribute>
 				</page>
-				
+				<field name="state_id" position="attributes">
+					<attribute name="attrs">{'required': 1}</attribute>
+				</field>
 			</field>
 		</record>
 
