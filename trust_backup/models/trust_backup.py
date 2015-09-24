@@ -115,7 +115,7 @@ class TrustBackup(models.Model):
             self.next_backup = datetime.now() + timedelta(hours=1)
         elif self.interval == 'seis':
             self.next_backup = datetime.now() + timedelta(hours=6)
-        elif self.interval == 'seis':
+        elif self.interval == 'doze':
             self.next_backup = datetime.now() + timedelta(hours=12)
         else:
             self.next_backup = datetime.now() + timedelta(days=1)
@@ -153,8 +153,8 @@ class TrustBackup(models.Model):
                         os.makedirs(rec.backup_dir)
                 except:
                     raise
-                dump = odoo.db.dump(rec.admin_password, self.database_name)
-                zip_name = '%s_%s.zip' % (self.database_name,
+                dump = odoo.db.dump(rec.admin_password, rec.database_name)
+                zip_name = '%s_%s.zip' % (rec.database_name,
                                                time.strftime('%Y%m%d_%H_%M_%S'))
                 zip_file = '%s/%s' % (rec.backup_dir, zip_name)
         
