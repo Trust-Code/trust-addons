@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<record id="trust_tasks_github_project_task_form" model="ir.ui.view">
+			<field name="name">project.task.form</field>
+			<field name="model">project.task</field>
+			<field name="inherit_id" ref="project.view_task_form2" />
+			<field name="arch" type="xml">
+				<field name="categ_ids" position="after">
+					<field name="repository" />
+					<field name="type" />
+					<field name="issue_github" />
+				</field>
+				<field name="description" position="after">
+					<field name="link_issue" widget="url"
+						attrs="{ 'invisible' : [('issue_github', '=' , '')] }" />
+				</field>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="trust_tasks_github_view_task_kanban">
+			<field name="name">project.task.kanban</field>
+			<field name="model">project.task</field>
+			<field name="inherit_id" ref="project.view_task_kanban" />
+			<field name="arch" type="xml">
+				<field name="categ_ids" position="after">
+					<field name="link_issue" />
+					<field name="issue_github" />
+				</field>
+				<xpath expr="//div[@class='oe_kanban_bottom_right']/img"
+					position='after'>
+					<div class="pull-left" style="padding:5px;">						
+						<a t-att-href="record.link_issue.value" style="font-size:14px;">
+							#<t t-raw="record.issue_github.value" />
+						</a>
+					</div>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</openerp>

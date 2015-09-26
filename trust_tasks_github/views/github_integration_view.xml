@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<record id="github_integration_form" model="ir.ui.view">
+			<field name="name">github.integration.form</field>
+			<field name="model">github.integration</field>
+			<field name="arch" type="xml">
+				<form string="Repositórios">
+					<group>
+						<field name="repo_name" />
+						<field name="owner_name" />						
+						<field name="track_branch" />
+						<field name="username" />
+						<field name="password" password="True" />						
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="github_integration_tree" model="ir.ui.view">
+			<field name="name">github.integration.tree</field>
+			<field name="model">github.integration</field>
+			<field name="arch" type="xml">
+				<tree string="Repositórios">
+					<field name="repo_name" />
+					<field name="owner_name" />
+					<field name="username" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_github_integration_form">
+			<field name="name">Repositórios</field>
+			<field name="res_model">github.integration</field>
+			<field name="view_type">form</field>
+			<field name='view_mode'>tree,form</field>
+		</record>
+		<menuitem parent="base.menu_definitions" action="action_github_integration_form"
+			id="github_integration_menu" />
+
+	</data>
+</openerp>
+			
