@@ -19,8 +19,9 @@
 #                                                                             #
 ###############################################################################
 
+import base64
 from lxml import etree
-from ..service.webservice import send_request
+from ..service.webservice import Comunicacao
 from openerp import api, fields, models
 
 
@@ -28,6 +29,8 @@ class BaseNfse(models.Model):
     _name = 'base.nfse'
 
     name = fields.Char('Nome', size=100)
+    certificate = fields.Binary('Certificado')
+    password = fields.Char('Senha', size=100)
 
     def _url_envio_rps(self):
         return ''
@@ -85,11 +88,19 @@ class BaseNfse(models.Model):
     @api.multi
     def generate_nfse(self):
         for item in self:
+
+            chave_temp = '/tmp/certificate'
+            item.certificate
+            arq_temp = open(chave_temp, 'w')
+            arq_temp.write(base64.b64decode(item.certificate))
+            arq_temp.close()
+
+            c = Comunicacao(chave_temp, item.password)
             nfse = item._get_nfse_object()
             url = item._url_envio_nfse()
-            xml_root = send_request(nfse, url, 'abrasf_rps.xml', None)
+
+            xml_root = c.send_request(nfse, url, 'abrasf_rps.xml')
             resposta = item._get_nfse_return_object(xml_root)
-            print resposta
             item._validate_result(resposta)
 
     @api.multi

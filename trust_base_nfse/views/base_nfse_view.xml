@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-	
+
 		<record id="base_nfse_form_view" model="ir.ui.view">
 			<field name="name">base.nfse.form</field>
 			<field name="model">base.nfse</field>
 			<field name="arch" type="xml">
-				 <form string="Base NFS-e">
-                    <header>
-                    	<button name="generate_nfse" string="Enviar a NFS-e" type="object"  
-							 class="oe_highlight" />						                      
-                    </header>
-                    <group string="Base NFS-e">
-                        <field name="name" />                                                                  
-                    </group>                    
-                </form>
+				<form string="Base NFS-e">
+					<header>
+						<button name="generate_nfse" string="Enviar a NFS-e" type="object"
+							class="oe_highlight" />
+					</header>
+					<group string="Base NFS-e">
+						<field name="name" />
+						<field name="certificate" />
+						<field name="password" />
+					</group>
+				</form>
 			</field>
 		</record>
 
@@ -26,6 +28,6 @@
 		</record>
 		<menuitem parent="account.menu_finance_receivables" action="base_nfse_tree"
 			id="base_nfse_menu" />
-	
+
 	</data>
 </openerp>
