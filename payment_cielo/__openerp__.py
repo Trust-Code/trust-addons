@@ -27,7 +27,7 @@
     'version': '1.0',
     'description': """Cielo Checkout Payment Acquirer""",
     'author': 'TrustCode',
-    'depends': ['payment'],
+    'depends': ['payment', 'website_sale', 'l10n_br_base'],
     'data': [
         'views/cielo.xml',
         'views/payment_acquirer.xml',

@@ -96,7 +96,7 @@ class AcquirerCielo(models.Model):
         cielo_tx_values.update({
             'merchant_id': acquirer.cielo_merchant_id,
             'order_id': tx_values['reference'],
-            'shipping_type': '2',
+            'shipping_type': '5',
 
             'zip_code': re.sub('[^0-9]', '', partner_values['zip'] or '-'),
             'street': partner_values.get('street', ''),

@@ -24,9 +24,27 @@ import logging
 import pprint
 
 from openerp import http, SUPERUSER_ID
-from openerp.addons.web.http import request
+from openerp.http import request
+from openerp.tools.translate import _
+from openerp.addons.website.models.website import slug
+from openerp.addons.web.controllers.main import login_redirect
+
+from openerp.addons.website_sale.controllers.main import website_sale
 
 _logger = logging.getLogger(__name__)
+
+
+class WebsiteSale(website_sale):
+
+    def checkout_form_validate(self, data):
+        result = super(WebsiteSale, self).checkout_form_validate(data)
+        if len(data['zip']) != 8:
+            result['zip'] = 'error'
+        if data['state_id'] == u'':
+            result['state_id'] = 'error'
+        if len(data['phone']) < 10:
+            result['phone'] = 'error'        
+        return result
 
 
 class CieloController(http.Controller):

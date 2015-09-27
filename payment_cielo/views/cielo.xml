@@ -11,16 +11,19 @@
 				<t t-foreach="tx_values['sale_lines']" t-as="line">						
 					<input type="hidden" t-att-name="'cart_' + line['index'] + '_name'" t-att-value="line['name']" />
 					<input type="hidden" t-att-name="'cart_' + line['index'] + '_unitprice'" t-att-value="line['price']" />
-					<input type="hidden" t-att-name="'cart_' + line['index'] + '_quantity'" t-att-value="line['quantity']" />
-					<input type="hidden" t-att-name="'cart_' + line['index'] + '_zipcode'" t-att-value="line['zip']" />
-					<input type="hidden" t-att-name="'cart_' + line['index'] + '_type'" t-att-value="1" />
+					<input type="hidden" t-att-name="'cart_' + line['index'] + '_quantity'" t-att-value="line['quantity']" />					
+					<input type="hidden" t-att-name="'cart_' + line['index'] + '_type'" t-att-value="2" />
 				</t>
 				
-				<input type="hidden" name="shipping_1_name" value="Servico da Loja" />
-				<input type="hidden" name="shipping_1_price" value="500" />
-				<input type="hidden" name="shipping_2_name" value="Motoboy" />
-				<input type="hidden" name="shipping_2_price" value="800" />
+				<div id="delivery-options">
+					<!-- Exemplo para implementar tipos de envio 
+					<input type="hidden" name="shipping_1_name" value="Servico da Loja" />
+					<input type="hidden" name="shipping_1_price" value="500" />
+					<input type="hidden" name="shipping_2_name" value="Motoboy" />
+					<input type="hidden" name="shipping_2_price" value="800" />  -->
+				</div>
 
+				<!-- 
 				<input type="hidden" name="Shipping_Zipcode" t-att-value="tx_values['zip_code']" />
 				<input type="hidden" name="Shipping_Address_Name" t-att-value="tx_values['street']" />
 				<input type="hidden" name="Shipping_Address_Number" t-att-value="tx_values['street_number']" />
@@ -28,7 +31,8 @@
 				<input type="hidden" name="Shipping_Address_District" t-att-value="tx_values['district']" />
 				<input type="hidden" name="Shipping_Address_City" t-att-value="tx_values['city']" />
 				<input type="hidden" name="Shipping_Address_State" t-att-value="tx_values['state']" />
-
+				 -->
+		
         		<input type="hidden" name="customer_name" t-att-value="tx_values['partner_name']" />
 				<input t-if="tx_values['partner_email']" type="hidden" name="customer_email" t-att-value="tx_values['partner_email']" />
 				<input t-if="tx_values['partner_cpf']" type="hidden" name="customer_identity" t-att-value="tx_values['partner_cpf']" />
