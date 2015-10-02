@@ -34,5 +34,5 @@
         'views/res_config_view.xml',
         'data/cielo.xml',
     ],
-    'installable': True,
+    'installable': False,
 }

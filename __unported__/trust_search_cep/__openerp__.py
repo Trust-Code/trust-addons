@@ -34,4 +34,5 @@
     'depends': [
         'base', 'l10n_br_zip'
     ],
+    'installable': False,
 }
