@@ -21,7 +21,7 @@
 
 import base64
 from lxml import etree
-from ..service.webservice import Comunicacao
+from ..service.nota_servico import NotaServico
 from openerp import api, fields, models
 
 
@@ -95,13 +95,15 @@ class BaseNfse(models.Model):
             arq_temp.write(base64.b64decode(item.certificate))
             arq_temp.close()
 
-            c = Comunicacao(chave_temp, item.password)
+             
             nfse = item._get_nfse_object()
             url = item._url_envio_nfse()
 
-            xml_root = c.send_request(nfse, url, 'abrasf_rps.xml')
-            resposta = item._get_nfse_return_object(xml_root)
-            item._validate_result(resposta)
+            nota = NotaServico(key=item.password, certificate=chave_temp, 
+                               city_code=3304557, environment="homologacao")
+            
+            response = nota.send_nfse(nfse, 'abrasf_rps.xml')        
+            print response
 
     @api.multi
     def cancel_nfse(self):

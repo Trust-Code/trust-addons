@@ -24,7 +24,8 @@
     'name': 'NFS-e Base',
     'summary': """Módulo que implementa o padrão base Abrasf -
                 Esse módulo não é utilizavel sózinho, necessário implementar
-                os métodos e o layout do municipio correspondente.""",
+                os métodos e o layout do municipio correspondente.
+                Depends: suds, suds_requests""",
     'version': '8.0',
     'category': 'Localisation',
     'author': 'Trustcode',
@@ -39,4 +40,5 @@
     'data': [
         'views/base_nfse_view.xml'
     ],
+    'instalable': True
 }

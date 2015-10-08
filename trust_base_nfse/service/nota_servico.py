@@ -19,31 +19,32 @@
 #                                                                             #
 ###############################################################################
 
-import os
+
+import requests
+import suds
+import suds.client
+import suds_requests
+
 from lxml import etree
+from suds.sax.text import Raw
+from certificate import converte_pfx_pem
 from xml import render
 
-from uuid import uuid4
-from .certificate import converte_pfx_pem
-from .http_client import HttpClient
-from .signature import Assinatura
 
+class NotaServico(object):
 
-class Comunicacao(object):
-    url = ''
-    web_service = ''
-    metodo = ''
-    tag_retorno = ''
-
-    def __init__(self, certificado, senha):
-        self.certificado = certificado
-        self.senha = senha
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+        self.key = kwargs.pop("key")
+        self.certificate = kwargs.pop("certificate")
+        self.city_code = kwargs.pop("city_code")
+        self.environment = kwargs.pop("environment")
 
     def _preparar_temp_pem(self):
         chave_temp = '/tmp/' + uuid4().hex
         certificado_temp = '/tmp/' + uuid4().hex
 
-        chave, certificado = converte_pfx_pem(self.certificado, self.senha)
+        chave, certificado = converte_pfx_pem(self.certificate, self.key)
         arq_temp = open(chave_temp, 'w')
         arq_temp.write(chave)
         arq_temp.close()
@@ -54,24 +55,41 @@ class Comunicacao(object):
 
         return chave_temp, certificado_temp
 
-    def _validar_dados(self):
-        assert self.url != '', "Url servidor não configurada"
-        assert self.web_service != '', "Web service não especificado"
-        assert self.certificado != '', "Certificado não configurado"
-        assert self.senha != '', "Senha não configurada"
-        assert self.metodo != '', "Método não configurado"
-        assert self.tag_retorno != '', "Tag de retorno não configurado"
+    def _get_client(self):
+        cache_location = '/tmp/suds'
+        cache = suds.cache.DocumentCache(location=cache_location)
 
-    def send_request(self, obj_nfse, url, template):
+        session = requests.Session()
+        key, certificate = self._preparar_temp_pem()
+        session.cert = (key, certificate)
+
+        return suds.client.Client(
+            self.base_url,
+            cache=cache,
+            transport=suds_requests.RequestsTransport(session)
+        )
+
+    def send_nfse(self, obj_nfse, template):
+        client = self._get_client()
         xml_send = render(obj_nfse, template)
-        # self._validar_dados()
+        # TODO O nome do método deve ser dinâmico
+        response = client.service.GerarNfse(xml_send)
+        return response
 
-        assinatura = Assinatura(self.certificado, '123456')
-        xml_signed = assinatura.assina_xml(xml_send, '#123')
-        print xml_signed
+    def send_rps(self, obj_nfse, template):
+        client = self._get_client()
+        xml_send = render(obj_nfse, template)
+        response = client.service.LoteRps(xml_send)
+        return response
 
-        chave, certificado = self._preparar_temp_pem()
-        client = HttpClient(self.url, chave, certificado)
-        xml_retorno = client.post_xml(self.web_service, xml_signed)
-
-        return etree.fromstring(xml_retorno)
+    def cancel_nfse(self, obj_nfse, template):
+        client = self._get_client()
+        xml_send = render(obj_nfse, template)
+        response = client.service.CancelamentoNFSe(xml_send)
+        return response
+    
+    def query_nfse(self, obj_nfse, template):
+        client = self._get_client()
+        xml_send = render(obj_nfse, template)
+        response = client.service.ConsultaNFSe(xml_send)
+        return response

@@ -22,12 +22,18 @@
 import os.path
 from lxml import etree
 from jinja2 import Environment, FileSystemLoader
-from StringIO import StringIO
+from . import filters_xml as filters
+
 
 
 def render(obj_nfse, template_path):
     path = os.path.dirname(os.path.dirname(__file__))
     env = Environment(loader=FileSystemLoader(os.path.join(path, 'templates')))
+    
+    env.filters["normalize"] = filters.normalize_str
+    env.filters["format_percent"] = filters.format_percent
+    env.filters["format_datetime"] = filters.format_datetime
+    
     template = env.get_template(template_path)
 
     # TODO Remover espaços e possíveis tags vazias
