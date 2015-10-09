@@ -2,7 +2,6 @@
 <openerp>
 	<data>
 
-<!-- 
 	<template id="report.external_layout">	    
 	    <t t-if="o and 'company_id' in o">
 	        <t t-set="company" t-value="o.company_id"></t>
@@ -22,8 +21,7 @@
 	            <div class="col-xs-3">
 	                <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
 	            </div>
-	            <div class="col-xs-9 text-right" style="margin-top:20px;" t-field="company.rml_header1"/>
-	            <span>Aqui tem que modificar o cabeçalho</span>
+	            <div class="col-xs-9 text-right" style="margin-top:20px;" t-field="company.rml_header1"/>	            
 	        </div>
 	        <div class="row zero_min_height">
 	            <div class="col-xs-12">
@@ -34,22 +32,16 @@
 	</template>
 	
 	<template id="report.external_layout_footer">
-	    <div class="footer">
-	        <div class="text-center" style="border-top: 1px solid black;">
-	            <ul t-if="not company.custom_footer" class="list-inline">
-	                <li t-if="company.phone">Phone: <span t-field="company.phone"/></li>
-	
-	                <li t-if="company.fax and company.phone">&amp;bull;</li>
-	                <li t-if="company.fax">Fax: <span t-field="company.fax"/></li>
-	
-	                <li t-if="company.email">&amp;bull;</li>
-	                <li t-if="company.email">Email: <span t-field="company.email"/></li>
-	
-	                <li t-if="company.website">&amp;bull;</li>
-	                <li t-if="company.website">Website: <span t-field="company.website"/></li>
-	            </ul>
-	
-	            <t t-if="company.custom_footer">
+		<div class="footer" style="text-align:center">
+        		<div class="oe_structure small">
+           			<span t-field="company.name"></span>
+           			<span t-if="company.partner_id.cnpj_cpf"> CNPJ: <span t-field="company.partner_id.cnpj_cpf"></span></span> 
+           			<span t-if="company.partner_id.inscr_est"> I.E.: <span t-field="company.partner_id.inscr_est"></span> </span> <br></br>
+           			<span t-raw="company.partner_id._display_address(company.partner_id)"></span>
+           			<span t-if="company.partner_id.phone">Fone: <span t-field="company.partner_id.phone"></span></span>
+           			<span t-if="company.partner_id.email">Email: <span t-field="company.partner_id.email"></span></span>					
+           		</div>           		
+           		<t t-if="company.custom_footer">
 	                <span t-raw="company.rml_footer"/>
 	            </t>
 	
@@ -59,8 +51,8 @@
 	                <li>/</li>
 	                <li><span class="topage"/></li>
 	            </ul>
-	        </div>
-	    </div>      
+	            <span style="font-size:10px;">Desenvolvido por trustcode.com.br</span>
+         </div>	
 	</template>
 	
 	<template id="report.internal_layout">
@@ -71,29 +63,37 @@
 	    <t t-if="not o or not 'company_id' in o">
 	        <t t-set="company" t-value="res_company"></t>
 	    </t>
-	
 	    <div class="header">
 	        <div class="row">
-	            <div class="col-xs-3">
-	                <span t-esc="time.strftime('%Y-%m-%d')"/>
-	                <span t-esc="time.strftime('%H:%M')"/>
-	                <span>Danimar Ribeiro</span>
-	            </div>
-	            <div class="col-xs-2 col-xs-offset-2 text-center">
-	                <span t-esc="company.name"/>
-	            </div>
-	            <div class="col-xs-2 col-xs-offset-3 text-right">
-	                <ul class="list-inline">
-	                    <li><span class="page"/></li>
-	                    <li>/</li>
-	                    <li><span class="topage"/></li>
-	                </ul>
-	            </div>
+	            <div class="col-xs-6">
+	            	<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+	                <strong><span t-esc="company.name"/></strong> - 
+	                <span t-field="company.rml_header1"></span>	                	                               	                
+	            </div>	            
+	           	<div class="col-xs-6 text-right" style="margin-top:20px;">
+	           		Relatório gerado em: 
+	                <span t-esc="time.strftime('%d-%m-%Y')"/>
+	           	</div>	           	
 	        </div>
+	        <div class="row zero_min_height">
+	            <div class="col-xs-12">
+	                <div style="border-bottom: 1px solid black;"></div>
+	            </div>
+	        </div>	
 	    </div>
 	    <t t-raw="0" />
-	</template>
- -->
+	    <div class="footer" style="text-align:center">
+       		<div class="oe_structure small">
+      			<span t-field="company.name"></span>
+      			<span t-if="company.partner_id.cnpj_cpf"> CNPJ: <span t-field="company.partner_id.cnpj_cpf"></span></span> 
+      			<span t-if="company.partner_id.inscr_est"> I.E.: <span t-field="company.partner_id.inscr_est"></span> </span> <br></br>
+      			<span t-raw="company.partner_id._display_address(company.partner_id)"></span>
+      			<span t-if="company.partner_id.phone">Fone: <span t-field="company.partner_id.phone"></span></span>
+      			<span t-if="company.partner_id.email">Email: <span t-field="company.partner_id.email"></span></span>					
+          	</div>        
+    		<span style="font-size:10px;">Desenvolvido por trustcode.com.br</span>
+         </div>	
+	</template> 
 	    	
 	</data>
 </openerp>

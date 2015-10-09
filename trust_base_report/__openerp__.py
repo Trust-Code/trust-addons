@@ -18,18 +18,18 @@
 ###############################################################################
 
 {
-    'name': 'Base Report - TrustCode',
-    'summary': """Módulo base de relatórios - TrustCode""",
+    'name': 'Base Report - Trustcode',
+    'summary': """Módulo base de relatórios - Trustcode""",
     'version': '8.0',
     'category': 'Tools',
-    'author': 'TrustCode',
+    'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'report'
+        'report', 'l10n_br_base'
     ],
     'data': [
         'report/report_base.xml',
