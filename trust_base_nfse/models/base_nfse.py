@@ -118,5 +118,10 @@ class BaseNfse(models.Model):
     def check_nfse_by_rps(self):
         pass
     
+    @api.multi    
     def check_nfse_by_lote(self):
+        pass
+
+    @api.multi
+    def print_pdf(self):
         pass
