@@ -28,6 +28,7 @@ from openerp import api, fields, models
 class BaseNfse(models.Model):
     _name = 'base.nfse'
 
+    city_code = fields.Char(u'Código Cidade', size=100)
     name = fields.Char('Nome', size=100)
     certificate = fields.Binary('Certificado')
     password = fields.Char('Senha', size=100)
@@ -104,11 +105,18 @@ class BaseNfse(models.Model):
             
             response = nota.send_nfse(nfse, 'abrasf_rps.xml')        
             print response
-
+            
+    @api.multi
+    def send_rps(self):
+        pass
+    
     @api.multi
     def cancel_nfse(self):
-        pass
-
+        pass        
+        
     @api.multi
-    def check_nfse(self):
+    def check_nfse_by_rps(self):
+        pass
+    
+    def check_nfse_by_lote(self):
         pass
