@@ -39,22 +39,18 @@ class Rps(object):
 
     def _header(self):
         data = [
-            ['Recebemos de verdesaine industria e comércio os produtos constantes na nota fiscal abaixo ', '',
-             'NF-e\nNº 000.000.001\nSérie 001'],
-            ['Data de recebimento',
-             'Identificação e assinatura do recebedor',
-             '']
+            ['Prefeitura Municipal de Campinas\nSecretaria Municipal de Finanças\nRECIBO PROVISÓRIO DE SERVIÇOS - RPS', self._field('Número do RPS', '0001')],
+            ['', self._field('Data de emissão', '28/10/2015')]
         ]
 
-        estilo = [('SPAN', (0, 0), (1, 0)),
-                  ('SPAN', (2, 0), (2, 1)),
+        estilo = [('SPAN', (0, 0), (0, 1)),                  
                   ('FONTSIZE', (0, 0), (1, 1), 7.0),
                   ('VALIGN', (0, 0), (1, 1), 'TOP'),
-                  ('ALIGN', (2, 0), (2, 1), 'CENTER'),
+                  ('ALIGN', (1, 0), (1, 1), 'CENTER'),
                   ('TOPPADING', (0, 0), (1, 1), 6),
-                  ('GRID', (0, 0), (3, 1), 0.5, colors.black)]
-        colunas = [4 * inch, 12 * inch, 4 * inch]
-        linhas = [20, 30]
+                  ('GRID', (0, 0), (2, 1), 0.5, colors.black)]
+        colunas = [16 * inch, 4 * inch]
+        linhas = [30, 30]
         table = Table(data, style=estilo, colWidths=colunas, rowHeights=linhas)
         return table
 
@@ -83,7 +79,7 @@ class Rps(object):
 
     def generate(self):
         doc = SimpleDocTemplate(
-            '/home/danimar/projetos/pdfs/danfe.pdf',
+            '/home/danimar/Documentos/danfe.pdf',
             pagesize=A4, leftMargin=0.5 * inch, rightMargin=0.5 * inch,
             topMargin=0.5 * inch, bottomMargin=0.5 * inch)
 

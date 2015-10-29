@@ -22,7 +22,7 @@
 import base64
 from lxml import etree
 from openerp import api, fields, models
-
+from ..pdf.rps import Rps
 
 class BaseNfse(models.Model):
     _inherit = 'base.nfse'
@@ -62,12 +62,17 @@ class BaseNfse(models.Model):
         
     
     @api.multi
-    def generate_pdf(self):
+    def print_pdf(self):        
+        
         if self.city_code == '6291': # Campinas
             pass #TODO Implementar envio       
         
-        return super(BaseNfse, self).generate_pdf()
+        rps_pdf = Rps({})
+        rps_pdf.generate()
         
-    
+        return self.env['report'].get_action(
+            self, 'trust_nfse_campinas.danfse_report')
+        
+
     
     

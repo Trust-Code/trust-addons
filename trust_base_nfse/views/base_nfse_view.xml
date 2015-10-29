@@ -10,6 +10,8 @@
 					<header>
 						<button name="generate_nfse" string="Enviar a NFS-e" type="object"
 							class="oe_highlight" />
+						<button name="print_pdf" string="Gerar PDF" type="object"
+							class="oe_highlight" />
 					</header>
 					<group string="Base NFS-e">
 						<field name="name" />

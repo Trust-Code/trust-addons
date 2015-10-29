@@ -21,3 +21,5 @@
 
 
 from . import models
+from . import pdf
+from . import report

@@ -35,7 +35,8 @@
     'depends': [
         'base', 'account', 'trust_base_nfse'
     ],
-    'data': [        
+    'data': [
+        'report/danfse.xml'
     ],
     'instalable': True
 }
