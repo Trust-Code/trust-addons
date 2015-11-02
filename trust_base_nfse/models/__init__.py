@@ -21,3 +21,4 @@
 
 
 from . import base_nfse
+from . import account_invoice

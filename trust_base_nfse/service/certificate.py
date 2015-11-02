@@ -23,12 +23,9 @@ import os.path
 from OpenSSL import crypto
 
 
-def converte_pfx_pem(caminho, senha):
-    if not os.path.isfile(caminho):
-        raise Exception('Certificado não existe')
-    stream = open(caminho, 'rb').read()
+def converte_pfx_pem(pfx_stream, senha):
     try:
-        certificado = crypto.load_pkcs12(stream, senha)
+        certificado = crypto.load_pkcs12(pfx_stream, senha)
 
         privada = crypto.dump_privatekey(crypto.FILETYPE_PEM,
                                          certificado.get_privatekey())
@@ -39,4 +36,4 @@ def converte_pfx_pem(caminho, senha):
                 e.message[0][2] == 'mac verify failure':
             raise Exception('Senha inválida')
         raise
-    return privada, certificado
+    return certificado, privada

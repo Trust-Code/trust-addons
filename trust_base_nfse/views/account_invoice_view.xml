@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="view_trust_base_nfse_account_invoice_form">
+			<field name="name">trust_base_nfse_account.invoice.form</field>
+			<field name="model">account.invoice</field>
+			<field name="priority">32</field>
+			<field name="inherit_id" ref="account.invoice_form" />
+			<field name="arch" type="xml">
+				<button name="invoice_open" position="after">
+					<button name="nfse_trysend" states="nfse_ready"
+						confirm="Confirma emissão da NFS-e ?" string="Transmitir" class="oe_highlight"
+						groups="base.group_user" />
+					<button name="nfse_resend" states="nfse_exception" string="Habilitar re-envio NFS-e"
+						class="oe_highlight" groups="base.group_user" />
+					<button name="invoice_print" states="nfse_ready" string="Pré-visualizar RPS"
+						type="object" groups="base.group_user" />
+				</button>
+			</field>
+		</record>
+	</data>
+</openerp>
+	

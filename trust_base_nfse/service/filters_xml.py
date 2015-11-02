@@ -39,3 +39,18 @@ def format_datetime(value):
         pass
 
     return value
+
+def format_date(value):
+    """
+    Format date
+    """
+    dt_format = '%Y-%m-%d'
+    if isinstance(value, datetime):
+        return value.strftime(dt_format)
+    
+    try:
+        value = parser_dateutil.parse(value).strftime(dt_format)
+    except AttributeError:
+        pass
+
+    return value

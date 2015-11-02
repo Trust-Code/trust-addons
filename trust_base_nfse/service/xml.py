@@ -25,19 +25,18 @@ from jinja2 import Environment, FileSystemLoader
 from . import filters_xml as filters
 
 
-
-def render(obj_nfse, template_path):
-    path = os.path.dirname(os.path.dirname(__file__))
-    env = Environment(loader=FileSystemLoader(os.path.join(path, 'templates')))
+def render(obj_nfse, base_path, template_path):    
+    env = Environment(loader=FileSystemLoader(os.path.join(base_path, 'templates')))
     
     env.filters["normalize"] = filters.normalize_str
     env.filters["format_percent"] = filters.format_percent
     env.filters["format_datetime"] = filters.format_datetime
+    env.filters["format_date"] = filters.format_date
     
     template = env.get_template(template_path)
 
     # TODO Remover espaços e possíveis tags vazias
-    xml = template.render(nfse=obj_nfse)
+    xml = template.render(nfse=obj_nfse)    
     parser = etree.XMLParser(remove_blank_text=True, remove_comments=True)
     elem = etree.fromstring(xml, parser=parser)
     return etree.tostring(elem)

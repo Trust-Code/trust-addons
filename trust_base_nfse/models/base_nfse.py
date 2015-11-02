@@ -20,17 +20,28 @@
 ###############################################################################
 
 import base64
+import requests
+import suds.client
+import suds_requests
+from uuid import uuid4
 from lxml import etree
 from ..service.nota_servico import NotaServico
+from ..service.certificate import converte_pfx_pem
 from openerp import api, fields, models
+
 
 
 class BaseNfse(models.Model):
     _name = 'base.nfse'
+    
+    def _company_certificate(self):
+        for item in self:
+            item.certificate = self.env.user.company_id.nfe_a1_file
 
     city_code = fields.Char(u'Código Cidade', size=100)
+    invoice_id = fields.Many2one('account.invoice', string=u'Fatura')
     name = fields.Char('Nome', size=100)
-    certificate = fields.Binary('Certificado')
+    certificate = fields.Binary('Certificado', default=_company_certificate)
     password = fields.Char('Senha', size=100)
 
     def _url_envio_rps(self):
@@ -54,57 +65,49 @@ class BaseNfse(models.Model):
         Returns:
             dict: retorna um dicionário com os dados da nfse
          """
-        tomador = {'cnpj': '8768532.234', 'razao_social': 'MILTON LOPES', 'endereco': 'Rua das Flores',
-                   'numero': 123, 'complemento': '1358', 'bairro': u'São Lourenço', 'cod_municipio': '4214805',
-                   'uf': 'SC', 'cep': '88032050'}
-        prestador = {'cnpj': '12154126', 'inscricao_municipal': '1234'}
-
-        rps = [{'tomador': tomador,
-                'prestador': prestador},
-
-               {'tomador': tomador,
-                'prestador': prestador}]
-
-        nfse_object = {
-            'id': '123',
-            'cnpj': '989788.98/3233',
-            'numero_lote': '123',
-            'lista_rps': rps
-        }
-        return nfse_object
-
-    def _get_nfse_return_object(self, xml_root):
-        result = {}
-
-        find = etree.XPath("/a:Envelope/a:Header/b:nfeCabecMsg/b:cUF/text()",
-                           namespaces={'a': 'http://www.w3.org/2003/05/soap-envelope',
-                                       'b': 'http://www.portalfiscal.inf.br/nfe/wsdl'})
-        print find(xml_root)[0]
-
-        return result
+        return None     
+      
 
     def _validate_result(self, result):
         pass
+    
+    def _save_pfx_certificate(self):  
+        pfx_tmp = '/tmp/' + uuid4().hex               
+        arq_temp = open(pfx_tmp, 'w')
+        print self.certificate
+        arq_temp.write(base64.b64decode(self.certificate))
+        arq_temp.close()
+        return pfx_tmp    
+    
+    
+    def _preparar_temp_pem(self):       
+        chave_temp = '/tmp/' + uuid4().hex
+        certificado_temp = '/tmp/' + uuid4().hex        
 
-    @api.multi
-    def generate_nfse(self):
-        for item in self:
+        pfx_tmp = self._save_pfx_certificate()
 
-            chave_temp = '/tmp/certificate'
-            item.certificate
-            arq_temp = open(chave_temp, 'w')
-            arq_temp.write(base64.b64decode(item.certificate))
-            arq_temp.close()
+        chave, certificado = converte_pfx_pem(pfx_tmp, self.password)
+        arq_temp = open(chave_temp, 'w')
+        arq_temp.write(chave)
+        arq_temp.close()
 
-             
-            nfse = item._get_nfse_object()
-            url = item._url_envio_nfse()
+        arq_temp = open(certificado_temp, 'w')
+        arq_temp.write(certificado)
+        arq_temp.close()
 
-            nota = NotaServico(key=item.password, certificate=chave_temp, 
-                               city_code=3304557, environment="homologacao")
-            
-            response = nota.send_nfse(nfse, 'abrasf_rps.xml')        
-            print response
+        return certificado_temp, chave_temp
+
+    def _get_client(self, base_url):
+        cache_location = '/tmp/suds'
+        cache = suds.cache.DocumentCache(location=cache_location)
+
+        session = requests.Session()        
+
+        return suds.client.Client(
+            base_url,
+            cache=cache,
+            transport=suds_requests.RequestsTransport(session)
+        )        
             
     @api.multi
     def send_rps(self):

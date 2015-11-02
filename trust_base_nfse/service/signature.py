@@ -71,7 +71,7 @@ class Assinatura(object):
             keyInfoNode = signNode.ensureKeyInfo()
             keyInfoNode.addX509Data()
 
-            dsig_ctx = xmlsec.DSigCtx()
+            dsig_ctx = xmlsec.DSigCtx()            
             chave = xmlsec.cryptoAppKeyLoad(filename=str(self.arquivo),
                                             format=xmlsec.KeyDataFormatPkcs12,
                                             pwd=str(self.senha),

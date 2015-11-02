@@ -35,10 +35,14 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'account'
+        'account', 'l10n_br_base', 
+        'l10n_br_account_service', 
+        'l10n_br_account_product'
     ],
     'data': [
-        'views/base_nfse_view.xml'
+        'views/base_nfse_view.xml',
+        'views/account_invoice_view.xml',
+        'workflow/account_invoice_workflow.xml'
     ],
     'instalable': True
 }

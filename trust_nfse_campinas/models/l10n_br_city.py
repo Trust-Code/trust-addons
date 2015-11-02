@@ -19,4 +19,12 @@
 #                                                                             #
 ###############################################################################
 
-from . import rps
+from openerp import fields, models
+
+
+class L10n_Br_Base_City(models.Model):
+    _inherit = 'l10n_br_base.city'
+    
+    siafi_code = fields.Char(u'Código SIAFI', size=10)
+    
+    

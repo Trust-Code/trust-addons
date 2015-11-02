@@ -33,10 +33,11 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'base', 'account', 'trust_base_nfse'
+        'trust_base_nfse'
     ],
     'data': [
-        'report/danfse.xml'
+        'report/danfse.xml',
+
     ],
     'instalable': True
 }
