@@ -7,7 +7,7 @@ Created on 2 de nov de 2015
 import base64
 from cStringIO import StringIO
 from lxml.etree import ElementTree
-from signxml import xmldsig, methods
+#from signxml import xmldsig, methods
 from .certificate import converte_pfx_pem
 from OpenSSL.crypto import *
 
