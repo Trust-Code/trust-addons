@@ -21,14 +21,17 @@
 
 import os
 import re
+import base64
 import hashlib
 from lxml import etree
+from lxml import objectify
 from datetime import datetime
 from openerp import api, fields, models, tools
 
 from openerp.addons.trust_base_nfse.service.xml import render
 from openerp.addons.trust_base_nfse.service.signature import Assinatura
 from openerp.addons.trust_base_nfse.service.signxml_test import assinar
+
 
 class BaseNfse(models.TransientModel):
     _inherit = 'base.nfse'
@@ -49,14 +52,14 @@ class BaseNfse(models.TransientModel):
             pfx_path = self._save_pfx_certificate()
             sign = Assinatura(pfx_path, self.password)
             xml_signed = sign.assina_xml(xml_send, '#lote:1ABCDZ')
-            
+
             arq_temp = open('/home/danimar/Documentos/pyxmlsec.xml', 'w')
             arq_temp.write(xml_signed)
             arq_temp.close()
-            
+
             xml_signed = xml_signed.replace("""<!DOCTYPE ns1:ReqEnvioLoteRPS [
 <!ATTLIST Lote Id ID #IMPLIED>
-]>""", "")            
+]>""", "")
 
             response = client.service.testeEnviar(xml_signed)
             print response
@@ -69,13 +72,38 @@ class BaseNfse(models.TransientModel):
             url = self._url_envio_nfse()
             client = self._get_client(url)
 
-            obj_cancelamento = {}  # TODO Preencher corretamente
+            # TODO Preencher corretamente
+            obj_cancelamento = {
+                'cancelamento': {
+                    'nota_id': self.invoice_id.internal_number}}
 
             path = os.path.dirname(os.path.dirname(__file__))
-            xml_send = render(obj_cancelamento, path, 'cancelamento.xml')
+            xml_send = render(
+                path, 'cancelamento.xml', **obj_cancelamento)
 
             response = client.service.cancelar(xml_send)
-            print response  # TODO Tratar resposta
+            sent_xml = client.last_sent()
+            received_xml = client.last_received()
+
+            status = {'status': '', 'message': '', 'files': [
+                {'name': '{0}-canc-envio.xml'.format(
+                    obj_cancelamento['cancelamento']['nota_id']),
+                 'data': base64.encodestring(sent_xml)},
+                {'name': '{0}-canc-envio.xml'.format(
+                    obj_cancelamento['cancelamento']['nota_id']),
+                 'data': base64.encodestring(received_xml)}
+            ]}
+            if 'RetornoCancelamentoNFSe' in response:
+                resp = objectify.fromstring(response)
+                status['status'] = resp.Erros.Erro[0].Codigo
+                status['message'] = resp.Erros.Erro[0].Descricao
+                status['success'] = resp.Cabecalho.Sucesso
+            else:
+                status['status'] = '-1'
+                status['message'] = response
+                status['success'] = False
+
+            return status
 
         return super(BaseNfse, self).cancel_nfse()
 
@@ -119,21 +147,21 @@ class BaseNfse(models.TransientModel):
                 self, 'trust_nfse_campinas.danfse_report')
 
     def _url_envio_nfse(self):
-        if self.city_code == '6291': #Campinas
+        if self.city_code == '6291':  # Campinas
             return 'http://issdigital.campinas.sp.gov.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '5403': #Uberlandia
+        elif self.city_code == '5403':  # Uberlandia
             return 'http://udigital.uberlandia.mg.gov.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '0427': #Belem-PA
+        elif self.city_code == '0427':  # Belem-PA
             return 'http://www.issdigitalbel.com.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '9051': #Campo Grande
+        elif self.city_code == '9051':  # Campo Grande
             return 'http://issdigital.pmcg.ms.gov.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '5869': #Nova Iguaçu 
+        elif self.city_code == '5869':  # Nova Iguaçu
             return 'http://www.issmaisfacil.com.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '1219': #Teresina 
+        elif self.city_code == '1219':  # Teresina
             return 'http://www.issdigitalthe.com.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '0921': #São Luis
+        elif self.city_code == '0921':  # São Luis
             return 'http://www.issdigitalslz.com.br/WsNFe2/LoteRps.jws?wsdl'
-        elif self.city_code == '7145': #Sorocaba
+        elif self.city_code == '7145':  # Sorocaba
             return 'http://www.issdigitalsod.com.br/WsNFe2/LoteRps.jws?wsdl'
 
     def _get_nfse_object(self):
@@ -201,7 +229,7 @@ class BaseNfse(models.TransientModel):
                  valor_deducao,
                  412040000,
                  int(tomador['cpf_cnpj']))
-                
+
             assinatura = hashlib.sha1(assinatura).hexdigest()
 
             rps = [{
