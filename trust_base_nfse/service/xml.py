@@ -25,7 +25,7 @@ from jinja2 import Environment, FileSystemLoader
 from . import filters_xml as filters
 
 
-def render(obj_nfse, base_path, template_path):    
+def render(base_path, template_path, **kwargs):    
     env = Environment(loader=FileSystemLoader(os.path.join(base_path, 'templates')))
     
     env.filters["normalize"] = filters.normalize_str
@@ -36,7 +36,7 @@ def render(obj_nfse, base_path, template_path):
     template = env.get_template(template_path)
 
     # TODO Remover espaços e possíveis tags vazias
-    xml = template.render(nfse=obj_nfse)    
+    xml = template.render(**kwargs)    
     parser = etree.XMLParser(remove_blank_text=True, remove_comments=True)
     elem = etree.fromstring(xml, parser=parser)
     return etree.tostring(elem)

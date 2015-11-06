@@ -18,6 +18,7 @@
 ###############################################################################
 
 import os
+import base64
 import logging
 import datetime
 from openerp import api, fields, models
@@ -35,27 +36,75 @@ class AccountInvoice(models.Model):
         ('nfse_exception', u'Erro de autorização'),
         ('nfse_cancelled', 'Cancelada')])
 
-    # def attach_file_event(self, cr, uid, ids, seq, att_type, ext, context):
-    #    pass
+    def _attach_files(self, obj_id, model, data, filename):
+        obj_attachment = self.env['ir.attachment']
+
+        obj_attachment.create({
+            'name': filename,
+            'datas': base64.b64encode(data),
+            'datas_fname': filename,
+            'description': '' or _('No Description'),
+            'res_model': model,
+            'res_id': obj_id,
+        })
 
     @api.multi
     def action_resend(self):
-        print 'agora vai'
         self.state = 'nfse_ready'
 
     @api.multi
     def action_invoice_send_nfse(self):
-        print 'chamou aqui'
-        self.state = 'open'
+        event_obj = self.env['l10n_br_account.document_event']
+        base_nfse = self.env['base.nfse'].create({'invoice_id': self.id,
+                                                  'city_code': '6291'})
+
+        send = base_nfse.send_rps()
+        vals = {
+            'type': 'Envio NFS-e',
+            'status': send['status'],
+            'company_id': self.company_id.id,
+            'origin': '[NFS-e] {0}'.format(self.internal_number),
+            'message': send['message'],
+            'state': 'done',
+            'document_event_ids': self.id
+        }
+        event = event_obj.create(vals)
+        for xml_file in send['files']:
+            self._attach_files(event.id, 'l10n_br_account.document_event',
+                               xml_file['data'], xml_file['name'])
+
+        if send['success']:
+            self.state = 'open'
+        else:
+            self.state = 'nfse_exception'
 
     @api.multi
     def button_cancel(self):
-        print 'passou aqui'
-        return super(AccountInvoice, self).button_cancel()
+        cancel_result = self.cancel_invoice_online()
+        if cancel_result:
+            return super(AccountInvoice, self).button_cancel()
 
     @api.multi
     def cancel_invoice_online(self):
-        return 'ok'
+        event_obj = self.env['l10n_br_account.document_event']
+        base_nfse = self.env['base.nfse'].create({'invoice_id': self.id,
+                                                  'city_code': '6291'})
+
+        cancelamento = base_nfse.cancel_nfse()
+        vals = {
+            'type': 'Cancelamento NFS-e',
+            'status': cancelamento['status'],
+            'company_id': self.company_id.id,
+            'origin': '[NFS-e] {0}'.format(self.internal_number),
+            'message': cancelamento['message'],
+            'state': 'done',
+            'document_event_ids': self.id
+        }
+        event = event_obj.create(vals)
+        for xml_file in cancelamento['files']:
+            self._attach_files(event.id, 'l10n_br_account.document_event',
+                               xml_file['data'], xml_file['name'])
+        return cancelamento['success']
 
     @api.multi
     def invoice_print(self):
