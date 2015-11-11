@@ -35,6 +35,7 @@
 				</style>
 				<t t-foreach="docs" t-as="o">
 					<t t-call="report.external_layout">
+						<t t-set="inv" t-value="o.invoice_id" />
 						<div class="page">
 							<div class="row" style="border: 1px solid black;">
 								<div class="col-xs-10" style="padding:0px;text-align:center;font-size:18px;">
@@ -49,7 +50,7 @@
 									<div style="border: 1px solid black; padding: 2px;">
 										Número RPS
 										<br />
-										<strong>0000001</strong>
+										<strong t-field="inv.internal_number"></strong>
 									</div>
 									<div style="border: 1px solid black; padding: 2px;">
 										Data de Emissão
@@ -64,29 +65,32 @@
 								</div>
 								<div class="col-xs-12">
 									Nome/Razão Social:
-									<strong>Construtora Attain LTDA</strong>
+									<strong t-field="inv.company_id.partner_id.legal_name"></strong>
 								</div>
 								<div class="col-xs-8">
 									CNPJ:
-									<strong>72.840.069/0001-34</strong>
+									<strong t-field="inv.company_id.partner_id.cnpj_cpf"></strong>
 								</div>
 								<div class="col-xs-4">
 									Inscrição Municipal:
-									<strong>00.003.601-3</strong>
+									<strong t-field="inv.company_id.partner_id.inscr_mun"></strong>
 								</div>
 								<div class="col-xs-12">
 									Endereço:
-									<strong>Largo LARGO ANTONIO POMPEU, 000010 SALA 21 - BAIRRO
-										CENTRO - CEP 13010170
+									<strong t-field="inv.company_id.partner_id.street">
+									</strong>
+									<strong t-field="inv.company_id.partner_id.number">
+									</strong>
+									<strong t-field="inv.company_id.partner_id.district">
 									</strong>
 								</div>
 								<div class="col-xs-6">
 									Município:
-									<strong>Campinas</strong>
+									<strong t-field="inv.company_id.partner_id.l10n_br_city_id.name"></strong>
 								</div>
 								<div class="col-xs-6">
 									UF:
-									<strong>SP</strong>
+									<strong t-field="inv.company_id.partner_id.state_id.name"></strong>
 								</div>
 							</div>
 							<div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
@@ -95,33 +99,36 @@
 								</div>
 								<div class="col-xs-12">
 									Nome/Razão Social:
-									<strong>ALEXANDRE DA SILVEIRA ÁVILA</strong>
+									<strong t-field="inv.partner_id.legal_name"></strong>
 								</div>
 								<div class="col-xs-8">
 									CNPJ:
-									<strong>72.840.069/0001-34</strong>
+									<strong t-field="inv.partner_id.cnpj_cpf"></strong>
 								</div>
 								<div class="col-xs-4">
 									Inscrição Municipal:
-									<strong>00.003.601-3</strong>
+									<strong t-field="inv.partner_id.inscr_mun"></strong>
 								</div>
 								<div class="col-xs-12">
 									Endereço:
-									<strong>Rua DELACIR TOFFOLI, 127 LOTE 03 QUADRA K - Bairro
-										Recanto dos Dourados - CEP 13098765
+									<strong t-field="inv.partner_id.street">
+									</strong>
+									<strong t-field="inv.partner_id.number">
+									</strong>
+									<strong t-field="inv.partner_id.district">
 									</strong>
 								</div>
 								<div class="col-xs-4">
 									Município:
-									<strong>Campinas</strong>
+									<strong t-field="inv.partner_id.l10n_br_city_id.name"></strong>
 								</div>
 								<div class="col-xs-2">
 									UF:
-									<strong>SP</strong>
+									<strong t-field="inv.partner_id.state_id.name"></strong>
 								</div>
 								<div class="col-xs-6">
 									E-mail:
-									<strong>contratos02@construtorabaggio.com.br</strong>
+									<strong t-field="inv.partner_id.email"></strong>									
 								</div>
 							</div>
 							<div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
