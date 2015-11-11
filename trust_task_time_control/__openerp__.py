@@ -35,7 +35,7 @@
     'depends': [
         'project', 'hr_attendance'
     ],
-    'data': ['views/trust_task_time_control_view.xml',
-             'views/project_task_type.xml',
+    'data': ['views/project_task_view.xml',
+             'views/color_icon_presence.xml',
              ],
 }
