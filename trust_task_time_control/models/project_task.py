@@ -83,7 +83,6 @@ class ProjectTask (models.Model):
 
             elif vals["kanban_state"] == "normal" and self.presence_state():
                 if self.other_task_time_open():
-                    raise Warning(
                     raise Warning(u"Movimentação não Permitida!",
                                   u"Já exite outra tarefa em contando tempo.")
                 else:
