@@ -19,6 +19,23 @@
 #                                                                             #
 ###############################################################################
 
-from . import project_task
-from . import hr_attendance
-from . import res_user
+
+from openerp import models
+
+class ResUser(models.Model):
+    _inherit = 'res.users'
+
+    def authenticate(self, db, login, password, user_agent_env):
+        result = super(ResUser, self).authenticate(db, login, password,
+                                                 user_agent_env)
+        
+        if result:
+            cr = self.pool.cursor()
+            try:
+                employee = self.pool['hr.employee'].browse(cr, result,  result)
+                if employee.state == 'absent':
+                    employee.attendance_action_change()
+                cr.commit()
+            finally:
+                cr.close()
+        return result

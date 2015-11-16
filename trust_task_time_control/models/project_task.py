@@ -1,10 +1,24 @@
-# -*- encoding: utf-8 -*-
-'''
-Created on Nov 5, 2015
+# -*- coding: utf-8 -*-
+###############################################################################
+#                                                                             #
+# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+#              Mackilem Van der Lan <mack.vdl@gmail.com>                      #
+#                                                                             #
+# This program is free software: you can redistribute it and/or modify        #
+# it under the terms of the GNU Affero General Public License as published by #
+# the Free Software Foundation, either version 3 of the License, or           #
+# (at your option) any later version.                                         #
+#                                                                             #
+# This program is distributed in the hope that it will be useful,             #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
+# GNU General Public License for more details.                                #
+#                                                                             #
+# You should have received a copy of the GNU General Public License           #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
+#                                                                             #
+###############################################################################
 
-@author: developer
-'''
-from openerp import api, fields, models
 
 from openerp import api, fields, models, tools
 from datetime import datetime
@@ -16,13 +30,14 @@ class ProjectTask (models.Model):
 
     def count_time_start(self, stage_name):
         df = tools.DEFAULT_SERVER_DATETIME_FORMAT
-        self.env['project.task.work'].create({'name': 'Tempo Automatico (%s)' % (stage_name),
-                                              'task_id': self.id,
-                                              'date': datetime.now().strftime(df),
-                                              'user_id': self.env.user.id,
-                                              'hours': 0.0,
-                                              'time_open': True,
-                                              'time_control': True})
+        self.env['project.task.work'].create(
+            {'name': 'Tempo Automatico (%s)' % (stage_name),
+             'task_id': self.id,
+             'date': datetime.now().strftime(df),
+             'user_id': self.env.user.id,
+             'hours': 0.0,
+             'time_open': True,
+             'time_control': True})
         return
 
     def count_time_stop(self):
