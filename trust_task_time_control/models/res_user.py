@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ###############################################################################
 #                                                                             #
 # Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
@@ -33,9 +33,11 @@ class ResUser(models.Model):
         if result:
             cr = self.pool.cursor()
             try:
-                employee = self.pool['hr.employee'].browse(cr, result, result)
-                if employee.state == 'absent':
-                    employee.attendance_action_change()
+                user = self.pool['res.users'].browse(cr, result, result)
+                if user.employee_ids:
+                    employee = user.employee_ids[0]
+                    if employee and employee.state == 'absent':
+                        employee.attendance_action_change()
                 cr.commit()
             finally:
                 cr.close()
@@ -43,7 +45,8 @@ class ResUser(models.Model):
 
     @api.model
     def logout_user(self):
-        employee = self.env['hr.employee'].browse(self.env.user.id)
-        if employee.state == 'present':
-            employee.attendance_action_change()
+        if self.env.user.employee_ids:
+            employee = self.env['hr.employee'].browse(self.env.user.id)
+            if employee.state == 'present':
+                employee.attendance_action_change()
         return True
