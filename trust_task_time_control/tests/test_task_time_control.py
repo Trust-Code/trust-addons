@@ -44,19 +44,18 @@ class TestTaskTime(common.TransactionCase):
         self.employee = self.env['hr.employee'].browse(self.env.user.id)
 
     def test_create_task_work(self):
-        print "chamou"
         self.employee.attendance_action_change()
         self.assertEqual(self.employee.state, 'present',
                          'Não registrou corretamente entrada do usuário')
-        
-        self.assertEqual(len(self.task_one.work_ids), 0, 
+
+        self.assertEqual(len(self.task_one.work_ids), 0,
                          'Registrou trabalho em uma tarefa que não conta tempo')
-        self.assertEqual(len(self.task_two.work_ids), 0, 
+        self.assertEqual(len(self.task_two.work_ids), 0,
                          'Registrou trabalho em uma tarefa que não conta tempo')
-        
+
         self.task_one.stage_id = self.stage_running.id
-        
-        self.assertEqual(len(self.task_one.work_ids), 1, 
+
+        self.assertEqual(len(self.task_one.work_ids), 1,
                          'Não registrou o tempo na tarefa um')
-        self.assertEqual(len(self.task_two.work_ids), 0, 
+        self.assertEqual(len(self.task_two.work_ids), 0,
                          'Registrou trabalho em uma tarefa que não conta tempo')
