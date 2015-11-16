@@ -20,22 +20,30 @@
 ###############################################################################
 
 
-from openerp import models
+from openerp import api, models
+
 
 class ResUser(models.Model):
     _inherit = 'res.users'
 
     def authenticate(self, db, login, password, user_agent_env):
         result = super(ResUser, self).authenticate(db, login, password,
-                                                 user_agent_env)
-        
+                                                   user_agent_env)
+
         if result:
             cr = self.pool.cursor()
             try:
-                employee = self.pool['hr.employee'].browse(cr, result,  result)
+                employee = self.pool['hr.employee'].browse(cr, result, result)
                 if employee.state == 'absent':
                     employee.attendance_action_change()
                 cr.commit()
             finally:
                 cr.close()
         return result
+
+    @api.model
+    def logout_user(self):
+        employee = self.env['hr.employee'].browse(self.env.user.id)
+        if employee.state == 'present':
+            employee.attendance_action_change()
+        return True

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
-        <template id="assets_backend" name="trust_task_time_control assets" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <link rel="stylesheet" href="/trust_task_time_control/static/src/css/trust_task_time_control.css"/>                
-            </xpath>
-        </template>
-    </data>
+	<data>
+		<template id="assets_backend" name="trust_task_time_control assets"
+			inherit_id="web.assets_backend">
+			<xpath expr="." position="inside">
+				<link rel="stylesheet"
+					href="/trust_task_time_control/static/src/css/trust_task_time_control.css" />
+				<script type="text/javascript" src="/trust_task_time_control/static/src/js/core.js"></script>
+			</xpath>
+		</template>
+	</data>
 </openerp>
