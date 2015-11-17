@@ -46,7 +46,7 @@ class ResUser(models.Model):
     @api.model
     def logout_user(self):
         if self.env.user.employee_ids:
-            employee = self.env['hr.employee'].browse(self.env.user.id)
+            employee = self.env.user.employee_ids[0]
             if employee.state == 'present':
                 employee.attendance_action_change()
         return True
