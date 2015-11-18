@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+     
+     	<record id="trust_sales_order_revision_order_form" model="ir.ui.view">
+			<field name="name">trust_sales_order_revision.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="trust_sale.trust_base_sale_order_form"/>
+            <field name="arch" type="xml">	            
+	            <field name="write_date" position="after">
+                	<field name="version" readonly="1" />
+	            </field>
+            </field>
+        </record>
+     
+    </data>
+</openerp>
