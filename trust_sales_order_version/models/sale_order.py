@@ -26,20 +26,32 @@ from openerp import api, fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    version = fields.Char(u'Versão', size=4, default="A")
-
-    def _increment_version(self):
-        for inv in self:
-            if inv.state != 'draft':
-                version = inv.version or 'A'
-                inv.version = chr(ord(version) + 1)
+    version = fields.Char(u'Versão', size=4, compute='_compute_version')
 
     @api.multi
-    def action_quotation_send(self):
-        self._increment_version()
-        return super(SaleOrder, self).action_quotation_send()
+    def _compute_version(self):
+        obj_attach = self.env['ir.attachment'].search(
+            [('res_id', '=', self.id)], 
+            order='id desc', limit=1)
 
-    @api.multi
-    def print_quotation(self):
-        self._increment_version()
-        return super(SaleOrder, self).print_quotation()
+        self.version = obj_attach.res_version
+
+
+class IrAttachment(models.Model):
+    _inherit = 'ir.attachment'
+
+    res_version = fields.Char(u'Versão', size=4)
+
+    @api.model
+    def create(self, values):
+        
+        if values and values['res_model'] == 'sale.order':
+            obj_so = self.env['sale.order'].browse(values['res_id'])
+            get_version = obj_so.version
+    
+            if get_version:
+                values.update({'res_version': chr(ord(get_version) + 1)})
+            else:
+                values.update({'res_version': 'A'})
+
+        return super(IrAttachment, self).create(values)
