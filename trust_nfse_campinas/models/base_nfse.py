@@ -38,6 +38,7 @@ class BaseNfse(models.TransientModel):
 
     @api.multi
     def send_rps(self):
+        self.ensure_one()
         if self.city_code == '6291':  # Campinas
             nfse = self._get_nfse_object()
             url = self._url_envio_nfse()
@@ -62,7 +63,39 @@ class BaseNfse(models.TransientModel):
 ]>""", "")
 
             response = client.service.testeEnviar(xml_signed)
-            print response
+
+            sent_xml = client.last_sent()
+            received_xml = client.last_received()
+
+            status = {'status': '', 'message': '', 'files': [
+                {'name': '{0}-envio-rps.xml'.format(
+                    nfse['lista_rps'][0]['assinatura']),
+                 'data': base64.encodestring(sent_xml)},
+                {'name': '{0}-retenvio-rps.xml'.format(
+                    nfse['lista_rps'][0]['assinatura']),
+                 'data': base64.encodestring(received_xml)}
+            ]}
+            if 'RetornoEnvioLoteRPS' in response:
+                resp = objectify.fromstring(response)
+                if resp.Cabecalho.sucesso:
+                    if resp.Cabecalho.Assincrono == 'S':
+                        return self.check_nfse_by_lote()
+                    else:
+                        status['status'] = '100'
+                        status['message'] = 'NFS-e emitida com sucesso'
+                        status['success'] = resp.Cabecalho.Sucesso
+                        status['nfse_number'] = resp.ListaNFSe.ConsultaNFSe[
+                            0].NumeroNFe
+                        status['verify_code'] = resp.ListaNFSe.ConsultaNFSe[
+                            0].CodigoVerificacao
+                else:
+                    status['status'] = resp.Erros.Erro[0].Codigo
+                    status['message'] = resp.Erros.Erro[0].Descricao
+                    status['success'] = resp.Cabecalho.Sucesso
+            else:
+                status['status'] = '-1'
+                status['message'] = response
+                status['success'] = False
 
         return super(BaseNfse, self).send_rps()
 
@@ -130,13 +163,47 @@ class BaseNfse(models.TransientModel):
             url = self._url_envio_nfse()
             client = self._get_client(url)
 
-            obj_consulta = {}  # TODO Preencher corretamente
+            obj_consulta = {
+                'consulta': {
+                    'cidade': self.invoice_id.internal_number,
+                    'cpf_cnpj': re.sub('[^0-9]', '', self.invoice_id.company_id.partner_id.cnpj_cpf or ''),
+                    'lote': self.invoice_id.lote_nfse}}
 
             path = os.path.dirname(os.path.dirname(__file__))
             xml_send = render(obj_consulta, path, 'consulta_lote.xml')
 
             response = client.service.consultarLote(xml_send)
-            print response  # TODO Tratar resposta
+            sent_xml = client.last_sent()
+            received_xml = client.last_received()
+
+            status = {'status': '', 'message': '', 'files': [
+                {'name': '{0}-consulta-lote.xml'.format(
+                    obj_consulta['consulta']['lote']),
+                 'data': base64.encodestring(sent_xml)},
+                {'name': '{0}-ret-consulta-lote.xml'.format(
+                    obj_consulta['consulta']['lote']),
+                 'data': base64.encodestring(received_xml)}
+            ]}
+            if 'RetornoConsultaLote' in response:
+                resp = objectify.fromstring(response)
+                if resp.Cabecalho.sucesso:
+                    status['status'] = '100'
+                    status['message'] = 'NFS-e emitida com sucesso'
+                    status['success'] = resp.Cabecalho.Sucesso
+                    status['nfse_number'] = resp.ListaNFSe.ConsultaNFSe[
+                        0].NumeroNFe
+                    status['verify_code'] = resp.ListaNFSe.ConsultaNFSe[
+                        0].CodigoVerificacao
+                else:
+                    status['status'] = resp.Erros.Erro[0].Codigo
+                    status['message'] = resp.Erros.Erro[0].Descricao
+                    status['success'] = resp.Cabecalho.Sucesso
+            else:
+                status['status'] = '-1'
+                status['message'] = response
+                status['success'] = False
+
+            return status
 
         return super(BaseNfse, self).check_nfse_by_lote()
 
@@ -201,8 +268,13 @@ class BaseNfse(models.TransientModel):
                 'email': inv.company_id.partner_id.email or '',
             }
 
+            aliquota_pis = 0.0
+            aliquota_cofins = 0.0
+            aliquota_csll = 0.0
+            aliquota_inss = 0.0
+            aliquota_ir = 0.0
+            aliquota_issqn = 0.0
             deducoes = []
-
             itens = []
             for inv_line in inv.invoice_line:
                 item = {
@@ -212,9 +284,19 @@ class BaseNfse(models.TransientModel):
                     'valor_total': str("%.2f" % (inv_line.quantity * inv_line.price_unit)),
                 }
                 itens.append(item)
+                aliquota_pis = inv_line.pis_percent
+                aliquota_cofins = inv_line.cofins_percent
+                aliquota_csll = inv_line.csll_percent
+                aliquota_inss = inv_line.inss_percent
+                aliquota_ir = inv_line.ir_percent
+                aliquota_issqn = inv_line.issqn_percent
 
             valor_servico = inv.amount_total
             valor_deducao = 0.0
+            codigo_atividade = re.sub('[^0-9]', '', inv.cnae_id.code)
+            tipo_recolhimento = 'A'
+            if inv.issqn_wh or inv.pis_wh or inv.cofins_wh or inv.csll_wh or inv.irrf_wh or inv.inss_wh:
+                tipo_recolhimento = 'R'
 
             data_envio = datetime.strptime(
                 inv.date_in_out,
@@ -224,10 +306,10 @@ class BaseNfse(models.TransientModel):
             assinatura = '%011dNF   %012d%s%s %s%s%015d%015d%010d%014d' % \
                 (int(prestador['inscricao_municipal']),
                  int(inv.internal_number),
-                 data_envio, 'T', 'N', 'A',
+                 data_envio, inv.taxation, 'N', tipo_recolhimento,
                  valor_servico,
                  valor_deducao,
-                 412040000,
+                 codigo_atividade,
                  int(tomador['cpf_cnpj']))
 
             assinatura = hashlib.sha1(assinatura).hexdigest()
@@ -241,23 +323,23 @@ class BaseNfse(models.TransientModel):
                 'data_emissao': inv.date_in_out,
                 'situacao': 'N',
                 'serie_prestacao': '99',
-                'codigo_atividade': '412040000',
-                'aliquota_atividade': '5.00',
-                'tipo_recolhimento': 'A',
+                'codigo_atividade': codigo_atividade,
+                'aliquota_atividade': str("%.2f" % aliquota_issqn),
+                'tipo_recolhimento': tipo_recolhimento,
                 'municipio_prestacao': tomador['cidade'],
                 'municipio_descricao_prestacao': tomador['cidade_descricao'],
-                'operacao': 'A',
-                'tributacao': 'T',
+                'operacao': inv.operation,
+                'tributacao': inv.taxation,
                 'valor_pis': str("%.2f" % inv.pis_value),
                 'valor_cofins': str("%.2f" % inv.cofins_value),
-                'valor_csll': '0.00',
-                'valor_inss': '0.00',
-                'valor_ir': '0.00',
-                'aliquota_pis': '0.00',
-                'aliquota_cofins': '0.00',
-                'aliquota_csll': '0.00',
-                'aliquota_inss': '0.00',
-                'aliquota_ir': '0.00',
+                'valor_csll': str("%.2f" % inv.csll_value),
+                'valor_inss': str("%.2f" % inv.inss_value),
+                'valor_ir': str("%.2f" % inv.ir_value),
+                'aliquota_pis': aliquota_pis,
+                'aliquota_cofins': aliquota_cofins,
+                'aliquota_csll': aliquota_csll,
+                'aliquota_inss': aliquota_inss,
+                'aliquota_ir': aliquota_ir,
                 'deducoes': deducoes,
                 'itens': itens,
             }]
@@ -266,13 +348,13 @@ class BaseNfse(models.TransientModel):
                 'cidade': '6291',
                 'cpf_cnpj': prestador['cnpj'],
                 'remetente': prestador['razao_social'],
-                'transacao': '',
+                'transacao': inv.transaction,
                 'data_inicio': datetime.now(),
                 'data_fim': datetime.now(),
                 'total_rps': '1',
                 'total_servicos': str("%.2f" % inv.amount_total),
                 'total_deducoes': '0.00',
-                'lote_id': 'lote:1ABCDZ',
+                'lote_id': 'lote:%s' % inv.lote_nfse,
                 'lista_rps': rps
             }
             return nfse_object

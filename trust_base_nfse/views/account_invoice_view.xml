@@ -6,7 +6,7 @@
 			<field name="name">trust_base_nfse_account.invoice.form</field>
 			<field name="model">account.invoice</field>
 			<field name="priority">32</field>
-			<field name="inherit_id" ref="account.invoice_form" />
+			<field name="inherit_id" ref="l10n_br_account_product.l10n_br_account_product_invoice_form" />
 			<field name="arch" type="xml">
 				<button name="invoice_open" position="after">
 					<button name="nfse_trysend" states="nfse_ready"
@@ -17,6 +17,21 @@
 					<button name="invoice_print" states="nfse_ready" string="Pré-visualizar RPS"
 						type="object" groups="base.group_user" />
 				</button>
+				<field name="ind_final" position="attributes">
+					<attribute name="attrs">{'invisible': [('fiscal_type', '==', 'service')], 'readonly': [('state', 'not in', 'draft')]}</attribute>
+				</field>
+				<field name="ind_pres" position="attributes">
+					<attribute name="attrs">{'invisible': [('fiscal_type', '==', 'service')], 'readonly': [('state', 'not in', 'draft')]}</attribute>
+				</field>
+				<page string="Documentos Relacionados" position="attributes">
+					<attribute name="attrs">{'invisible': [('fiscal_type', '==', 'service')]}</attribute>
+				</page>
+				<page string="Dados Adicionais" position="attributes">
+					<attribute name="attrs">{'invisible': [('fiscal_type', '==', 'service')]}</attribute>
+				</page>
+				<field name="move_id" position="after">
+					<field name="nfe_status" string="Status NFS-e" attrs="{'invisible': [('fiscal_type', '!=', 'service')]}"></field>
+				</field>
 			</field>
 		</record>
 	</data>

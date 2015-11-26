@@ -37,7 +37,7 @@
     ],
     'data': [
         'report/danfse.xml',
-
+        'views/account_invoice_view.xml'
     ],
     'instalable': True
 }
