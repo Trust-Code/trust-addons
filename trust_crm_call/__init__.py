@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
 # Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
@@ -18,40 +18,3 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 #                                                                             #
 ###############################################################################
-
-
-from openerp import api, fields, models
-
-
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
-
-    version = fields.Char(u'Versão', size=4, compute='_compute_version')
-
-    @api.multi
-    def _compute_version(self):
-        obj_attach = self.env['ir.attachment'].search(
-            [('res_id', '=', self.id)], 
-            order='id desc', limit=1)
-
-        self.version = obj_attach.res_version
-
-
-class IrAttachment(models.Model):
-    _inherit = 'ir.attachment'
-
-    res_version = fields.Char(u'Versão', size=4)
-
-    @api.model
-    def create(self, values):
-        
-        if values and values['res_model'] == 'sale.order':
-            obj_so = self.env['sale.order'].browse(values['res_id'])
-            get_version = obj_so.version
-    
-            if get_version:
-                values.update({'res_version': chr(ord(get_version) + 1)})
-            else:
-                values.update({'res_version': 'A'})
-
-        return super(IrAttachment, self).create(values)

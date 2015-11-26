@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="crm_case_form_view_leads">
+			<field name="name">CRM - Leads Form</field>
+			<field name="model">crm.lead</field>
+			<field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+			<field name="arch" type="xml">
+				<div name="buttons" position="replace">
+					<div class="oe_right oe_button_box" name="buttons">
+						<button class="oe_inline oe_stat_button" type="action"
+							context="{'default_opportunity_id': active_id, 'search_default_opportunity_id': active_id, 'default_partner_id': partner_id, 'default_duration': 1.0}"
+							name="%(crm.crm_case_categ_phone_incoming0)d" icon="fa-phone">
+							<div>Logged<br />Calls</div>
+						</button>
+						<button class="oe_inline oe_stat_button" type="action"
+							context="{'default_opportunity_id': active_id, 'search_default_opportunity_id': active_id, 'default_partner_id': partner_id, 'default_duration': 1.0}"
+							name="%(crm.crm_case_categ_phone_outgoing0)d" icon="fa-phone">
+							<div>Schedule<br />Calls</div>
+						</button>
+					</div>
+				</div>
+			</field>
+		</record>
+
+	</data>
+</openerp>
