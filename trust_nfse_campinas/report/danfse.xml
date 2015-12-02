@@ -19,7 +19,7 @@
 			<field name="name">Danfse</field>
 			<field name="report_name">trust_nfse_campinas.danfse_report</field>
 			<field name="model">base.nfse</field>
-			<field name="report_type">qweb-html</field>
+			<field name="report_type">qweb-pdf</field>
 		</record>
 
 		<template id="danfse_report_template">
@@ -31,7 +31,8 @@
 					.col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
 					padding:0px;
 					}
-					td, th { padding: 0 4px; }
+					td, th
+					{ padding: 0 4px; }
 				</style>
 				<t t-foreach="docs" t-as="o">
 					<t t-call="report.external_layout">
@@ -128,12 +129,13 @@
 								</div>
 								<div class="col-xs-6">
 									E-mail:
-									<strong t-field="inv.partner_id.email"></strong>									
+									<strong t-field="inv.partner_id.email"></strong>
 								</div>
 							</div>
 							<div class="row" style="border: 1px solid black;padding: 0 0 5px 5px;">
 								<div class="col-xs-12" style="text-align:center;">
-									<strong>DISCRIMINAÇÃO DOS SERVIÇOS</strong><br />									
+									<strong>DISCRIMINAÇÃO DOS SERVIÇOS</strong>
+									<br />
 								</div>
 							</div>
 							<div class="row"
@@ -153,11 +155,19 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr t-foreach="inv.invoice_line" t-as="line" >
-											<td><span t-field="line.product_id.name"></span></td>
-											<td><span t-field="line.quantity"></span></td>
-											<td><span t-field="line.price_unit"></span></td>
-											<td><span t-field="line.price_total"></span></td>
+										<tr t-foreach="inv.invoice_line" t-as="line">
+											<td>
+												<span t-field="line.product_id.name"></span>
+											</td>
+											<td>
+												<span t-field="line.quantity"></span>
+											</td>
+											<td>
+												<span t-field="line.price_unit"></span>
+											</td>
+											<td>
+												<span t-field="line.price_total"></span>
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -166,31 +176,33 @@
 								<div class="col-xs-2" style="width:20%;text-align:center;border">
 									PIS(0,00%):
 									<br />
-									<strong t-field="inv.pis_value" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.pis_value"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
 								<div class="col-xs-2" style="width:20%;text-align:center;">
 									COFINS(0,00%):
 									<br />
-									<strong t-field="inv.cofins_value" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.cofins_value"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
 								<div class="col-xs-2" style="width:20%;text-align:center;">
 									INSS(0,00%):
 									<br />
-									<strong t-field="inv.inss_value" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.inss_value"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
 								<div class="col-xs-2" style="width:20%;text-align:center;">
 									IR(0,00%):
 									<br />
-									<strong t-field="inv.ir_value" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.ir_value"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
 								<div class="col-xs-2" style="width:20%;text-align:center;">
 									CSLL(0,00%):
 									<br />
-									<strong t-field="inv.csll_value" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.csll_value"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
-							</div>
-							<div class="row" style="border: 1px solid black;padding:0 0 5px 5px;">
-								Valor Total do RPS
 							</div>
 							<div class="row" style="border: 1px solid black;padding:0 0 5px 5px;">
 								<div class="col-xs-3" style="text-align:center;">
@@ -201,7 +213,8 @@
 								<div class="col-xs-3" style="text-align:center;">
 									Base de Cálculo:
 									<br />
-									<strong t-field="inv.amount_services" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.amount_services"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
 								<div class="col-xs-3" style="text-align:center;">
 									Alíquota:
@@ -211,7 +224,25 @@
 								<div class="col-xs-3" style="text-align:center;">
 									Valor do ISS:
 									<br />
-									<strong t-field="inv.issqn_value" t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+									<strong t-field="inv.issqn_value"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+								</div>
+							</div>
+							<div class="row" style="border: 1px solid black;padding:0 0 5px 5px;">
+								<div class="col-xs-3" style="text-align:center;">
+									VL. Total Bruto:
+									<strong t-field="inv.amount_gross"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+								</div>
+								<div class="col-xs-3" style="text-align:center;">
+									Valor de Retenções:
+									<strong t-field="inv.amount_wh"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
+								</div>
+								<div class="col-xs-6" style="text-align:center;font-size:20px;">
+									Valor RPS:
+									<strong t-field="inv.amount_total"
+										t-field-options='{"widget": "monetary",  "display_currency": "inv.currency_id" }'></strong>
 								</div>
 							</div>
 							<div class="row"

@@ -23,6 +23,7 @@ import logging
 import datetime
 from openerp import api, fields, models
 from openerp.tools.translate import _
+from openerp.exceptions import Warning
 
 _logger = logging.getLogger(__name__)
 
@@ -51,6 +52,151 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_resend(self):
         self.state = 'nfse_ready'
+
+    @api.multi
+    def validate_nfse(self):
+        self.ensure_one()
+
+        strErro = u''        
+        if not self.document_serie_id:
+            strErro = u'Nota Fiscal - Série da nota fiscal\n'
+
+        if not self.fiscal_document_id:
+            strErro += u'Nota Fiscal - Tipo de documento fiscal\n'
+
+        if not self.document_serie_id.internal_sequence_id:
+            strErro += u'Nota Fiscal - Número da nota fiscal, a série deve ter uma sequencia interna\n'
+
+        # Emitente
+        if not self.company_id.partner_id.legal_name:
+            strErro += u'Emitente - Razão Social\n'
+
+        if not self.company_id.partner_id.name:
+            strErro += u'Emitente - Fantasia\n'
+
+        if not self.company_id.partner_id.cnpj_cpf:
+            strErro += u'Emitente - CNPJ/CPF\n'
+
+        if not self.company_id.partner_id.street:
+            strErro += u'Emitente / Endereço - Logradouro\n'
+
+        if not self.company_id.partner_id.number:
+            strErro += u'Emitente / Endereço - Número\n'
+
+        if not self.company_id.partner_id.zip:
+            strErro += u'Emitente / Endereço - CEP\n'
+
+        if not self.cnae_id:
+            strErro += u'Fatura / CNAE\n'
+
+        if not self.company_id.partner_id.inscr_est:
+            strErro += u'Emitente / Inscrição Estadual\n'
+
+        if not self.company_id.partner_id.state_id:
+            strErro += u'Emitente / Endereço - Estado\n'
+        else:
+            if not self.company_id.partner_id.state_id.ibge_code:
+                strErro += u'Emitente / Endereço - Código do IBGE do estado\n'
+            if not self.company_id.partner_id.state_id.name:
+                strErro += u'Emitente / Endereço - Nome do estado\n'
+
+        if not self.company_id.partner_id.l10n_br_city_id:
+            strErro += u'Emitente / Endereço - município\n'
+        else:
+            if not self.company_id.partner_id.l10n_br_city_id.name:
+                strErro += u'Emitente / Endereço - Nome do município\n'
+            if not self.company_id.partner_id.l10n_br_city_id.ibge_code:
+                strErro += u'Emitente / Endereço - Código do IBGE do município\n'
+
+        if not self.company_id.partner_id.country_id:
+            strErro += u'Emitente / Endereço - país\n'
+        else:
+            if not self.company_id.partner_id.country_id.name:
+                strErro += u'Emitente / Endereço - Nome do país\n'
+            if not self.company_id.partner_id.country_id.bc_code:
+                strErro += u'Emitente / Endereço - Código do BC do país\n'
+
+        # Destinatário
+        if self.partner_id.is_company and not self.partner_id.legal_name:
+            strErro += u'Destinatário - Razão Social\n'
+
+        if self.partner_id.country_id.id == self.company_id.partner_id.country_id.id:
+            if not self.partner_id.cnpj_cpf:
+                strErro += u'Destinatário - CNPJ/CPF\n'
+
+        if not self.partner_id.street:
+            strErro += u'Destinatário / Endereço - Logradouro\n'
+
+        if not self.partner_id.number:
+            strErro += u'Destinatário / Endereço - Número\n'
+
+        if self.partner_id.country_id.id == self.company_id.partner_id.country_id.id:
+            if not self.partner_id.zip:
+                strErro += u'Destinatário / Endereço - CEP\n'
+
+        if self.partner_id.country_id.id == self.company_id.partner_id.country_id.id:
+            if not self.partner_id.state_id:
+                strErro += u'Destinatário / Endereço - Estado\n'
+            else:
+                if not self.partner_id.state_id.ibge_code:
+                    strErro += u'Destinatário / Endereço - Código do IBGE do estado\n'
+                if not self.partner_id.state_id.name:
+                    strErro += u'Destinatário / Endereço - Nome do estado\n'
+
+        if self.partner_id.country_id.id == self.company_id.partner_id.country_id.id:
+            if not self.partner_id.l10n_br_city_id:
+                strErro += u'Destinatário / Endereço - Município\n'
+            else:
+                if not self.partner_id.l10n_br_city_id.name:
+                    strErro += u'Destinatário / Endereço - Nome do município\n'
+                if not self.partner_id.l10n_br_city_id.ibge_code:
+                    strErro += u'Destinatário / Endereço - Código do IBGE do município\n'
+
+        if not self.partner_id.country_id:
+            strErro += u'Destinatário / Endereço - País\n'
+        else:
+            if not self.partner_id.country_id.name:
+                strErro += u'Destinatário / Endereço - Nome do país\n'
+            if not self.partner_id.country_id.bc_code:
+                strErro += u'Destinatário / Endereço - Código do BC do país\n'
+
+        # produtos
+        for inv_line in self.invoice_line:
+            if inv_line.product_id:
+                if not inv_line.product_id.default_code:
+                    strErro += u'Produtos e Serviços: %s, Qtde: %s - Referência/Código do produto\n' % (
+                        inv_line.product_id.name, inv_line.quantity)
+                if not inv_line.product_id.name:
+                    strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - Nome do produto\n' % (
+                        inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+                if not inv_line.quantity:
+                    strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - Quantidade\n' % (
+                        inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+
+                if not inv_line.price_unit:
+                    strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - Preco unitario\n' % (
+                        inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+
+                if inv_line.product_type == 'service':
+                    if not inv_line.issqn_type:
+                        strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - Tipo do ISSQN\n' % (
+                            inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+
+                    if not inv_line.service_type_id:
+                        strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - Tipo do Serviço\n' % (
+                            inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+
+                if not inv_line.pis_cst_id:
+                    strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - CST do PIS\n' % (
+                        inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+
+                if not inv_line.cofins_cst_id:
+                    strErro += u'Produtos e Serviços: %s - %s, Qtde: %s - CST do COFINS\n' % (
+                        inv_line.product_id.default_code, inv_line.product_id.name, inv_line.quantity)
+
+        if strErro:
+            raise Warning(
+                _(u'Atenção !'), (u"Por favor corrija os erros antes de prosseguir:\n '%s'") % (strErro, ))
 
     @api.multi
     def action_invoice_send_nfse(self):

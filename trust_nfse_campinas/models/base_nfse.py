@@ -259,7 +259,7 @@ class BaseNfse(models.TransientModel):
             prestador = {
                 'cnpj': re.sub('[^0-9]', '', inv.company_id.partner_id.cnpj_cpf or ''),
                 'razao_social': inv.company_id.partner_id.legal_name or '',
-                'inscricao_municipal': inv.company_id.partner_id.inscr_mun or '',
+                'inscricao_municipal': re.sub('[^0-9]', '', inv.company_id.partner_id.inscr_mun or ''),
                 'cod_municipio': '%s%s' % (inv.company_id.partner_id.state_id.ibge_code, inv.company_id.partner_id.l10n_br_city_id.ibge_code),
                 'cidade': inv.company_id.partner_id.city or '',
                 'tipo_logradouro': 'Rua',
@@ -293,7 +293,7 @@ class BaseNfse(models.TransientModel):
 
             valor_servico = inv.amount_total
             valor_deducao = 0.0
-            codigo_atividade = re.sub('[^0-9]', '', inv.cnae_id.code)
+            codigo_atividade = re.sub('[^0-9]', '', inv.cnae_id.code or '')
             tipo_recolhimento = 'A'
             if inv.issqn_wh or inv.pis_wh or inv.cofins_wh or inv.csll_wh or inv.irrf_wh or inv.inss_wh:
                 tipo_recolhimento = 'R'
@@ -303,6 +303,7 @@ class BaseNfse(models.TransientModel):
                 tools.DEFAULT_SERVER_DATETIME_FORMAT)
             data_envio = data_envio.strftime('%Y%m%d')
 
+            print tomador['cpf_cnpj']
             assinatura = '%011dNF   %012d%s%s %s%s%015d%015d%010d%014d' % \
                 (int(prestador['inscricao_municipal']),
                  int(inv.internal_number),

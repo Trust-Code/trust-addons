@@ -4,7 +4,9 @@
         <record id="act_nfse_ready" model="workflow.activity">
             <field name="wkf_id" ref="account.wkf"/>
             <field name="name">nfse_ready</field>
-            <field name="action">write({'state':'nfse_ready'})</field>
+            <field name="action">
+            validate_nfse()
+            write({'state':'nfse_ready'})</field>
             <field name="kind">function</field>
         </record>
         
