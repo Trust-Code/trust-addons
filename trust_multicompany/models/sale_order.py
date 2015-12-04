@@ -56,7 +56,7 @@ class SaleMulticompany (models.Model):
                        'warehouse_id': 'stock.warehouse'
                        }
 
-        if vals['company_id']:
+        if 'company_id' in vals:
             company_id = vals['company_id']
         else:
             company_id = self.company_id.id
