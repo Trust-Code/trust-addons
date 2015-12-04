@@ -20,6 +20,7 @@
 ###############################################################################
 
 
+from lxml import etree
 from openerp import api, fields, models
 
 FIELD_STATE = {'draft': [('readonly', False)]}
@@ -39,7 +40,7 @@ class AccountInvoice(models.Model):
     taxation = fields.Selection([('C', u"Isenta de ISS"),
                                  ('E', u"Não incidência no município"),
                                  ('F', u"Imune"),
-                                 ('K', u"Exigibilidd Susp.Dec.J/Proc.A"),
+                                 ('K', u"Exigibilidade Susp.Dec.J/Proc.A"),
                                  ('N', u"Não Tributável"),
                                  ('T', u"Tributável"),
                                  ('G', u"Tributável Fixo"),
@@ -50,6 +51,27 @@ class AccountInvoice(models.Model):
 
     cnae_id = fields.Many2one('l10n_br_account.cnae', string=u"CNAE",
                               readonly=True, states=FIELD_STATE)
-    lote_nfse = fields.Char(u'Lote', size=20, readonly=True, states=FIELD_STATE)
+    lote_nfse = fields.Char(
+        u'Lote', size=20, readonly=True, states=FIELD_STATE)
     transaction = fields.Char(u'Transação', size=60,
                               readonly=True, states=FIELD_STATE)
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form',
+                        context=None, toolbar=False, submenu=False):
+
+        res = super(AccountInvoice, self).fields_view_get(
+            cr, uid, view_id=view_id, view_type=view_type, context=context,
+            toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            doc = etree.XML(res['arch'])
+            nodes = doc.xpath("//field[@name='cnae_id']")
+            if nodes:
+                user = self.pool['res.users'].browse(
+                    cr, uid, uid, context=context)
+                main_id = user.company_id.cnae_main_id.id
+                secondary_ids = user.company_id.cnae_secondary_ids.ids
+                ids = [main_id]
+                ids.extend(secondary_ids)
+                nodes[0].set("domain", "[('id', '=', %s)]" % str(ids))
+                res['arch'] = etree.tostring(doc)
+        return res
