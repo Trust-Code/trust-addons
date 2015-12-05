@@ -20,37 +20,13 @@
 ###############################################################################
 
 
-from openerp import api, fields, models
+from openerp import fields, models
 
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+class L10n_brDocumentEvent(models.Model):
+    _inherit = 'l10n_br_account.document_event'
 
-    version = fields.Char(u'Versão', size=4, compute='_compute_version')
-
-    @api.multi
-    def _compute_version(self):
-        obj_attach = self.env['ir.attachment'].search(
-            [('res_id', '=', self.id)], 
-            order='id desc', limit=1)
-
-        self.version = obj_attach.res_version
-
-
-class IrAttachment(models.Model):
-    _inherit = 'ir.attachment'
-
-    res_version = fields.Char(u'Versão', size=4)
-
-    @api.model
-    def create(self, values):        
-        if 'res_model' in values and values['res_model'] == 'sale.order':
-            obj_so = self.env['sale.order'].browse(values['res_id'])
-            get_version = obj_so.version
-    
-            if get_version:
-                values.update({'res_version': chr(ord(get_version) + 1)})
-            else:
-                values.update({'res_version': 'A'})
-
-        return super(IrAttachment, self).create(values)
+    type = fields.Selection(selection_add=[('14', u'Envio RPS'),
+                                           ('15', u'Consulta RPS'),
+                                           ('16', u'Cancelamento NFSe')],
+                            string=u'Serviço')

@@ -22,6 +22,7 @@
 
 from lxml import etree
 from openerp import api, fields, models
+from openerp.exceptions import Warning
 
 FIELD_STATE = {'draft': [('readonly', False)]}
 
@@ -55,6 +56,18 @@ class AccountInvoice(models.Model):
         u'Lote', size=20, readonly=True, states=FIELD_STATE)
     transaction = fields.Char(u'Transação', size=60,
                               readonly=True, states=FIELD_STATE)
+
+    @api.multi
+    def action_invoice_send_nfse(self):
+        if self.company_id.lote_sequence_id:
+            ir_env = self.env['ir.sequence']
+            lote = ir_env.next_by_id(self.company_id.lote_sequence_id.id)
+            self.lote_nfse = lote
+        else:
+            raise Warning(u'Atenção!', u'Configure na empresa a sequência para\
+                                        gerar o lote da NFS-e')
+
+        return super(AccountInvoice, self).action_invoice_send_nfse()
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form',
                         context=None, toolbar=False, submenu=False):
