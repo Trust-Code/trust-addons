@@ -63,9 +63,6 @@ class BaseNfse(models.TransientModel):
             else:
                 response = client.service.testeEnviar(xml_signed)
 
-            print client.last_sent().str()
-            print client.last_received().str()
-
             import unicodedata
             response = unicodedata.normalize(
                 'NFKD', response).encode(
@@ -248,7 +245,7 @@ class BaseNfse(models.TransientModel):
                 'numero': inv.partner_id.number or '',
                 'complemento': inv.partner_id.street2 or '',
                 'bairro': inv.partner_id.district or 'Sem Bairro',
-                'cidade': '%s%s' % (inv.partner_id.state_id.ibge_code, inv.partner_id.l10n_br_city_id.ibge_code),
+                'cidade': inv.partner_id.l10n_br_city_id.siafi_code,
                 'cidade_descricao': inv.company_id.partner_id.city or '',
                 'uf': inv.partner_id.state_id.code,
                 'cep': re.sub('[^0-9]', '', inv.partner_id.zip),
@@ -265,7 +262,6 @@ class BaseNfse(models.TransientModel):
                 'cnpj': re.sub('[^0-9]', '', inv.company_id.partner_id.cnpj_cpf or ''),
                 'razao_social': inv.company_id.partner_id.legal_name or '',
                 'inscricao_municipal': re.sub('[^0-9]', '', inv.company_id.partner_id.inscr_mun or ''),
-                'cod_municipio': '%s%s' % (inv.company_id.partner_id.state_id.ibge_code, inv.company_id.partner_id.l10n_br_city_id.ibge_code),
                 'cidade': inv.company_id.partner_id.city or '',
                 'tipo_logradouro': 'Rua',
                 'ddd': re.sub('[^0-9]', '', phone.split(' ')[0]),
