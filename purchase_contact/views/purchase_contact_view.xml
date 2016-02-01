@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="view_purchase_contact_form" model="ir.ui.view">
+            <field name="name">purchase.contact</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+					<field name="partner_contact_id" string="Contato"/>
+				</field>
+			</field>
+		</record>
+
+	</data>
+</openerp>

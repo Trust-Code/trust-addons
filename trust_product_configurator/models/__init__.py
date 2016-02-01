@@ -18,3 +18,5 @@
 ###############################################################################
 
 from . import sale
+from . import product_attributes
+from . import product

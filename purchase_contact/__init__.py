@@ -16,25 +16,4 @@
 # You should have received a copy of the GNU General Public License           #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
-
-{
-    'name': 'Product Configurator for Manufacturing',
-    'summary': """Create flexibility adding attributes to products that allow
-                to generate dynamic manufacturing orders""",
-    'version': '1.0',
-    'category': 'MRP',
-    'author': 'TrustCode',
-    'license': 'AGPL-3',
-    'website': 'http://www.trustcode.com.br',
-    'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
-                     'Danimar Ribeiro <danimaribeiro@gmail.com>'
-                     ],
-    'depends': [
-        'sale'
-    ],
-    'data': [
-        'views/sale_view.xml',
-        'views/product_view.xml',
-    ],
-    'application': True,
-}
+from . import models

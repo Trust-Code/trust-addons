@@ -42,6 +42,7 @@ class IrAttachment(models.Model):
 
     res_version = fields.Char(u'Versão', size=4)
 
+
     @api.model
     def create(self, values):        
         if 'res_model' in values and values['res_model'] == 'sale.order':
@@ -54,3 +55,4 @@ class IrAttachment(models.Model):
                 values.update({'res_version': 'A'})
 
         return super(IrAttachment, self).create(values)
+'''
