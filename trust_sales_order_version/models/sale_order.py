@@ -55,4 +55,3 @@ class IrAttachment(models.Model):
                 values.update({'res_version': 'A'})
 
         return super(IrAttachment, self).create(values)
-'''
