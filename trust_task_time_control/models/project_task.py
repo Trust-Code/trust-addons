@@ -31,7 +31,7 @@ class ProjectTask (models.Model):
     def count_time_start(self, stage_name):
         df = tools.DEFAULT_SERVER_DATETIME_FORMAT
         self.env['project.task.work'].create(
-            {'name': 'Tempo Automatico (%s)' % (stage_name),
+            {'name': u'Tempo Automático (%s)' % (stage_name),
              'task_id': self.id,
              'date': datetime.now().strftime(df),
              'user_id': self.env.user.id,
@@ -92,7 +92,7 @@ class ProjectTask (models.Model):
             if next_stage.count_time:
                 if self.other_task_time_open():
                     raise Warning(u"Movimentação não Permitida!",
-                                  u"Já exite outra tarefa em contando tempo.")
+                                  u"Já existe outra tarefa em contando tempo.")
 
                 else:
                     self.count_time_stop()
@@ -110,7 +110,7 @@ class ProjectTask (models.Model):
                 
                 raise Warning(u"Movimentação não Permitida!",
                               u"Você não pode desbloquear uma tarefa sem ser \
-                              o Dono dela ou o Srum Marter. \
+                              o Dono dela ou o Scrum Master. \
                                Peça ajuda ao Scrum Master.")
             
             if vals["kanban_state"] == "blocked":
@@ -119,14 +119,14 @@ class ProjectTask (models.Model):
             elif vals["kanban_state"] == "normal" and self.presence_state():
                 if self.other_task_time_open():
                     raise Warning(u"Alteração não Permitida!",
-                                  u"Já exite outra tarefa contando tempo.")
+                                  u"Já existe outra tarefa contando tempo.")
                 else:
                     self.count_time_start(self.stage_id.name)
         
         if "user_id" in vals \
             and self.env.user.id != self.project_id.user_id.id:
                     raise Warning(u"Alteração não Permitida!",
-                                  u"Somente o Scrum Master pode pode atribuír a \
+                                  u"Somente o Scrum Master pode atribuir a \
                                   tarefa a outra pessoa.")
 
         return super(ProjectTask, self).write(vals)

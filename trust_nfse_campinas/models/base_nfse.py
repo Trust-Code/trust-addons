@@ -312,15 +312,8 @@ class BaseNfse(models.TransientModel):
                  valor_deducao,
                  int(codigo_atividade),
                  int(tomador['cpf_cnpj']))
-
-            print len(assinatura)
-            print assinatura
+           
             assinatura = hashlib.sha1(assinatura).hexdigest()
-            print assinatura
-            teste = '00000317330NF   00000003866320090905T NN000000000001686000000000000000082997990008764130000102'
-            print teste
-            print len(teste)
-            print hashlib.sha1(teste).hexdigest()
 
             rps = [{
                 'assinatura': assinatura,
@@ -332,7 +325,7 @@ class BaseNfse(models.TransientModel):
                 'situacao': 'N',
                 'serie_prestacao': '99',
                 'codigo_atividade': codigo_atividade,
-                'aliquota_atividade': str("%.2f" % aliquota_issqn),
+                'aliquota_atividade': str("%.4f" % aliquota_issqn),
                 'tipo_recolhimento': tipo_recolhimento,
                 'municipio_prestacao': tomador['cidade'],
                 'municipio_descricao_prestacao': tomador['cidade_descricao'],
@@ -343,11 +336,11 @@ class BaseNfse(models.TransientModel):
                 'valor_csll': str("%.2f" % inv.csll_value),
                 'valor_inss': str("%.2f" % inv.inss_value),
                 'valor_ir': str("%.2f" % inv.ir_value),
-                'aliquota_pis': aliquota_pis,
-                'aliquota_cofins': aliquota_cofins,
-                'aliquota_csll': aliquota_csll,
-                'aliquota_inss': aliquota_inss,
-                'aliquota_ir': aliquota_ir,
+                'aliquota_pis': str("%.4f" % aliquota_pis),
+                'aliquota_cofins': str("%.4f" % aliquota_cofins),
+                'aliquota_csll': str("%.4f" % aliquota_csll),
+                'aliquota_inss': str("%.4f" % aliquota_inss),
+                'aliquota_ir': str("%.4f" % aliquota_ir),
                 'deducoes': deducoes,
                 'itens': itens,
             }]
@@ -357,8 +350,8 @@ class BaseNfse(models.TransientModel):
                 'cpf_cnpj': prestador['cnpj'],
                 'remetente': prestador['razao_social'],
                 'transacao': '',
-                'data_inicio': datetime.now(),
-                'data_fim': datetime.now(),
+                'data_inicio': data_envio,
+                'data_fim': data_envio,
                 'total_rps': '1',
                 'total_servicos': str("%.2f" % inv.amount_total),
                 'total_deducoes': '0.00',
