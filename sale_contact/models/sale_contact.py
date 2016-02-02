@@ -30,6 +30,7 @@ class SaleContact(orm.Model):
             domain="[('parent_id','=',partner_id)]",
             readonly=True,
             required=True,
+            track_visibility='onchange',
             states={
                 'draft': [('readonly', False)],
                 'sent': [('readonly', False)]},
