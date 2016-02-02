@@ -73,8 +73,7 @@ class BaseNfse(models.Model):
     
     def _save_pfx_certificate(self):  
         pfx_tmp = '/tmp/' + uuid4().hex               
-        arq_temp = open(pfx_tmp, 'w')
-        print self.certificate
+        arq_temp = open(pfx_tmp, 'w')        
         arq_temp.write(base64.b64decode(self.certificate))
         arq_temp.close()
         return pfx_tmp    

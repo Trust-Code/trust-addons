@@ -40,8 +40,10 @@
         'l10n_br_account_product'
     ],
     'data': [
+        'data/trust_base_nfse_data.xml',
         'views/base_nfse_view.xml',
         'views/account_invoice_view.xml',
+        'views/res_company_view.xml',
         'workflow/account_invoice_workflow.xml'
     ],
     'instalable': True

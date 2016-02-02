@@ -16,7 +16,7 @@
 	</Cabecalho>
 	<Lote Id="{{ nfse.lote_id }}">
 		{% for rps in nfse.lista_rps -%}
-		<RPS Id="rps:{{ rps.id }}">
+		<RPS Id="rps:{{ rps.numero }}">
 			<Assinatura>{{ rps.assinatura }}</Assinatura>
 			<InscricaoMunicipalPrestador>{{ rps.prestador.inscricao_municipal }}
 			</InscricaoMunicipalPrestador>
@@ -32,8 +32,7 @@
 			<NumeroNFSeSubstituida>0</NumeroNFSeSubstituida>
 			<DataEmissaoNFSeSubstituida>1900-01-01</DataEmissaoNFSeSubstituida>
 			<SeriePrestacao>{{ rps.serie_prestacao }}</SeriePrestacao>
-			<InscricaoMunicipalTomador>{{ rps.tomador.inscricao_municipal }}
-			</InscricaoMunicipalTomador>
+			<InscricaoMunicipalTomador>{{ rps.tomador.inscricao_municipal }}</InscricaoMunicipalTomador>
 			<CPFCNPJTomador>{{ rps.tomador.cpf_cnpj }}</CPFCNPJTomador>
 			<RazaoSocialTomador>{{ rps.tomador.razao_social }}
 			</RazaoSocialTomador>

@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ###############################################################################
 #                                                                             #
 # Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
@@ -20,7 +20,14 @@
 ###############################################################################
 
 
-from . import base_nfse
-from . import account_invoice
-from . import res_company
-from . import l10n_br_account
+from openerp import api, fields, models
+
+
+class ResCompany(models.Model):
+    _inherit = 'res.company'
+
+    nfse_environment = fields.Selection([('1', u'Produção'),
+                                         ('2', u'Homologação')],
+                                        u'Ambiente Padrão')
+
+    lote_sequence_id = fields.Many2one('ir.sequence', u'Sequência Lote NFS-e')

@@ -23,7 +23,6 @@ import os
 import re
 import base64
 import hashlib
-from lxml import etree
 from lxml import objectify
 from datetime import datetime
 from openerp import api, fields, models, tools
@@ -45,57 +44,64 @@ class BaseNfse(models.TransientModel):
 
             client = self._get_client(url)
             path = os.path.dirname(os.path.dirname(__file__))
-            xml_send = render(nfse, path, 'envio_rps.xml')
+            xml_send = render(path, 'envio_rps.xml', nfse=nfse)
 
             xml_send = "<!DOCTYPE ns1:ReqEnvioLoteRPS [<!ATTLIST Lote Id ID #IMPLIED>]>" + \
                 xml_send
 
             pfx_path = self._save_pfx_certificate()
             sign = Assinatura(pfx_path, self.password)
-            xml_signed = sign.assina_xml(xml_send, '#lote:1ABCDZ')
-
-            arq_temp = open('/home/danimar/Documentos/pyxmlsec.xml', 'w')
-            arq_temp.write(xml_signed)
-            arq_temp.close()
+            reference = str('#%s' % nfse['lote_id'])
+            xml_signed = sign.assina_xml(xml_send, reference)
 
             xml_signed = xml_signed.replace("""<!DOCTYPE ns1:ReqEnvioLoteRPS [
 <!ATTLIST Lote Id ID #IMPLIED>
 ]>""", "")
 
-            response = client.service.testeEnviar(xml_signed)
+            if self.invoice_id.company_id.nfe_environment == '2':
+                response = client.service.testeEnviar(xml_signed)
+            else:
+                response = client.service.testeEnviar(xml_signed)
 
-            sent_xml = client.last_sent()
-            received_xml = client.last_received()
+            import unicodedata
+            response = unicodedata.normalize(
+                'NFKD', response).encode(
+                'ascii', 'ignore')
 
             status = {'status': '', 'message': '', 'files': [
                 {'name': '{0}-envio-rps.xml'.format(
                     nfse['lista_rps'][0]['assinatura']),
-                 'data': base64.encodestring(sent_xml)},
+                 'data': base64.encodestring(xml_signed)},
                 {'name': '{0}-retenvio-rps.xml'.format(
                     nfse['lista_rps'][0]['assinatura']),
-                 'data': base64.encodestring(received_xml)}
+                 'data': base64.encodestring(response or '')}
             ]}
             if 'RetornoEnvioLoteRPS' in response:
+                response = response.replace(
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '')
                 resp = objectify.fromstring(response)
-                if resp.Cabecalho.sucesso:
-                    if resp.Cabecalho.Assincrono == 'S':
+                if resp['{}Cabecalho'].Sucesso:
+                    if resp['{}Cabecalho'].Assincrono == 'S':
                         return self.check_nfse_by_lote()
                     else:
                         status['status'] = '100'
                         status['message'] = 'NFS-e emitida com sucesso'
-                        status['success'] = resp.Cabecalho.Sucesso
-                        status['nfse_number'] = resp.ListaNFSe.ConsultaNFSe[
+                        status['success'] = resp['{}Cabecalho'].Sucesso
+                        status['nfse_number'] = resp['{}ListaNFSe'].ConsultaNFSe[
                             0].NumeroNFe
-                        status['verify_code'] = resp.ListaNFSe.ConsultaNFSe[
+                        status['verify_code'] = resp['{}ListaNFSe'].ConsultaNFSe[
                             0].CodigoVerificacao
                 else:
-                    status['status'] = resp.Erros.Erro[0].Codigo
-                    status['message'] = resp.Erros.Erro[0].Descricao
-                    status['success'] = resp.Cabecalho.Sucesso
+                    status['status'] = resp['{}Erros'].Erro[0].Codigo
+                    status['message'] = resp['{}Erros'].Erro[0].Descricao
+                    status['success'] = resp['{}Cabecalho'].Sucesso
             else:
                 status['status'] = '-1'
                 status['message'] = response
                 status['success'] = False
+
+            return status
 
         return super(BaseNfse, self).send_rps()
 
@@ -115,22 +121,20 @@ class BaseNfse(models.TransientModel):
                 path, 'cancelamento.xml', **obj_cancelamento)
 
             response = client.service.cancelar(xml_send)
-            sent_xml = client.last_sent()
-            received_xml = client.last_received()
 
             status = {'status': '', 'message': '', 'files': [
                 {'name': '{0}-canc-envio.xml'.format(
                     obj_cancelamento['cancelamento']['nota_id']),
-                 'data': base64.encodestring(sent_xml)},
+                 'data': base64.encodestring(xml_send)},
                 {'name': '{0}-canc-envio.xml'.format(
                     obj_cancelamento['cancelamento']['nota_id']),
-                 'data': base64.encodestring(received_xml)}
+                 'data': base64.encodestring(response)}
             ]}
             if 'RetornoCancelamentoNFSe' in response:
                 resp = objectify.fromstring(response)
-                status['status'] = resp.Erros.Erro[0].Codigo
-                status['message'] = resp.Erros.Erro[0].Descricao
-                status['success'] = resp.Cabecalho.Sucesso
+                status['status'] = resp['{}Erros'].Erro[0].Codigo
+                status['message'] = resp['{}Erros'].Erro[0].Descricao
+                status['success'] = resp['{}Cabecalho'].Sucesso
             else:
                 status['status'] = '-1'
                 status['message'] = response
@@ -173,31 +177,29 @@ class BaseNfse(models.TransientModel):
             xml_send = render(obj_consulta, path, 'consulta_lote.xml')
 
             response = client.service.consultarLote(xml_send)
-            sent_xml = client.last_sent()
-            received_xml = client.last_received()
 
             status = {'status': '', 'message': '', 'files': [
                 {'name': '{0}-consulta-lote.xml'.format(
                     obj_consulta['consulta']['lote']),
-                 'data': base64.encodestring(sent_xml)},
+                 'data': base64.encodestring(xml_send)},
                 {'name': '{0}-ret-consulta-lote.xml'.format(
                     obj_consulta['consulta']['lote']),
-                 'data': base64.encodestring(received_xml)}
+                 'data': base64.encodestring(response)}
             ]}
             if 'RetornoConsultaLote' in response:
                 resp = objectify.fromstring(response)
-                if resp.Cabecalho.sucesso:
+                if resp['{}Cabecalho'].sucesso:
                     status['status'] = '100'
                     status['message'] = 'NFS-e emitida com sucesso'
-                    status['success'] = resp.Cabecalho.Sucesso
-                    status['nfse_number'] = resp.ListaNFSe.ConsultaNFSe[
+                    status['success'] = resp['{}Cabecalho'].Sucesso
+                    status['nfse_number'] = resp['{}ListaNFSe'].ConsultaNFSe[
                         0].NumeroNFe
-                    status['verify_code'] = resp.ListaNFSe.ConsultaNFSe[
+                    status['verify_code'] = resp['{}ListaNFSe'].ConsultaNFSe[
                         0].CodigoVerificacao
                 else:
-                    status['status'] = resp.Erros.Erro[0].Codigo
-                    status['message'] = resp.Erros.Erro[0].Descricao
-                    status['success'] = resp.Cabecalho.Sucesso
+                    status['status'] = resp['{}Erros'].Erro[0].Codigo
+                    status['message'] = resp['{}Erros'].Erro[0].Descricao
+                    status['success'] = resp['{}Cabecalho'].Sucesso
             else:
                 status['status'] = '-1'
                 status['message'] = response
@@ -243,7 +245,7 @@ class BaseNfse(models.TransientModel):
                 'numero': inv.partner_id.number or '',
                 'complemento': inv.partner_id.street2 or '',
                 'bairro': inv.partner_id.district or 'Sem Bairro',
-                'cidade': '%s%s' % (inv.partner_id.state_id.ibge_code, inv.partner_id.l10n_br_city_id.ibge_code),
+                'cidade': inv.partner_id.l10n_br_city_id.siafi_code,
                 'cidade_descricao': inv.company_id.partner_id.city or '',
                 'uf': inv.partner_id.state_id.code,
                 'cep': re.sub('[^0-9]', '', inv.partner_id.zip),
@@ -251,7 +253,7 @@ class BaseNfse(models.TransientModel):
                 'tipo_bairro': 'Normal',
                 'ddd': re.sub('[^0-9]', '', phone.split(' ')[0]),
                 'telefone': re.sub('[^0-9]', '', phone.split(' ')[1]),
-                'inscricao_municipal': inv.partner_id.inscr_mun or '',
+                'inscricao_municipal': inv.partner_id.inscr_mun or '000000000',
                 'email': inv.partner_id.email or '',
             }
 
@@ -260,7 +262,6 @@ class BaseNfse(models.TransientModel):
                 'cnpj': re.sub('[^0-9]', '', inv.company_id.partner_id.cnpj_cpf or ''),
                 'razao_social': inv.company_id.partner_id.legal_name or '',
                 'inscricao_municipal': re.sub('[^0-9]', '', inv.company_id.partner_id.inscr_mun or ''),
-                'cod_municipio': '%s%s' % (inv.company_id.partner_id.state_id.ibge_code, inv.company_id.partner_id.l10n_br_city_id.ibge_code),
                 'cidade': inv.company_id.partner_id.city or '',
                 'tipo_logradouro': 'Rua',
                 'ddd': re.sub('[^0-9]', '', phone.split(' ')[0]),
@@ -303,17 +304,23 @@ class BaseNfse(models.TransientModel):
                 tools.DEFAULT_SERVER_DATETIME_FORMAT)
             data_envio = data_envio.strftime('%Y%m%d')
 
-            print tomador['cpf_cnpj']
             assinatura = '%011dNF   %012d%s%s %s%s%015d%015d%010d%014d' % \
                 (int(prestador['inscricao_municipal']),
                  int(inv.internal_number),
                  data_envio, inv.taxation, 'N', tipo_recolhimento,
                  valor_servico,
                  valor_deducao,
-                 codigo_atividade,
+                 int(codigo_atividade),
                  int(tomador['cpf_cnpj']))
 
+            print len(assinatura)
+            print assinatura
             assinatura = hashlib.sha1(assinatura).hexdigest()
+            print assinatura
+            teste = '00000317330NF   00000003866320090905T NN000000000001686000000000000000082997990008764130000102'
+            print teste
+            print len(teste)
+            print hashlib.sha1(teste).hexdigest()
 
             rps = [{
                 'assinatura': assinatura,
@@ -349,7 +356,7 @@ class BaseNfse(models.TransientModel):
                 'cidade': '6291',
                 'cpf_cnpj': prestador['cnpj'],
                 'remetente': prestador['razao_social'],
-                'transacao': inv.transaction,
+                'transacao': '',
                 'data_inicio': datetime.now(),
                 'data_fim': datetime.now(),
                 'total_rps': '1',

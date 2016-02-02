@@ -20,7 +20,6 @@
 import os
 import base64
 import logging
-import datetime
 from openerp import api, fields, models
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
@@ -32,6 +31,7 @@ class AccountInvoice(models.Model):
     """account_invoice overwritten methods"""
     _inherit = 'account.invoice'
 
+    nfse_status = fields.Char(u'Status NFS-e', size=100)
     state = fields.Selection(selection_add=[
         ('nfse_ready', u'Enviar NFS-e'),
         ('nfse_exception', u'Erro de autorização'),
@@ -42,7 +42,7 @@ class AccountInvoice(models.Model):
 
         obj_attachment.create({
             'name': filename,
-            'datas': base64.b64encode(data),
+            'datas': data,
             'datas_fname': filename,
             'description': '' or _('No Description'),
             'res_model': model,
@@ -54,10 +54,18 @@ class AccountInvoice(models.Model):
         self.state = 'nfse_ready'
 
     @api.multi
+    def action_set_to_draft(self):
+        self.button_cancel()
+        self.write({'state': 'draft'})
+        self.delete_workflow()
+        self.create_workflow()
+        return True
+
+    @api.multi
     def validate_nfse(self):
         self.ensure_one()
 
-        strErro = u''        
+        strErro = u''
         if not self.document_serie_id:
             strErro = u'Nota Fiscal - Série da nota fiscal\n'
 
@@ -202,11 +210,13 @@ class AccountInvoice(models.Model):
     def action_invoice_send_nfse(self):
         event_obj = self.env['l10n_br_account.document_event']
         base_nfse = self.env['base.nfse'].create({'invoice_id': self.id,
-                                                  'city_code': '6291'})
+                                                  'city_code': '6291',
+                                                  'certificate': self.company_id.nfe_a1_file,
+                                                  'password': self.company_id.nfe_a1_password})
 
         send = base_nfse.send_rps()
         vals = {
-            'type': 'Envio NFS-e',
+            'type': '14',
             'status': send['status'],
             'company_id': self.company_id.id,
             'origin': '[NFS-e] {0}'.format(self.internal_number),
@@ -221,12 +231,17 @@ class AccountInvoice(models.Model):
 
         if send['success']:
             self.state = 'open'
+            self.nfse_status = send['status']
         else:
             self.state = 'nfse_exception'
+            self.nfse_status = '0 - Erro de autorização (verifique os \
+                                documentos eletrônicos para mais info)'
 
     @api.multi
     def button_cancel(self):
-        cancel_result = self.cancel_invoice_online()
+        cancel_result = True
+        if self.state == 'open':
+            cancel_result = self.cancel_invoice_online()
         if cancel_result:
             return super(AccountInvoice, self).button_cancel()
 

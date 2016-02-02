@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ###############################################################################
 #                                                                             #
 # Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
@@ -20,7 +20,13 @@
 ###############################################################################
 
 
-from . import base_nfse
-from . import account_invoice
-from . import res_company
-from . import l10n_br_account
+from openerp import fields, models
+
+
+class L10n_brDocumentEvent(models.Model):
+    _inherit = 'l10n_br_account.document_event'
+
+    type = fields.Selection(selection_add=[('14', u'Envio RPS'),
+                                           ('15', u'Consulta RPS'),
+                                           ('16', u'Cancelamento NFSe')],
+                            string=u'Serviço')
