@@ -79,6 +79,16 @@ class ProjectTask (models.Model):
     def write(self, vals):
         if "stage_id" in vals:
             next_stage = self.env['project.task.type'].browse(vals["stage_id"])
+            
+            if self.user_id.id != self.env.user.id \
+                and self.project_id.use_scrum \
+                and self.env.user.id != self.project_id.user_id.id:
+                
+                raise Warning(u"Movimentação não Permitida!",
+                              u"Você não pode trocar de estágio uma tarefa \
+                               que não esteja no seu nome. \
+                               Peça ajuda ao Scrum Master.")
+                
             if next_stage.count_time:
                 if self.other_task_time_open():
                     raise Warning(u"Movimentação não Permitida!",
@@ -91,17 +101,33 @@ class ProjectTask (models.Model):
                         self.count_time_start(next_stage.name)
             else:
                 self.count_time_stop()
-
+                
         elif "kanban_state" in vals:
+            if self.kanban_state == "blocked" \
+                and self.user_id.id != self.env.user.id \
+                and self.project_id.use_scrum \
+                and self.env.user.id != self.project_id.user_id.id:
+                
+                raise Warning(u"Movimentação não Permitida!",
+                              u"Você não pode desbloquear uma tarefa sem ser \
+                              o Dono dela ou o Srum Marter. \
+                               Peça ajuda ao Scrum Master.")
+            
             if vals["kanban_state"] == "blocked":
                 self.count_time_stop()
 
             elif vals["kanban_state"] == "normal" and self.presence_state():
                 if self.other_task_time_open():
-                    raise Warning(u"Movimentação não Permitida!",
-                                  u"Já exite outra tarefa em contando tempo.")
+                    raise Warning(u"Alteração não Permitida!",
+                                  u"Já exite outra tarefa contando tempo.")
                 else:
                     self.count_time_start(self.stage_id.name)
+        
+        if "user_id" in vals \
+            and self.env.user.id != self.project_id.user_id.id:
+                    raise Warning(u"Alteração não Permitida!",
+                                  u"Somente o Scrum Master pode pode atribuír a \
+                                  tarefa a outra pessoa.")
 
         return super(ProjectTask, self).write(vals)
 
