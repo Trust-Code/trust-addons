@@ -16,7 +16,7 @@
 	</Cabecalho>
 	<Lote Id="{{ nfse.lote_id }}">
 		{% for rps in nfse.lista_rps -%}
-		<RPS Id="rps:{{ rps.numero }}">
+		<RPS Id="{{ rps.numero }}">
 			<Assinatura>{{ rps.assinatura }}</Assinatura>
 			<InscricaoMunicipalPrestador>{{ rps.prestador.inscricao_municipal }}
 			</InscricaoMunicipalPrestador>
@@ -73,6 +73,7 @@
 			<DDDTomador>{{ rps.tomador.ddd }}</DDDTomador>
 			<TelefoneTomador>{{ rps.tomador.telefone }}</TelefoneTomador>
 			<MotCancelamento>{{ rps.motivo_cancelamento }}</MotCancelamento>
+			{% if rps.deducoes|count > 0 %}
 			<Deducoes>
 				{% for deducao in rps.deducoes -%}
 				<Deducao>
@@ -86,6 +87,10 @@
 				</Deducao>
 				{% endfor %}
 			</Deducoes>
+			{% endif %}
+			{% if rps.deducoes|count == 0 %}
+			<Deducoes />
+			{% endif %}
 			<Itens>
 				{% for item in rps.itens -%}
 				<Item>

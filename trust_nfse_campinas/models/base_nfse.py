@@ -280,8 +280,8 @@ class BaseNfse(models.TransientModel):
             for inv_line in inv.invoice_line:
                 item = {
                     'descricao': inv_line.product_id.name[:80] or '',
-                    'quantidade': str("%.4f" % inv_line.quantity),
-                    'valor_unitario': str("%.4f" % (inv_line.price_unit)),
+                    'quantidade': str("%.0f" % inv_line.quantity),
+                    'valor_unitario': str("%.2f" % (inv_line.price_unit)),
                     'valor_total': str("%.2f" % (inv_line.quantity * inv_line.price_unit)),
                 }
                 itens.append(item)
@@ -336,11 +336,11 @@ class BaseNfse(models.TransientModel):
                 'valor_csll': str("%.2f" % inv.csll_value),
                 'valor_inss': str("%.2f" % inv.inss_value),
                 'valor_ir': str("%.2f" % inv.ir_value),
-                'aliquota_pis': str("%.4f" % aliquota_pis),
-                'aliquota_cofins': str("%.4f" % aliquota_cofins),
-                'aliquota_csll': str("%.4f" % aliquota_csll),
-                'aliquota_inss': str("%.4f" % aliquota_inss),
-                'aliquota_ir': str("%.4f" % aliquota_ir),
+                'aliquota_pis': str("%.2f" % aliquota_pis),
+                'aliquota_cofins': str("%.2f" % aliquota_cofins),
+                'aliquota_csll': str("%.2f" % aliquota_csll),
+                'aliquota_inss': str("%.2f" % aliquota_inss),
+                'aliquota_ir': str("%.2f" % aliquota_ir),
                 'deducoes': deducoes,
                 'itens': itens,
             }]
@@ -354,8 +354,8 @@ class BaseNfse(models.TransientModel):
                 'data_fim': data_envio,
                 'total_rps': '1',
                 'total_servicos': str("%.2f" % inv.amount_total),
-                'total_deducoes': '0.00',
-                'lote_id': 'lote:%s' % inv.lote_nfse,
+                'total_deducoes': '0',
+                'lote_id': '%s' % inv.lote_nfse,
                 'lista_rps': rps
             }
             return nfse_object

@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<record id="view_account_invoice_rules_tree" model="ir.ui.view">
+			<field name="name">account.invoice.rules.tree</field>
+			<field name="model">account.invoice.rules</field>
+			<field name="arch" type="xml">
+				<tree string="Invoice Validation Rules">
+					<field name="active" />
+					<field name="name" />
+					<field name="description" />
+					<field name="use_in" />
+					<field name="sequence" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_account_invoice_rules_form" model="ir.ui.view">
+			<field name="name">account.invoice.rules.form</field>
+			<field name="model">account.invoice.rules</field>
+			<field name="arch" type="xml">
+				<form string="Invoice Validation Setup">
+					<group colspan="4" col="2">
+						<field name="name" />
+						<field name="description" />
+					</group>
+					<group col="4" colspan="4" groups="base.group_sale_manager">
+						<field name="active" />
+						<field name="sequence" />
+						<group colspan="4" col="2" groups="base.group_system">
+							<field name="use_in" />
+							<field name="rule_expression" />
+							<field name="message" />
+						</group>
+					</group>					
+				</form>
+			</field>
+		</record>
+
+		<record id="action_account_invoice_rules_tree" model="ir.actions.act_window">
+			<field name="name">Invoice Validation Rules</field>
+			<field name="res_model">account.invoice.rules</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_account_invoice_rules_tree" />
+			<field name="context">{'active_test': False}</field>
+		</record>
+
+		<menuitem action="action_account_invoice_rules_tree" id="menu_account_invoice_rules"
+			parent="account.menu_configuration_misc" />
+
+	</data>
+
+</openerp>
