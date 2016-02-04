@@ -98,6 +98,7 @@
 					<Quantidade>{{ item.quantidade }}</Quantidade>
 					<ValorUnitario>{{ item.valor_unitario }}</ValorUnitario>
 					<ValorTotal>{{ item.valor_total }}</ValorTotal>
+					<Tributavel>S</Tributavel>
 				</Item>
 				{% endfor %}
 			</Itens>

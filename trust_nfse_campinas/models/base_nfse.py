@@ -88,10 +88,11 @@ class BaseNfse(models.TransientModel):
                         status['status'] = '100'
                         status['message'] = 'NFS-e emitida com sucesso'
                         status['success'] = resp['{}Cabecalho'].Sucesso
-                        status['nfse_number'] = resp['{}ListaNFSe'].ConsultaNFSe[
-                            0].NumeroNFe
-                        status['verify_code'] = resp['{}ListaNFSe'].ConsultaNFSe[
-                            0].CodigoVerificacao
+                        if self.invoice_id.company_id.nfe_environment == '1':
+                            status['nfse_number'] = \
+                                resp['{}ListaNFSe'].ConsultaNFSe[0].NumeroNFe
+                            status['verify_code'] = \
+                                resp['{}ListaNFSe'].ConsultaNFSe[0].CodigoVerificacao
                 else:
                     status['status'] = resp['{}Erros'].Erro[0].Codigo
                     status['message'] = resp['{}Erros'].Erro[0].Descricao
@@ -253,7 +254,7 @@ class BaseNfse(models.TransientModel):
                 'tipo_bairro': 'Normal',
                 'ddd': re.sub('[^0-9]', '', phone.split(' ')[0]),
                 'telefone': re.sub('[^0-9]', '', phone.split(' ')[1]),
-                'inscricao_municipal': inv.partner_id.inscr_mun or '000000000',
+                'inscricao_municipal': re.sub('[^0-9]', '', inv.partner_id.inscr_mun or '000000000'),
                 'email': inv.partner_id.email or '',
             }
 
@@ -307,9 +308,9 @@ class BaseNfse(models.TransientModel):
             assinatura = '%011dNF   %012d%s%s %s%s%015d%015d%010d%014d' % \
                 (int(prestador['inscricao_municipal']),
                  int(inv.internal_number),
-                 data_envio, inv.taxation, 'N', tipo_recolhimento,
-                 valor_servico,
-                 valor_deducao,
+                 data_envio, inv.taxation, 'N', 'N' if tipo_recolhimento == 'A' else 'S',
+                 valor_servico * 100,
+                 valor_deducao * 100,
                  int(codigo_atividade),
                  int(tomador['cpf_cnpj']))
            
