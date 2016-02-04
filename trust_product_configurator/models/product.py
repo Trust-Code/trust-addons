@@ -19,8 +19,12 @@
 
 from openerp import api, fields, models
 
+
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
-    
-    material_attribute_ids = fields.One2many('material.attribute.line', 'product_tmpl_id', 'Material Attributes')
-    
+
+    configurator_template = fields.Boolean('Template Configurator',
+                                           default=False)
+    material_attribute_ids = fields.One2many('material.attribute.line',
+                                             'product_tmpl_id',
+                                             'Material Attributes')

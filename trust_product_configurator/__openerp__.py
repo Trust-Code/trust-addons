@@ -30,11 +30,12 @@
                      'Danimar Ribeiro <danimaribeiro@gmail.com>'
                      ],
     'depends': [
-        'sale'
+        'sale', 'mrp', 'trust_sales_order_followup'
     ],
     'data': [
         'views/sale_view.xml',
-        'views/product_view.xml',
+        'views/product_attributes_view.xml',
+        'views/configurator_view.xml'
     ],
     'application': True,
 }

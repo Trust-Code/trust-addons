@@ -26,6 +26,7 @@ class MaterialAttributes(models.Model):
     _name = 'material.attributes'
 
     name = fields.Char('Nome', size=20)
+    active = fields.Boolean('Active')
 
 
 class MaterialAttributesValue(models.Model):
@@ -33,7 +34,10 @@ class MaterialAttributesValue(models.Model):
 
     name = fields.Char('Nome', size=20)
     value = fields.Char('Valor', size=50)
-   
+
+    attribute_id = fields.Many2one('material.attributes')
+
+
 class MaterialAttributeLine(models.Model):
     _name = "material.attribute.line"
     _rec_name = 'attribute_id'
