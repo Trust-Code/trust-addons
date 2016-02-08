@@ -37,5 +37,6 @@
     ],
     'data': ['views/project_task_view.xml',
              'views/color_icon_presence.xml',
+             'security/project_tasks.xml',
              ],
 }

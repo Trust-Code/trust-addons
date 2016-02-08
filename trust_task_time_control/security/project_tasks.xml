@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+    
+    <!-- REGRA QUE NÃO PERMITE QUE UMA TAREFA SEJA DESBLOQUEADA POR OUTRA PESSOA QUE NÃO O DONO -->
+        <record id="filter_task_lock_owner" model="ir.filters">
+            <field name="name">task lock by owner</field>
+            <field name="model_id">project.task</field>
+            <field name="domain">[
+            					('kanban_state','=',"blocked"),
+                                ('user_id.id','!=',user.id),
+                                ('project_id.user_id.id','!=',user.id)
+            					]</field>
+            <field name="user_id" eval="False"/>
+        </record>
+
+        <record id="action_task_unlock" model="ir.actions.server">
+            <field name="name">tasks unlock</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="sequence">1</field>
+            <field name="state">code</field>
+            <field name="code">raise Warning(u"Você não pode desbloquear uma 
+            tarefa sem ser o Dono dela.")</field>
+        </record>
+        
+        <record id="rule_task_lock_onwer" model="base.action.rule">
+            <field name="name">task lock by owner</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="kind">on_write</field>
+            <field name="filter_id" ref="filter_task_lock_owner"/>
+            <field name="server_action_ids" eval="[(6,0,[ref('action_task_unlock')])]"/>
+        </record>
+        
+    </data>
+</openerp>
