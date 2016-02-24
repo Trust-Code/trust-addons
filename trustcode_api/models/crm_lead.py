@@ -42,10 +42,11 @@ class CrmLead(models.Model):
             lead['segment'] = post['company_segment']
             lead['source_id'] = source.id
             new_lead = self.create(lead)
-            source.mail_template_id.send_mail(
-                new_lead.id,
-                force_send=True,
-                raise_exception=False)
+            if source.mail_template_id:
+                source.mail_template_id.send_mail(
+                    new_lead.id,
+                    force_send=True,
+                    raise_exception=False)
         else:
             raise UserError('Atenção!', 'Identificador da origem desconhecido')
 
