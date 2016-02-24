@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<record id="trustcode_api_crm_lead_form" model="ir.ui.view">
+			<field name="name">trustcode.api.crm.lead.form</field>
+			<field name="model">crm.lead</field>
+			<field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+			<field name="arch" type="xml">
+				<field name="priority" position="after">
+					<field name="segment" />
+				</field>
+				<page string="Extra Info" position="after">
+					<page string="Atributos">
+						<group>
+							<field name="attribute_ids" />
+						</group>
+					</page>
+				</page>
+			</field>
+		</record>
+
+
+		<record id="trustcode_api_crm_tracking_source_form" model="ir.ui.view">
+			<field name="name">trustcode.api.crm.tracking.source.form</field>
+			<field name="model">crm.tracking.source</field>
+			<field name="inherit_id" ref="crm.crm_tracking_source_view_form" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="unique_identifier" required="1" />
+					<field name="description" required="1" />
+					<field name="mail_template_id" />
+				</field>				
+			</field>
+		</record>
+
+
+
+
+	</data>
+</openerp>
+		
