@@ -27,13 +27,9 @@ from openerp.addons.website_blog.controllers.main import WebsiteBlog
 
 class LeadCapture(http.Controller):
 
-    @http.route('/lead-capture', type='http', auth="public", website=True,
-                cors='*')
+    @http.route('/lead-capture', type='http', auth="public", cors="*")
     def lead_capture(self, **post):
         lead = {'name': 'Novo lead via API', 'type': 'lead'}
         request.env['crm.lead'].sudo().new_lead_via_api(lead, **post)
         request.cr.commit()
-        return request.make_response("", {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST',
-        })
+        return "true"
