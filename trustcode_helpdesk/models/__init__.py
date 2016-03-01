@@ -20,39 +20,4 @@
 ###############################################################################
 
 
-from openerp.addons.web import http
-from openerp.addons.web.http import request
-from openerp.addons.website_blog.controllers.main import WebsiteBlog
-
-
-class LeadCapture(http.Controller):
-
-    @http.route('/lead-capture', type='http', auth="public", cors="*")
-    def lead_capture(self, **post):
-        lead = {'name': 'Novo lead via API', 'type': 'lead'}
-        request.env['crm.lead'].sudo().new_lead_via_api(lead, **post)
-        request.cr.commit()
-        return "true"
-
-
-class HelpDeskApi(http.Controller):
-
-    @http.route('/help-desk/new', type='json', auth="public", cors="*")
-    def new_solicitation(self, **post):
-        request.env['crm.helpdesk'].sudo().new_lead_via_api(**post)
-        request.cr.commit()
-        return "true"
-
-    @http.route('/help-desk/update/:id', type='json', auth="public", cors="*")
-    def update_solicitation(self, id, **post):
-        solicitation = request.env['crm.helpdesk'].sudo().browse(id)
-        solicitation.update_via_api(**post)
-        request.cr.commit()
-        return "true"
-
-    @http.route('/help-desk/get/:id', type='json', auth="public", cors="*")
-    def get_solicitation(self, id):
-        solicitation = request.env['crm.helpdesk'].sudo().browse(id)
-        result = solicitation.new_lead_via_api(id)
-        request.cr.commit()
-        return result
+from . import crm_helpdesk

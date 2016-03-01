@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+
+		<record id="trustcode_helpdesk_crm_helpdesk_interaction_form"
+			model="ir.ui.view">
+			<field name="name">trustcode.helpdesk.crm.helpdesk.interaction.form
+			</field>
+			<field name="model">crm.helpdesk.interaction</field>
+			<field name="arch" type="xml">
+				<form string="Interações">
+					<header>
+						<field name="state" nolabel="1" widget="statusbar"
+							clickable="True" statusbar_colors="{'new': 'blue'}" />
+					</header>
+					<group>
+						<field name="responsible_id" readonly="1" />
+						<field name="date" readonly="1" />
+						<field name="time_since_last_interaction" readonly="1" widget="float_time" />
+					</group>
+					<separator string="Informações" />
+					<group>
+						<field name="name" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_trustcode_helpdesk_interaction_form">
+			<field name="name">Nova Interacão</field>
+			<field name="res_model">crm.helpdesk.interaction</field>
+			<field name="view_type">form</field>
+			<field name='view_mode'>form</field>
+			<field name="target">new</field>
+		</record>
+
+		<record id="trustcode_helpdesk_crm_helpdesk_interaction_tree"
+			model="ir.ui.view">
+			<field name="name">trustcode.helpdesk.crm.helpdesk.interaction.tree
+			</field>
+			<field name="model">crm.helpdesk.interaction</field>
+			<field name="arch" type="xml">
+				<tree string="Interações" colors="blue:state=='new';" delete="false">
+					<field name="id" invisible="1" />
+					<field name="name" />
+					<field name="state" readonly="1" />
+					<field name="responsible_id" readonly="1" />
+					<button string="Marcar como lida" icon="kanban-apply" name="mark_as_read"
+						type="object" attrs="{'invisible': [('state', '=', 'read')] }" />					
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="trustcode_helpdesk_crm_helpdesk_form" model="ir.ui.view">
+			<field name="name">trustcode.helpdesk.crm.helpdesk.form</field>
+			<field name="model">crm.helpdesk</field>
+			<field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
+			<field name="arch" type="xml">
+				<field name="description" position="after">
+					<separator string="Interações" />
+					<field name="interaction_ids" />
+				</field>
+				<field name="partner_id" position="attributes">
+					<attribute name="required">1</attribute>
+				</field>
+				<field name="email_from" position="attributes">
+					<attribute name="required">1</attribute>
+				</field>
+			</field>
+		</record>
+	
+
+	</data>
+</openerp>
+		

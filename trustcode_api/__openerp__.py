@@ -32,7 +32,7 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'crm',
+        'crm', 'crm_helpdesk',
     ],
     'data': [
         'views/crm_lead_view.xml',

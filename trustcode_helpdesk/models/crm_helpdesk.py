@@ -20,39 +20,33 @@
 ###############################################################################
 
 
-from openerp.addons.web import http
-from openerp.addons.web.http import request
-from openerp.addons.website_blog.controllers.main import WebsiteBlog
+from openerp import api, fields, models
 
 
-class LeadCapture(http.Controller):
+class CrmHelpdeskInteraction(models.Model):
+    _name = 'crm.helpdesk.interaction'
+    _description = u'Interações do chamado'
 
-    @http.route('/lead-capture', type='http', auth="public", cors="*")
-    def lead_capture(self, **post):
-        lead = {'name': 'Novo lead via API', 'type': 'lead'}
-        request.env['crm.lead'].sudo().new_lead_via_api(lead, **post)
-        request.cr.commit()
-        return "true"
+    def _default_responsible(self):
+        return self.env.user.partner_id.id
+
+    responsible_id = fields.Many2one('res.partner', u'Responsável', 
+                                     default=_default_responsible)
+    date = fields.Datetime(u'Data', default=fields.Datetime.now())
+    time_since_last_interaction = fields.Float(u'Última interação')
+    state = fields.Selection([('new', 'Novo'), ('read', 'Lida')],
+                             u'Status', default='new')
+    name = fields.Text(string=u'Resposta')
+    crm_help_id = fields.Many2one('crm.helpdesk', string=u"Chamado")    
+
+    @api.multi
+    def mark_as_read(self):
+        self.write({'state': 'read'})
 
 
-class HelpDeskApi(http.Controller):
+class CrmHelpDesk(models.Model):
+    _inherit = 'crm.helpdesk'
 
-    @http.route('/help-desk/new', type='json', auth="public", cors="*")
-    def new_solicitation(self, **post):
-        request.env['crm.helpdesk'].sudo().new_lead_via_api(**post)
-        request.cr.commit()
-        return "true"
-
-    @http.route('/help-desk/update/:id', type='json', auth="public", cors="*")
-    def update_solicitation(self, id, **post):
-        solicitation = request.env['crm.helpdesk'].sudo().browse(id)
-        solicitation.update_via_api(**post)
-        request.cr.commit()
-        return "true"
-
-    @http.route('/help-desk/get/:id', type='json', auth="public", cors="*")
-    def get_solicitation(self, id):
-        solicitation = request.env['crm.helpdesk'].sudo().browse(id)
-        result = solicitation.new_lead_via_api(id)
-        request.cr.commit()
-        return result
+    interaction_ids = fields.One2many(
+        'crm.helpdesk.interaction',
+        'crm_help_id', string="Interações")
