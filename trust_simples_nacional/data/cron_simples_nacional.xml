@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<record id="ir_cron_download_nfe_scheduler0" model="ir.cron">
+			<field name="function">calculate_revenue_monthly</field>
+			<field name="interval_number">2</field>
+			<field name="interval_type">hours</field>
+			<field name="user_id" ref="base.user_root" />
+			<field name="name">Calculo periodico faturamento</field>
+			<field eval="-1" name="numbercall" />
+			<field eval="5" name="priority" />
+			<field eval="0" name="doall" />
+			<field eval="1" name="active" />
+			<field name="model">res.company</field>
+		</record>
+
+	</data>
+</openerp>

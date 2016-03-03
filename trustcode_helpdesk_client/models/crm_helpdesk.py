@@ -20,23 +20,7 @@
 ###############################################################################
 
 
-{
-    'name': 'API Trustcode',
-    'summary': """Módulo para API de integração Trustcode""",
-    'version': '8.0',
-    'category': 'Tools',
-    'author': 'Trustcode',
-    'license': 'AGPL-3',
-    'website': 'http://www.trustcode.com.br',
-    'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
-                     'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],
-    'depends': [
-        'crm', 'crm_helpdesk',
-    ],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/crm_lead_view.xml',
-    ],
-    'instalable': True
-}
+from openerp import api, fields, models
+
+
+

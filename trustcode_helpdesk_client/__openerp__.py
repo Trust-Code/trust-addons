@@ -21,8 +21,8 @@
 
 
 {
-    'name': 'API Trustcode',
-    'summary': """Módulo para API de integração Trustcode""",
+    'name': 'Trustcode Helpdesk Client',
+    'summary': """Módulo cliente para chamados da Trustcode""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'Trustcode',
@@ -32,11 +32,10 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'crm', 'crm_helpdesk',
+        'trustcode_helpdesk',
     ],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/crm_lead_view.xml',
+    'data': [        
+        'views/crm_delpdesk_view.xml',
     ],
     'instalable': True
 }

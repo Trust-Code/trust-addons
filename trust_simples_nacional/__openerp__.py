@@ -21,10 +21,11 @@
 
 
 {
-    'name': 'API Trustcode',
-    'summary': """Módulo para API de integração Trustcode""",
+    'name': 'Trustcode - Simples Nacional',
+    'summary': """Módulo que facilita o cadastro de impostos e faixas de
+        faturamento para o Simples Nacional""",
     'version': '8.0',
-    'category': 'Tools',
+    'category': 'Localisation',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
@@ -32,11 +33,12 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'crm', 'crm_helpdesk',
+        'l10n_br_account',
     ],
     'data': [
         'security/ir.model.access.csv',
-        'views/crm_lead_view.xml',
+        'data/cron_simples_nacional.xml',
+        'views/res_company_view.xml',
     ],
     'instalable': True
 }

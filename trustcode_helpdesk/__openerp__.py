@@ -35,6 +35,7 @@
         'crm_helpdesk',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/crm_delpdesk_view.xml',
     ],
     'instalable': True
