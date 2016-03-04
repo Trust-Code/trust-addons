@@ -34,7 +34,8 @@
     'depends': [
         'trustcode_helpdesk',
     ],
-    'data': [        
+    'data': [
+        'data/cron_synchronize_helpdesk.xml',
         'views/crm_delpdesk_view.xml',
     ],
     'instalable': True

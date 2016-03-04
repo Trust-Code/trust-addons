@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<record id="ir_cron_synchronize_helpdesk_client" model="ir.cron">
+			<field name="function">synchronize_helpdesk_solicitation</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">minutes</field>
+			<field name="user_id" ref="base.user_root" />
+			<field name="name">Sincronização automática de chamados</field>
+			<field eval="-1" name="numbercall" />
+			<field eval="5" name="priority" />
+			<field eval="0" name="doall" />
+			<field eval="1" name="active" />
+			<field name="model">crm.helpdesk</field>
+		</record>
+
+	</data>
+</openerp>

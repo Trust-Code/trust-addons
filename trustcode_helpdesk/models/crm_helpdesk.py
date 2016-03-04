@@ -30,14 +30,16 @@ class CrmHelpdeskInteraction(models.Model):
     def _default_responsible(self):
         return self.env.user.partner_id.id
 
-    responsible_id = fields.Many2one('res.partner', u'Responsável', 
+    trustcode_id = fields.Char(u"Id Único", size=80)
+    responsible_id = fields.Many2one('res.partner', u'Responsável',
                                      default=_default_responsible)
     date = fields.Datetime(u'Data', default=fields.Datetime.now())
     time_since_last_interaction = fields.Float(u'Última interação')
     state = fields.Selection([('new', 'Novo'), ('read', 'Lida')],
                              u'Status', default='new')
     name = fields.Text(string=u'Resposta')
-    crm_help_id = fields.Many2one('crm.helpdesk', string=u"Chamado")    
+    crm_help_id = fields.Many2one('crm.helpdesk', string=u"Chamado")
+    attachment = fields.Binary(u'Anexo')
 
     @api.multi
     def mark_as_read(self):
@@ -47,6 +49,14 @@ class CrmHelpdeskInteraction(models.Model):
 class CrmHelpDesk(models.Model):
     _inherit = 'crm.helpdesk'
 
+    attachment = fields.Binary(u'Anexo')
+    version = fields.Integer(u'Versão', default=0)
     interaction_ids = fields.One2many(
         'crm.helpdesk.interaction',
         'crm_help_id', string="Interações")
+
+    @api.multi
+    def write(self, vals):
+        for item in self:
+            item.version += 1
+        return super(CrmHelpDesk, self).write(vals)

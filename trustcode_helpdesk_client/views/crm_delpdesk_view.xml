@@ -8,39 +8,46 @@
 			<field name="arch" type="xml">
 				<form string="Helpdesk Support">
 					<header>
-						<button name="case_escalate" string="Escalate" type="object"
-							states="open,draft,pending" />
 						<field name="state" nolabel="1" widget="statusbar"
-							clickable="True" statusbar_colors="{&quot;pending&quot;:&quot;blue&quot;}" />
+							statusbar_colors="{&quot;pending&quot;:&quot;blue&quot;}" />
 					</header>
 					<sheet string="Helpdesk Support">
 						<group col="4" class="oe_header">
-							<field name="name" string="Query" />
-							<field name="section_id" widget="selection"
-								groups="base.group_multi_salesteams" />
-							<field name="user_id"
-								context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'base.group_sale_salesman_all_leads']}" />
+							<field name="trustcode_solicitation" invisible="1" />
+							<field name="name" string="Solicitação" />
+							<field name="responsible" states="open,pending,done,cancel" />
 							<field name="date" />
-							<field name="date_deadline" />
 						</group>
 						<notebook>
 							<page string="General">
 								<group>
 									<group string="Communication">
-										<field name="partner_id" on_change="on_change_partner_id(partner_id)" />
 										<field name="email_from" />
 									</group>
 									<group string="Categorization">
 										<field name="priority" widget="priority" />
-										<field name="categ_id" domain="[('object_id.model', '=', 'crm.helpdesk')]"
-											context="{'object_name': 'crm.helpdesk'}" />
-										<field name="channel_id" />
 									</group>
 								</group>
 
 								<separator string="Notes" />
 								<field name="description" />
-							</page>							
+								<label for="attachment"></label>
+								<field name="attachment" />
+								<separator string="Interações" states="open,pending,done,cancel" />
+								<field name="interaction_ids" context="{'default_trustcode_solicitation': True }"
+									states="open,pending,done,cancel">
+									<tree string="Interações" colors="blue:state=='new';"
+										delete="false">
+										<field name="id" invisible="1" />
+										<field name="name" />
+										<field name="state" readonly="1" />
+										<field name="responsible" readonly="1" />
+										<button string="Marcar como lida" icon="kanban-apply"
+											name="mark_as_read" type="object"
+											attrs="{'invisible': [('state', '=', 'read')] }" />
+									</tree>
+								</field>
+							</page>
 						</notebook>
 					</sheet>
 					<div class="oe_chatter">
@@ -48,22 +55,70 @@
 						<field name="message_ids" widget="mail_thread" />
 					</div>
 				</form>
-
 			</field>
 		</record>
-		
-		
+
+		<record id="trustcode_helpdesk_client_crm_helpdesk_interaction_form"
+			model="ir.ui.view">
+			<field name="name">trustcode.helpdesk.client.crm.helpdesk.interaction.form
+			</field>
+			<field name="model">crm.helpdesk.interaction</field>
+			<field name="inherit_id"
+				ref="trustcode_helpdesk.trustcode_helpdesk_crm_helpdesk_interaction_form" />
+			<field name="arch" type="xml">
+				<field name="responsible_id" position="replace">
+					<field name="trustcode_solicitation" invisible="1" />
+					<field name="responsible_id"
+						attrs="{'invisible': [('trustcode_solicitation', '=', True)]}" />
+					<field name="responsible"
+						attrs="{'invisible': [('trustcode_solicitation', '!=', True)]}" />
+				</field>
+			</field>
+		</record>
+
+
+		<record id="view_trustcode_helpdesk_client_filter" model="ir.ui.view">
+			<field name="name">Chamados Trustcode</field>
+			<field name="model">crm.helpdesk</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="Filtrar">
+					<field name="state" />
+					<field name="date" />
+				</search>
+			</field>
+		</record>
+
 		<record model="ir.actions.act_window" id="action_trustcode_helpdesk_client_form">
 			<field name="name">Suporte Trustcode</field>
 			<field name="res_model">crm.helpdesk</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-						
-			<field name="target">current</field>		
+			<field name="target">current</field>
+			<field name="search_view_id" ref="view_trustcode_helpdesk_client_filter" />
+			<field name="domain">[('trustcode_solicitation', '=', True)]</field>
+			<field name="context">{ 'default_trustcode_solicitation': True }</field>
 		</record>
-		
+
+		<record model="ir.actions.act_window" id="crm_helpdesk.crm_case_helpdesk_act111">
+			<field name="domain">[('trustcode_solicitation', '=', False)]</field>
+		</record>
+
+		<record id="view_act_trustcode_helpdesk_client_tree" model="ir.actions.act_window.view">
+			<field name="sequence">5</field>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk" />
+			<field name="act_window_id" ref="action_trustcode_helpdesk_client_form" />
+		</record>
+
+		<record id="view_act_trustcode_helpdesk_client_form" model="ir.actions.act_window.view">
+			<field name="sequence">15</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="trustcode_helpdesk_client_crm_helpdesk_form" />
+			<field name="act_window_id" ref="action_trustcode_helpdesk_client_form" />
+		</record>
+
 		<menuitem parent="mail.mail_feeds_main" name="Trustcode"
 			id="truscode_helpdesk_client_menu" sequence="20" />
+
 		<menuitem parent="truscode_helpdesk_client_menu" action="action_trustcode_helpdesk_client_form"
 			id="truscode_helpdesk_client_suporte_menu" />
 

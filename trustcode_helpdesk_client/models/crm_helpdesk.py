@@ -23,4 +23,39 @@
 from openerp import api, fields, models
 
 
+class CrmHelpesk(models.Model):
+    _inherit = 'crm.helpdesk'
 
+    def _default_email_from(self):
+        if "default_trustcode_solicitation" in self.env.context:
+            return self.env.user.partner_id.email or self.env.user.login
+
+    responsible = fields.Char('Atendente', readonly=True, size=50)
+    trustcode_solicitation = fields.Boolean("Chamado Trustcode")
+    email_from = fields.Char("Email", size=128, default=_default_email_from)
+
+    @api.model
+    def create(self, vals):
+        self.send_to_trustcode()
+        return super(CrmHelpesk, self).create(vals)
+
+    @api.multi
+    def send_to_trustcode(self):
+        pass
+
+    @api.model
+    def synchronize_helpdesk_solicitation(self):
+        solicitations = self.search([('trustcode_solicitation', '=', True),
+                                     ('state', '!=', 'done'),
+                                     ('state', '!=', 'cancel')])
+        for solicitation in solicitations:
+
+            print solicitation.trustcode_id
+
+
+class CrmHelpdeskInteraction(models.Model):
+    _inherit = 'crm.helpdesk.interaction'
+
+    responsible = fields.Char(u'Atendente', size=50, readonly=True)
+    trustcode_solicitation = fields.Boolean(
+        "Chamado Trustcode", related="crm_help_id.trustcode_solicitation")
