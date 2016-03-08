@@ -24,15 +24,40 @@ from openerp import api, fields, models
 
 
 class CrmHelpesk(models.Model):
-    _inherit = 'crm.helpdesk'
+    _name = 'crm.helpdesk.trustcode'
+    _description = "Chamados Trustcode"
+    _order = "id desc"
+    _inherit = ['mail.thread']
 
     def _default_email_from(self):
         if "default_trustcode_solicitation" in self.env.context:
             return self.env.user.partner_id.email or self.env.user.login
 
+    name = fields.Char('Name', required=True)
+    description = fields.Text('Description')
+    company_id = fields.Many2one('res.company', 'Company')
+    date_closed = fields.Datetime('Closed', readonly=True)
+    email_from = fields.Char('Email', size=128,
+                             help="Destination email for email gateway",
+                             default=_default_email_from)
+    date = fields.Datetime('Date', readonly=True, default=fields.Datetime.now())
+    priority = fields.Selection([('0', 'Low'), ('1', 'Normal'), ('2', 'High')], 'Priority')
+    state = fields.Selection(
+        [('draft', 'Novo'),
+         ('open', 'Em progresso'),
+         ('pending', 'Pendente'),
+         ('done', 'Fechado'),
+         ('cancel', 'Cancelado')], 'Status',
+        readonly=True, track_visibility='onchange',
+        default='draft',
+    )
     responsible = fields.Char('Atendente', readonly=True, size=50)
-    trustcode_solicitation = fields.Boolean("Chamado Trustcode")
-    email_from = fields.Char("Email", size=128, default=_default_email_from)
+    responsible_id = fields.Many2one('res.users', string='Atendente', readonly=True, size=50)
+    attachment = fields.Binary(u'Anexo')
+    version = fields.Integer(u'Versão', default=0)
+    interaction_ids = fields.One2many(
+        'crm.helpdesk.trustcode.interaction',
+        'crm_help_id', string="Interações")
 
     @api.model
     def create(self, vals):
@@ -45,17 +70,30 @@ class CrmHelpesk(models.Model):
 
     @api.model
     def synchronize_helpdesk_solicitation(self):
-        solicitations = self.search([('trustcode_solicitation', '=', True),
-                                     ('state', '!=', 'done'),
+        solicitations = self.search([('state', '!=', 'done'),
                                      ('state', '!=', 'cancel')])
         for solicitation in solicitations:
-
             print solicitation.trustcode_id
 
 
 class CrmHelpdeskInteraction(models.Model):
-    _inherit = 'crm.helpdesk.interaction'
+    _name = 'crm.helpdesk.trustcode.interaction'
+    _description = u'Interações do chamado'
 
+    def _default_responsible(self):
+        return self.env.user.partner_id.id
+
+    trustcode_id = fields.Char(u"Id Único", size=80)
+    date = fields.Datetime(u'Data', default=fields.Datetime.now())
+    time_since_last_interaction = fields.Float(u'Última interação')
+    state = fields.Selection([('new', 'Novo'), ('read', 'Lida')],
+                             u'Status', default='new')
+    name = fields.Text(string=u'Resposta')
+    crm_help_id = fields.Many2one('crm.helpdesk.trustcode', string=u"Chamado")
+    attachment = fields.Binary(u'Anexo')
     responsible = fields.Char(u'Atendente', size=50, readonly=True)
-    trustcode_solicitation = fields.Boolean(
-        "Chamado Trustcode", related="crm_help_id.trustcode_solicitation")
+    responsible_id = fields.Many2one('res.users', string='Atendente', readonly=True, size=50)
+
+    @api.multi
+    def mark_as_read(self):
+        self.write({'state': 'read'})
