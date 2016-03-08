@@ -40,9 +40,9 @@ class ProjectTask (models.Model):
              'time_control': True})
         return
 
-    def count_time_stop(self):
+    def count_time_stop(self, user_id=False):
         task_work = self.env['project.task.work'].search(
-            [('user_id', '=', self.env.user.id),
+            [('user_id', '=', (user_id and user_id.id or self.env.user.id)),
              ('time_open', '=', True)],
             order='id desc', limit=1)
 
@@ -99,6 +99,8 @@ class ProjectTask (models.Model):
                                   u"Já existe outra tarefa contando tempo.")
                 else:
                     self.count_time_start(self.stage_id.name)
+        elif "user_id" in vals and self.stage_id.count_time:
+            self.count_time_stop(self.user_id)
         
         return super(ProjectTask, self).write(vals)
 
