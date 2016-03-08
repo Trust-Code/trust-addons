@@ -61,6 +61,7 @@
 			<field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
 			<field name="arch" type="xml">
 				<field name="description" position="after">
+					<field name="attachment" />
 					<separator string="Interações" />
 					<field name="interaction_ids" />
 				</field>

@@ -37,22 +37,37 @@ class LeadCapture(http.Controller):
 
 class HelpDeskApi(http.Controller):
 
-    @http.route('/help-desk/new', type='json', auth="public", cors="*")
-    def new_solicitation(self, **post):
-        request.env['crm.helpdesk'].sudo().new_lead_via_api(**post)
-        request.cr.commit()
-        return "true"
+    @http.route('/helpdesk/new', type='json', auth="none", cors="*")
+    def new_solicitation(self, **kwargs):
+        try:
+            trustcode_id = request.env[
+                'crm.helpdesk'].sudo().new_solicitation_api(**kwargs)
+            request.cr.commit()
+            return {'sucesso': True, 'trustcode_id': trustcode_id}
+        except KeyError:
+            return {'sucesso': False,
+                    'erro': 'Instale o módulo helpdesk'}
 
-    @http.route('/help-desk/update/:id', type='json', auth="public", cors="*")
-    def update_solicitation(self, id, **post):
-        solicitation = request.env['crm.helpdesk'].sudo().browse(id)
-        solicitation.update_via_api(**post)
-        request.cr.commit()
-        return "true"
+    @http.route(
+        '/helpdesk/interaction/new', type='json', auth="none", cors="*")
+    def new_interaction(self, **kwargs):
+        try:
+            trustcode_id = request.env[
+                'crm.helpdesk'].sudo().new_interaction(**kwargs)
+            request.cr.commit()
+            return {'sucesso': True, 'trustcode_id': trustcode_id}
+        except KeyError:
+            return {'sucesso': False,
+                    'erro': 'Instale o módulo helpdesk'}
 
-    @http.route('/help-desk/get/:id', type='json', auth="public", cors="*")
-    def get_solicitation(self, id):
-        solicitation = request.env['crm.helpdesk'].sudo().browse(id)
-        result = solicitation.new_lead_via_api(id)
-        request.cr.commit()
-        return result
+    @http.route(
+        '/helpdesk/interaction/update', type='json', auth="public", cors="*")
+    def update_interaction(self, **kwargs):
+        try:
+            trustcode_id = request.env[
+                'crm.helpdesk'].sudo().update_interaction(**kwargs)
+            request.cr.commit()
+            return {'sucesso': True, 'trustcode_id': trustcode_id}
+        except KeyError:
+            return {'sucesso': False,
+                    'erro': 'Instale o módulo helpdesk'}

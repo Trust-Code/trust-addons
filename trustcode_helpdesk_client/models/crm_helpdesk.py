@@ -21,6 +21,7 @@
 
 
 from openerp import api, fields, models
+import odoorpc
 
 
 class CrmHelpesk(models.Model):
@@ -30,18 +31,26 @@ class CrmHelpesk(models.Model):
     _inherit = ['mail.thread']
 
     def _default_email_from(self):
-        if "default_trustcode_solicitation" in self.env.context:
-            return self.env.user.partner_id.email or self.env.user.login
+        return self.env.user.partner_id.email or self.env.user.login
 
+    def _default_company(self):
+        return self.env.user.company_id.id
+
+    trustcode_id = fields.Char(u"Id Único", size=80)
     name = fields.Char('Name', required=True)
     description = fields.Text('Description')
-    company_id = fields.Many2one('res.company', 'Company')
+    company_id = fields.Many2one('res.company', 'Company',
+                                 default=_default_company)
     date_closed = fields.Datetime('Closed', readonly=True)
     email_from = fields.Char('Email', size=128,
                              help="Destination email for email gateway",
                              default=_default_email_from)
-    date = fields.Datetime('Date', readonly=True, default=fields.Datetime.now())
-    priority = fields.Selection([('0', 'Low'), ('1', 'Normal'), ('2', 'High')], 'Priority')
+    date = fields.Datetime(
+        'Date',
+        readonly=True,
+        default=fields.Datetime.now())
+    priority = fields.Selection(
+        [('0', 'Low'), ('1', 'Normal'), ('2', 'High')], 'Priority')
     state = fields.Selection(
         [('draft', 'Novo'),
          ('open', 'Em progresso'),
@@ -52,7 +61,11 @@ class CrmHelpesk(models.Model):
         default='draft',
     )
     responsible = fields.Char('Atendente', readonly=True, size=50)
-    responsible_id = fields.Many2one('res.users', string='Atendente', readonly=True, size=50)
+    responsible_id = fields.Many2one(
+        'res.users',
+        string='Atendente',
+        readonly=True,
+        size=50)
     attachment = fields.Binary(u'Anexo')
     version = fields.Integer(u'Versão', default=0)
     interaction_ids = fields.One2many(
@@ -61,12 +74,15 @@ class CrmHelpesk(models.Model):
 
     @api.model
     def create(self, vals):
-        self.send_to_trustcode()
+        self.send_to_trustcode(vals)
         return super(CrmHelpesk, self).create(vals)
 
     @api.multi
-    def send_to_trustcode(self):
-        pass
+    def send_to_trustcode(self, vals):
+        odoo = odoorpc.ODOO('localhost', port=8069)
+        r = odoo.json('/helpdesk/new',
+                      vals)
+        vals['trustcode_id'] = r['result']['trustcode_id']
 
     @api.model
     def synchronize_helpdesk_solicitation(self):
@@ -92,8 +108,28 @@ class CrmHelpdeskInteraction(models.Model):
     crm_help_id = fields.Many2one('crm.helpdesk.trustcode', string=u"Chamado")
     attachment = fields.Binary(u'Anexo')
     responsible = fields.Char(u'Atendente', size=50, readonly=True)
-    responsible_id = fields.Many2one('res.users', string='Atendente', readonly=True, size=50)
+    responsible_id = fields.Many2one(
+        'res.users', string='Atendente', readonly=True, size=50)
 
     @api.multi
     def mark_as_read(self):
-        self.write({'state': 'read'})
+        for item in self:
+            if item.responsible_id and item.responsible_id.id != self.env.user.id:
+                item.write({'state': 'read'})
+                odoo = odoorpc.ODOO('localhost', port=8069)
+                odoo.json('/helpdesk/interaction/update',
+                          {'trustcode_id': item.trustcode_id})
+
+    @api.model
+    def create(self, vals):
+        self.send_to_trustcode(vals)
+        return super(CrmHelpdeskInteraction, self).create(vals)
+
+    @api.multi
+    def send_to_trustcode(self, vals):
+        help_id = self.env['crm.helpdesk.trustcode'].browse(
+            vals['crm_help_id'])
+        vals['help_trustcode_id'] = help_id.trustcode_id
+        odoo = odoorpc.ODOO('localhost', port=8069)
+        r = odoo.json('/helpdesk/interaction/new', vals)
+        vals['trustcode_id'] = r['result']['trustcode_id']
