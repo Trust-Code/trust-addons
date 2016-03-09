@@ -79,17 +79,42 @@ class CrmHelpesk(models.Model):
 
     @api.multi
     def send_to_trustcode(self, vals):
-        odoo = odoorpc.ODOO('localhost', port=8069)
-        r = odoo.json('/helpdesk/new',
-                      vals)
+        url = self.env.user.company_id.url_trustcode
+        cnpj = self.env.user.company_id.cnpj_cpf
+        odoo = odoorpc.ODOO(url, port=8069)
+        vals['cnpj'] = cnpj
+        r = odoo.json('/helpdesk/new', vals)
         vals['trustcode_id'] = r['result']['trustcode_id']
 
     @api.model
     def synchronize_helpdesk_solicitation(self):
-        solicitations = self.search([('state', '!=', 'done'),
-                                     ('state', '!=', 'cancel')])
-        for solicitation in solicitations:
-            print solicitation.trustcode_id
+        env_inter = self.env['crm.helpdesk.trustcode.interaction']
+        url = self.env.user.company_id.url_trustcode
+        cnpj = self.env.user.company_id.cnpj_cpf
+        odoo = odoorpc.ODOO(url, port=8069)
+        result = odoo.json('/helpdesk/list', {'cnpj': cnpj})
+        if result['result']['sucesso']:
+            for item in result['result']['solicitations']:
+                help_sol = self.search(
+                    [('trustcode_id', '=', item['trustcode_id'])])
+                if help_sol:
+                    help_sol.state = item['state']
+                    help_sol.responsible = item['responsible']
+                    help_sol.priority = item['priority']
+                    for interact in item['interactions']:
+                        inter = env_inter.search(
+                            [('trustcode_id', '=', interact['trustcode_id'])])
+                        if inter:
+                            inter.state = interact['state']
+                            inter.name = interact['name']
+                            inter.responsible = interact['responsible']
+                            inter.time_since_last_interaction = interact[
+                                'time_since_last_interaction']
+                        else:
+                            interact['crm_help_id'] = help_sol.id
+                            int_env = self.env[
+                                'crm.helpdesk.trustcode.interaction']
+                            int_env.create(interact)
 
 
 class CrmHelpdeskInteraction(models.Model):
@@ -97,7 +122,7 @@ class CrmHelpdeskInteraction(models.Model):
     _description = u'Interações do chamado'
 
     def _default_responsible(self):
-        return self.env.user.partner_id.id
+        return self.env.user.id
 
     trustcode_id = fields.Char(u"Id Único", size=80)
     date = fields.Datetime(u'Data', default=fields.Datetime.now())
@@ -109,27 +134,34 @@ class CrmHelpdeskInteraction(models.Model):
     attachment = fields.Binary(u'Anexo')
     responsible = fields.Char(u'Atendente', size=50, readonly=True)
     responsible_id = fields.Many2one(
-        'res.users', string='Atendente', readonly=True, size=50)
+        'res.users', string='Atendente',
+        readonly=True, size=50, default=_default_responsible)
 
     @api.multi
     def mark_as_read(self):
+        url = self.env.user.company_id.url_trustcode
         for item in self:
-            if item.responsible_id and item.responsible_id.id != self.env.user.id:
+            if not item.responsible_id:
                 item.write({'state': 'read'})
-                odoo = odoorpc.ODOO('localhost', port=8069)
+                odoo = odoorpc.ODOO(url, port=8069)
                 odoo.json('/helpdesk/interaction/update',
-                          {'trustcode_id': item.trustcode_id})
+                          {'trustcode_id': item.trustcode_id,
+                           'user': self.env.user.name})
 
     @api.model
     def create(self, vals):
-        self.send_to_trustcode(vals)
+        if "trustcode_id" not in vals:
+            self.send_to_trustcode(vals)
         return super(CrmHelpdeskInteraction, self).create(vals)
 
     @api.multi
     def send_to_trustcode(self, vals):
+        url = self.env.user.company_id.url_trustcode
+        cnpj = self.env.user.company_id.cnpj_cpf
+        odoo = odoorpc.ODOO(url, port=8069)
         help_id = self.env['crm.helpdesk.trustcode'].browse(
             vals['crm_help_id'])
         vals['help_trustcode_id'] = help_id.trustcode_id
-        odoo = odoorpc.ODOO('localhost', port=8069)
+        vals['cnpj'] = cnpj
         r = odoo.json('/helpdesk/interaction/new', vals)
         vals['trustcode_id'] = r['result']['trustcode_id']

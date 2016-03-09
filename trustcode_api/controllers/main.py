@@ -71,3 +71,15 @@ class HelpDeskApi(http.Controller):
         except KeyError:
             return {'sucesso': False,
                     'erro': 'Instale o módulo helpdesk'}
+
+    @http.route(
+        '/helpdesk/list', type='json', auth="public", cors="*")
+    def list_solicitation(self, **kwargs):
+        try:
+            solicitations = request.env[
+                'crm.helpdesk'].sudo().list_solicitation(**kwargs)
+            request.cr.commit()
+            return {'sucesso': True, 'solicitations': solicitations}
+        except KeyError:
+            return {'sucesso': False,
+                    'erro': 'Instale o módulo helpdesk'}

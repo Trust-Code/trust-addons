@@ -12,7 +12,7 @@
 			<field eval="5" name="priority" />
 			<field eval="0" name="doall" />
 			<field eval="1" name="active" />
-			<field name="model">crm.helpdesk</field>
+			<field name="model">crm.helpdesk.trustcode</field>
 		</record>
 
 	</data>

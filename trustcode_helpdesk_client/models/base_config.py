@@ -20,5 +20,27 @@
 ###############################################################################
 
 
-from . import crm_helpdesk
-from . import base_config
+from openerp import api, fields, models
+
+
+class ResCompany(models.Model):
+    _inherit = 'res.company'
+
+    url_trustcode = fields.Char(u'Url Trustcode', size=100)
+
+
+class BaseConfigSettings(models.Model):
+    _inherit = 'base.config.settings'
+
+    url_trustcode = fields.Char(u'Url Trustcode', size=100)
+
+    def get_default_url_trustcode(
+            self, cr, uid, fields, context=None):
+        user = self.pool['res.users'].browse(cr, uid, uid, context)
+        return {'url_trustcode':
+                user.company_id.url_trustcode}
+
+    @api.multi
+    def set_cancel_url_trustcode(self):
+        self.env.user.company_id.url_trustcode = \
+            self.url_trustcode

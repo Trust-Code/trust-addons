@@ -40,7 +40,8 @@ class CrmHelpdeskInteraction(models.Model):
     name = fields.Text(string=u'Resposta')
     crm_help_id = fields.Many2one('crm.helpdesk', string=u"Chamado")
     attachment = fields.Binary(u'Anexo')
-    trustcode_id = fields.Char(u"Id Único", size=80)
+    trustcode_id = fields.Char(u"Id Único", size=80,
+                               default=lambda *args: str(uuid.uuid4()))
 
     @api.multi
     def mark_as_read(self):
@@ -56,10 +57,33 @@ class CrmHelpDesk(models.Model):
         'crm.helpdesk.interaction',
         'crm_help_id', string="Interações")
 
+    def validate_cnpj(self, **kwargs):
+        if "cnpj" in kwargs:
+            partner = self.env['res.partner'].search(
+                [('cnpj_cpf', '=', kwargs['cnpj'])])
+            if partner:
+                return partner
+            else:
+                raise Warning('Atenção!',
+                              'Sua empresa ainda não está configurada na base da Trustcode')
+        else:
+            raise Warning('Atenção!',
+                          'Configure seu CNPJ corretamente')
+
     @api.multi
     def new_solicitation_api(self, **kwargs):
-        kwargs.update({'trustcode_id': str(uuid.uuid4())})
+        partner = self.validate_cnpj(**kwargs)
+        kwargs.update({'trustcode_id': str(uuid.uuid4()),
+                       'partner_id': partner.id,
+                       'user_id': None})
         self.create(kwargs)
+        users = self.env['res.users'].search(
+            [('receive_support', '=', True)])
+        for user in users:
+            user.message_post(
+                type='email',
+                subject=u"Nova chamado %s" % kwargs['name'],
+                body=kwargs['name'])
         return kwargs['trustcode_id']
 
     @api.multi
@@ -67,9 +91,15 @@ class CrmHelpDesk(models.Model):
         helpdesk = self.search(
             [('trustcode_id', '=', kwargs['help_trustcode_id'])])
         if helpdesk:
-            kwargs['crm_help_id'] = helpdesk.id
-            kwargs.update({'trustcode_id': str(uuid.uuid4())})
+            kwargs.update({'trustcode_id': str(uuid.uuid4()),
+                           'crm_help_id': helpdesk.id})
             self.env['crm.helpdesk.interaction'].create(kwargs)
+            users = self.env['res.users'].search(
+                [('receive_support', '=', True)])
+            for user in users:
+                user.message_post(type='email',
+                                  subject=u"Nova interação no chamado %s" % helpdesk.name,
+                                  body=kwargs['name'])
             return kwargs['trustcode_id']
 
     @api.multi
@@ -78,3 +108,43 @@ class CrmHelpDesk(models.Model):
             [('trustcode_id', '=', kwargs['trustcode_id'])])
 
         interaction.mark_as_read()
+        body = "Interação lida por - %s" % kwargs['user']
+        interaction.crm_help_id.message_post(type='notification',
+                                             subtype="mt_comment",
+                                             body=body)
+
+    @api.multi
+    def list_solicitation(self, **kwargs):
+        partner = self.validate_cnpj(**kwargs)
+        solicitations = self.env['crm.helpdesk'].search(
+            [('state', 'in', ('open', 'pending')),
+             ('partner_id', '=', partner.id)])
+
+        items = []
+
+        for solicitation in solicitations:
+            item = {'trustcode_id': solicitation.trustcode_id,
+                    'name': solicitation.name,
+                    'responsible': solicitation.user_id.name,
+                    'state': solicitation.state,
+                    'priority': solicitation.priority,
+                    'description': solicitation.description,
+                    'interactions': []}
+
+            for interaction in solicitation.interaction_ids.sorted(
+                    lambda x: x.id):
+                interact = {
+                    'trustcode_id': interaction.trustcode_id,
+                    'name': interaction.name,
+                    'responsible': interaction.responsible_id.name,
+                    'state': interaction.state,
+                    'date': interaction.date,
+                    'time_since_last_interaction':
+                    interaction.time_since_last_interaction
+                }
+
+                item['interactions'].append(interact)
+
+            items.append(item)
+
+        return items

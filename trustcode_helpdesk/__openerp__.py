@@ -37,6 +37,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/crm_delpdesk_view.xml',
+        'views/res_users_view.xml',
     ],
     'instalable': True
 }

@@ -20,5 +20,10 @@
 ###############################################################################
 
 
-from . import crm_helpdesk
-from . import base_config
+from openerp import api, fields, models
+
+
+class ResUsers(models.Model):
+    _inherit = 'res.users'
+
+    receive_support = fields.Boolean(u'Recebe email suporte?')

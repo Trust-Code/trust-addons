@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_general_configuration" model="ir.ui.view">
+            <field name="name">base.config.settings.signup</field>
+            <field name="model">base.config.settings</field>
+            <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+			<field name="arch" type="xml">
+				<form string="General Settings" position="inside">
+					<separator string="Trustcode" />
+					<group>
+						<label for="id" string="Url Trustcode" />
+						<div>
+							<div>
+								<field name="url_trustcode" class="oe_inline" />
+								<label for="url_trustcode" />
+							</div>
+						</div>
+					</group>
+				</form>
+			</field>
+		</record>
+
+	</data>
+</openerp>

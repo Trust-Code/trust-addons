@@ -21,3 +21,4 @@
 
 
 from . import crm_helpdesk
+from . import res_users
