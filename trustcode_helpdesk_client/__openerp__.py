@@ -32,12 +32,12 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'trustcode_helpdesk',
+        'mail',
     ],
     'data': [
         'data/cron_synchronize_helpdesk.xml',
-        'views/crm_delpdesk_view.xml',
         'views/base_config_settings_view.xml',
+        'views/crm_delpdesk_view.xml',
     ],
     'instalable': True
 }

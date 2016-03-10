@@ -2,41 +2,14 @@
 <openerp>
 	<data>
 
-		<record id="crm_helpdesk_interaction_form" model="ir.ui.view">
-			<field name="name">trustcode.helpdesk.client.crm.helpdesk.interaction.form
-			</field>
-			<field name="model">crm.helpdesk.trustcode.interaction</field>
-			<field name="arch" type="xml">
-				<form string="Interações">
-					<header>
-						<field name="state" nolabel="1" widget="statusbar"
-							statusbar_colors="{'new': 'blue'}" />
-					</header>
-					<group>
-						<field name="interacao_trustcode" invisible="1" />
-						<field name="responsible" readonly="1" />
-						<field name="date" readonly="1" />
-						<field name="time_since_last_interaction" readonly="1"
-							widget="float_time" invisible="1" />
-					</group>
-					<separator string="Informações" />
-					<group>
-						<field name="name" />
-						<field name="attachment"
-							attrs="{ 'invisible': [('interacao_trustcode', '=', True)]}" />
-					</group>
-				</form>
-			</field>
-		</record>
-
-		<record id="trustcode_helpdesk_client_crm_helpdesk_form" model="ir.ui.view">
-			<field name="name">trustcode.helpdesk.client.crm.helpdesk.form</field>
+		<record id="client_crm_helpdesk_form" model="ir.ui.view">
+			<field name="name">client.crm.helpdesk.form</field>
 			<field name="model">crm.helpdesk.trustcode</field>
 			<field name="arch" type="xml">
-				<form string="Helpdesk Support">
+				<form string="Chamados">
 					<header>
 						<field name="state" nolabel="1" widget="statusbar"
-							clickable="True" statusbar_colors="{&quot;pending&quot;:&quot;blue&quot;}" />
+							clickable="True" statusbar_colors="{'pending':'blue'}" />
 					</header>
 					<sheet string="Helpdesk Support">
 						<group col="4" class="oe_header">
@@ -76,10 +49,35 @@
 						</notebook>
 					</sheet>
 				</form>
-				<div class="oe_chatter">
-					<field name="message_follower_ids" widget="mail_followers" />
-					<field name="message_ids" widget="mail_thread" />
-				</div>
+			</field>
+		</record>
+
+
+
+		<record id="crm_helpdesk_interaction_form" model="ir.ui.view">
+			<field name="name">trustcode.helpdesk.client.crm.helpdesk.interaction.form
+			</field>
+			<field name="model">crm.helpdesk.trustcode.interaction</field>
+			<field name="arch" type="xml">
+				<form string="Interações">
+					<header>
+						<field name="state" nolabel="1" widget="statusbar"
+							statusbar_colors="{'new': 'blue'}" />
+					</header>
+					<group>
+						<field name="interacao_trustcode" invisible="1" />
+						<field name="responsible" readonly="1" />
+						<field name="date" readonly="1" />
+						<field name="time_since_last_interaction" readonly="1"
+							widget="float_time" invisible="1" />
+					</group>
+					<separator string="Informações" />
+					<group>
+						<field name="name" />
+						<field name="attachment"
+							attrs="{ 'invisible': [('interacao_trustcode', '=', True)]}" />
+					</group>
+				</form>
 			</field>
 		</record>
 
@@ -115,6 +113,7 @@
 			<field name="search_view_id" ref="view_trustcode_helpdesk_client_filter" />
 		</record>
 
+
 		<record id="view_act_trustcode_helpdesk_client_tree" model="ir.actions.act_window.view">
 			<field name="sequence">5</field>
 			<field name="view_mode">tree</field>
@@ -122,10 +121,11 @@
 			<field name="act_window_id" ref="action_trustcode_helpdesk_client_form" />
 		</record>
 
+
 		<record id="view_act_trustcode_helpdesk_client_form" model="ir.actions.act_window.view">
 			<field name="sequence">15</field>
 			<field name="view_mode">form</field>
-			<field name="view_id" ref="trustcode_helpdesk_client_crm_helpdesk_form" />
+			<field name="view_id" ref="client_crm_helpdesk_form" />
 			<field name="act_window_id" ref="action_trustcode_helpdesk_client_form" />
 		</record>
 
