@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_helpdesk_trustcode_manager,crm.helpdes.trustcode.manager,model_crm_helpdesk_trustcode,base.group_sale_manager,1,1,1,1
+access_crm_helpdesk_trustcode_user,crm.helpdesk.trustcode.user,model_crm_helpdesk_trustcode,base.group_sale_salesman,1,1,1,1
+access_crm_helpdesk_trustcode_interaction_manager,crm.helpdes.trustcode.interaction.manager,model_crm_helpdesk_trustcode_interaction,base.group_sale_manager,1,1,1,1
+access_crm_helpdesk_trustcode_interaction_user,crm.helpdesk.trustcode.interaction.user,model_crm_helpdesk_trustcode_interaction,base.group_sale_salesman,1,1,1,1

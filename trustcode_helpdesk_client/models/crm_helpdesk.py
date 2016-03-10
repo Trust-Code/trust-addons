@@ -90,33 +90,34 @@ class CrmHelpesk(models.Model):
     def synchronize_helpdesk_solicitation(self):
         env_inter = self.env['crm.helpdesk.trustcode.interaction']
         url = self.env.user.company_id.url_trustcode
-        cnpj = self.env.user.company_id.cnpj_cpf
-        odoo = odoorpc.ODOO(url, port=80)
-        result = odoo.json('/helpdesk/list', {'cnpj': cnpj})
-        if result['result']['sucesso']:
-            for item in result['result']['solicitations']:
-                help_sol = self.search(
-                    [('trustcode_id', '=', item['trustcode_id'])])
-                if help_sol:
-                    help_sol.state = item['state']
-                    help_sol.responsible = item['responsible']
-                    help_sol.priority = item['priority']
-                    for interact in item['interactions']:
-                        inter = env_inter.search(
-                            [('trustcode_id', '=', interact['trustcode_id'])])
-                        if inter:
-                            inter.state = interact['state']
-                            inter.name = interact['name']
-                            inter.responsible = interact['responsible']
-                            inter.interacao_trustcode = interact[
-                                'interacao_trustcode']
-                            inter.time_since_last_interaction = interact[
-                                'time_since_last_interaction']
-                        else:
-                            interact['crm_help_id'] = help_sol.id
-                            int_env = self.env[
-                                'crm.helpdesk.trustcode.interaction']
-                            int_env.create(interact)
+        if url:
+            cnpj = self.env.user.company_id.cnpj_cpf
+            odoo = odoorpc.ODOO(url, port=80)
+            result = odoo.json('/helpdesk/list', {'cnpj': cnpj})
+            if result['result']['sucesso']:
+                for item in result['result']['solicitations']:
+                    help_sol = self.search(
+                        [('trustcode_id', '=', item['trustcode_id'])])
+                    if help_sol:
+                        help_sol.state = item['state']
+                        help_sol.responsible = item['responsible']
+                        help_sol.priority = item['priority']
+                        for interact in item['interactions']:
+                            inter = env_inter.search(
+                                [('trustcode_id', '=', interact['trustcode_id'])])
+                            if inter:
+                                inter.state = interact['state']
+                                inter.name = interact['name']
+                                inter.responsible = interact['responsible']
+                                inter.interacao_trustcode = interact[
+                                    'interacao_trustcode']
+                                inter.time_since_last_interaction = interact[
+                                    'time_since_last_interaction']
+                            else:
+                                interact['crm_help_id'] = help_sol.id
+                                int_env = self.env[
+                                    'crm.helpdesk.trustcode.interaction']
+                                int_env.create(interact)
 
 
 class CrmHelpdeskInteraction(models.Model):

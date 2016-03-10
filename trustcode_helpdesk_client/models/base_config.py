@@ -29,7 +29,7 @@ class ResCompany(models.Model):
     url_trustcode = fields.Char(u'Url Trustcode', size=100)
 
 
-class BaseConfigSettings(models.Model):
+class BaseConfigSettings(models.TransientModel):
     _inherit = 'base.config.settings'
 
     url_trustcode = fields.Char(u'Url Trustcode', size=100)

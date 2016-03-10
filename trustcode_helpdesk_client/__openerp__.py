@@ -36,6 +36,8 @@
     ],
     'data': [
         'data/cron_synchronize_helpdesk.xml',
+        'data/trustcode_data.xml',
+        'security/ir.model.access.csv',
         'views/base_config_settings_view.xml',
         'views/crm_delpdesk_view.xml',
     ],
