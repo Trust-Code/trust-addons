@@ -33,6 +33,7 @@ class CrmHelpdeskInteraction(models.Model):
 
     responsible_id = fields.Many2one('res.partner', u'Responsável',
                                      default=_default_responsible)
+    responsible = fields.Char('Atendente', readonly=True, size=50)
     date = fields.Datetime(u'Data', default=fields.Datetime.now())
     time_since_last_interaction = fields.Float(u'Última interação')
     state = fields.Selection([('new', 'Novo'), ('read', 'Lida')],
@@ -42,10 +43,33 @@ class CrmHelpdeskInteraction(models.Model):
     attachment = fields.Binary(u'Anexo')
     trustcode_id = fields.Char(u"Id Único", size=80,
                                default=lambda *args: str(uuid.uuid4()))
+    interacao_trustcode = fields.Boolean(
+        u"Interação do suporte",
+        default=True)
 
     @api.multi
     def mark_as_read(self):
-        self.write({'state': 'read'})
+        for item in self:
+            if not item.interacao_trustcode:
+                item.write({'state': 'read'})
+
+    @api.model
+    def create(self, vals):
+        result = super(CrmHelpdeskInteraction, self).create(vals)
+        if result.interacao_trustcode:
+            helpdesk = self.env['crm.helpdesk'].browse(vals['crm_help_id'])
+            helpdesk.partner_id.message_post(
+                type='email',
+                subject=u"Nova interação no chamado %s" % helpdesk.name,
+                body=vals['name'])
+
+            template_id = self.env['ir.model.data'].get_object_reference(
+                'trustcode_helpdesk', 'email_template_nova_interacao')[1]
+            mail_template = self.env['email.template'].browse(
+                template_id)
+            mail_template.send_mail(
+                result.id, force_send=False, raise_exception=False)
+        return result
 
 
 class CrmHelpDesk(models.Model):
@@ -92,14 +116,14 @@ class CrmHelpDesk(models.Model):
             [('trustcode_id', '=', kwargs['help_trustcode_id'])])
         if helpdesk:
             kwargs.update({'trustcode_id': str(uuid.uuid4()),
-                           'crm_help_id': helpdesk.id})
+                           'crm_help_id': helpdesk.id,
+                           'interacao_trustcode': False})
             self.env['crm.helpdesk.interaction'].create(kwargs)
-            users = self.env['res.users'].search(
-                [('receive_support', '=', True)])
-            for user in users:
-                user.message_post(type='email',
-                                  subject=u"Nova interação no chamado %s" % helpdesk.name,
-                                  body=kwargs['name'])
+            if helpdesk.user_id:
+                helpdesk.user_id.message_post(
+                    type='email',
+                    subject=u"Nova interação no chamado %s" % helpdesk.name,
+                    body=kwargs['name'])
             return kwargs['trustcode_id']
 
     @api.multi
@@ -107,7 +131,7 @@ class CrmHelpDesk(models.Model):
         interaction = self.env['crm.helpdesk.interaction'].search(
             [('trustcode_id', '=', kwargs['trustcode_id'])])
 
-        interaction.mark_as_read()
+        interaction.state = 'read'
         body = "Interação lida por - %s" % kwargs['user']
         interaction.crm_help_id.message_post(type='notification',
                                              subtype="mt_comment",
@@ -136,9 +160,10 @@ class CrmHelpDesk(models.Model):
                 interact = {
                     'trustcode_id': interaction.trustcode_id,
                     'name': interaction.name,
-                    'responsible': interaction.responsible_id.name,
+                    'responsible': ("Suporte - %s" % interaction.responsible_id.name) if interaction.interacao_trustcode else interaction.responsible,
                     'state': interaction.state,
                     'date': interaction.date,
+                    'interacao_trustcode': interaction.interacao_trustcode,
                     'time_since_last_interaction':
                     interaction.time_since_last_interaction
                 }

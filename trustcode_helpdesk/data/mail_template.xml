@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+		<!--Email template -->
+		<record id="email_template_nova_interacao" model="email.template">
+			<field name="name">Nova interacao chamado</field>
+			<field name="email_from">${user.name}
+				&lt;${user.email}&gt;</field>
+			<field name="subject">Nova interação do chamado
+				${object.crm_help_id.name}
+			</field>
+			<field name="email_to">${object.crm_help_id.email_from}</field>
+			<field name="model_id" ref="trustcode_helpdesk.model_crm_helpdesk_interaction" />
+			<field name="auto_delete" eval="True" />
+			<field name="body_html"><![CDATA[
+<div
+	style="color: rgb(76, 76, 76); font-family: 'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; font-size: 13px;">O seu chamado teve uma nova interação, verifique abaixo a
+	resposta:</div>
+<div
+	style="color: rgb(76, 76, 76); font-family: 'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; font-size: 13px;">
+	<br>
+</div>
+<div>
+	<font color="#4c4c4c" face="Lucida Grande, Helvetica, Verdana, Arial, sans-serif">
+		<span style="font-size: 13px;">${object.name}</span>
+	</font>
+</div>
+<div
+	style="color: rgb(76, 76, 76); font-family: 'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; font-size: 13px;">
+	<br>
+</div>
+ ]]></field>
+		</record>
+	</data>
+</openerp>

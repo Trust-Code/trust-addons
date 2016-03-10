@@ -18,12 +18,12 @@
 						<field name="responsible_id" readonly="1" />
 						<field name="date" readonly="1" />
 						<field name="time_since_last_interaction" readonly="1"
-							widget="float_time" />
+							widget="float_time" invisible="1" />
 					</group>
 					<separator string="Informações" />
 					<group>
 						<field name="name" />
-						<field name="attachment" />
+						<field name="attachment" readonly="1" />
 					</group>
 				</form>
 			</field>

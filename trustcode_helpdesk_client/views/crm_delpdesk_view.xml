@@ -3,7 +3,8 @@
 	<data>
 
 		<record id="crm_helpdesk_interaction_form" model="ir.ui.view">
-			<field name="name">trustcode.helpdesk.client.crm.helpdesk.interaction.form</field>
+			<field name="name">trustcode.helpdesk.client.crm.helpdesk.interaction.form
+			</field>
 			<field name="model">crm.helpdesk.trustcode.interaction</field>
 			<field name="arch" type="xml">
 				<form string="Interações">
@@ -12,15 +13,17 @@
 							statusbar_colors="{'new': 'blue'}" />
 					</header>
 					<group>
+						<field name="interacao_trustcode" invisible="1" />
 						<field name="responsible" readonly="1" />
 						<field name="date" readonly="1" />
 						<field name="time_since_last_interaction" readonly="1"
-							widget="float_time" />
+							widget="float_time" invisible="1" />
 					</group>
 					<separator string="Informações" />
 					<group>
 						<field name="name" />
-						<field name="attachment" />
+						<field name="attachment"
+							attrs="{ 'invisible': [('interacao_trustcode', '=', True)]}" />
 					</group>
 				</form>
 			</field>

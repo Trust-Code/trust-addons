@@ -35,6 +35,7 @@
         'crm_helpdesk',
     ],
     'data': [
+        'data/mail_template.xml',
         'security/ir.model.access.csv',
         'views/crm_delpdesk_view.xml',
         'views/res_users_view.xml',
