@@ -45,9 +45,11 @@
 			<field name="arch" type="xml">
 				<tree string="Interações" colors="blue:state=='new';" delete="false">
 					<field name="id" invisible="1" />
+					<field name="interacao_trustcode" invisible="1" />
 					<field name="name" />
 					<field name="state" readonly="1" />
-					<field name="responsible_id" readonly="1" />
+					<field name="responsible_id" readonly="1" attrs="{ 'invisible': [('interacao_trustcode', '!=', True)]}" />
+					<field name="responsible" readonly="1" attrs="{ 'invisible': [('interacao_trustcode', '=', True)]}" />
 					<button string="Marcar como lida" icon="kanban-apply" name="mark_as_read"
 						type="object" attrs="{'invisible': [('state', '=', 'read')] }" />
 				</tree>
