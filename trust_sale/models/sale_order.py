@@ -24,4 +24,4 @@ class sale_order(models.Model):
     _inherit = 'sale.order'
 
     delivery_after = fields.Integer(
-        string='Prazo de entrega (dias)', default=30)
+        string="Prazo de entrega (dias)", default=30)

@@ -18,34 +18,60 @@
 			<field name="model">sale.order.configured.product</field>
 			<field name="arch" type="xml">
 				<form string="Setup new Product">
-					<group string="Sale Order Info">
-						<field name="sale_order_id" />
-						<field name="order_line_id" />
-					</group>
-					<group>
-						<field name="product_tmpl_id" />
-						<field name="quantity" />
-					</group>
+					<header>
+							<button name="confirm_done" string="Confirmar" type="object" class="oe_highlight" states="draft" />
+							<field name="state" widget="statusbar" clickable="true" statusbar_colors="{'done':'blue'}"/>
+					</header>
+					<sheet>
+						<group string="Informações do pedido venda">
+							<group>
+								<field name="sale_order_id" />
+							</group>
+							<group>
+								<field name="order_line_id" />
+							</group>
+						</group>
+						<group string="Escolher o produto e quantidade">
+							<group>
+								<field name="product_tmpl_id" context="{'default_configurator_template': True}" />
+							</group>
+							<group>
+								<field name="quantity" />
+							</group>
+						</group>
+						<group string="Selecione as propriedades">
+							<field name="product_attributes" nolabel="1"
+									attrs="{'invisible': [('product_attributes','=',[])]}"
+									options="{'no_create': True, 'no_delete': True}">
+									<tree create="0" delete="0" editable="1">
+											<field name="attribute" />
+											<field name="value" />
+											<field name="possible_values"
+														 widget="many2many_tags" />
+									</tree>
+							</field>
+						</group>
+					</sheet>
 				</form>
 			</field>
 		</record>
 
 		<record id="action_sale_order_configured_product_tree" model="ir.actions.act_window">
-			<field name="name">Configured Products</field>
+			<field name="name">Produtos Configurados</field>
 			<field name="res_model">sale.order.configured.product</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="view_id" ref="view_sale_order_configured_product_tree" />
 			<field name="context">{}</field>
 		</record>
-		
+
 		<record id="view_sale_order_configured_product_filter" model="ir.ui.view">
-	        <field name="model">sale.order.configured.product</field>			
+	        <field name="model">sale.order.configured.product</field>
 	        <field name="arch" type="xml">
-	        	<search string="Search Sales Order">                    
-                    <field name="sale_order_id"/>
-               </search>
-	        </field>		
+	        <search string="Search Sales Order">
+                <field name="sale_order_id"/>
+            </search>
+	        </field>
 		</record>
 
 	</data>

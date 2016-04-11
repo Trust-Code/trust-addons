@@ -12,7 +12,7 @@
 					<button class="oe_inline oe_stat_button" type="action"
 						name="%(trust_product_configurator.action_sale_order_configured_product_tree)d" icon="fa-puzzle-piece"
 						context="{'default_sale_order_id': active_id, 'search_default_sale_order_id': active_id }">
-						<field string="Configurator" name="product_configurator_count"
+						<field string="Configurador" name="product_configurator_count"
 							widget="statinfo" />
 					</button>
 				</div>
@@ -27,4 +27,3 @@
 
 	</data>
 </openerp>
-
