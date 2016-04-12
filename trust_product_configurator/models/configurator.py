@@ -51,8 +51,11 @@ class SaleOrderConfiguredProducts(models.Model):
 
     product_tmpl_id = fields.Many2one(
         'product.template', string="Template de produto",
-        domain="[('configurator_template', '=', True)]")
-    quantity = fields.Integer(string="Quantidade")
+        domain="[('configurator_template', '=', True)]",
+        readonly=True, states={'draft': [('readonly', False)]})
+    quantity = fields.Integer(
+        string="Quantidade", readonly=True,
+        states={'draft': [('readonly', False)]})
 
     product_attributes = fields.One2many(
         comodel_name='sale.order.configured.product.attribute',

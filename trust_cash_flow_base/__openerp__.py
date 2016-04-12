@@ -20,4 +20,21 @@
 ###############################################################################
 
 
-from . import cash_flow
+{
+    'name': 'Cash Flow Report - Base Account',
+    'summary': """Cria um relatório de fluxo de caixa base""",
+    'version': '8.0',
+    'category': 'Tools',
+    'author': 'TrustCode',
+    'license': 'AGPL-3',
+    'website': 'http://www.trustcode.com.br',
+    'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
+                     'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
+                     ],
+    'depends': [
+        'account'
+    ],
+    'data': [
+        'views/cash_flow_view.xml'
+    ],
+}

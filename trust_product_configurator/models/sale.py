@@ -17,43 +17,44 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
 
-from openerp.osv import orm, fields
+from openerp import fields, models
 
 
-class sale_product_configurator(orm.Model):
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    _columns = {
-        'resin': fields.selection([
-            ('isophthalic', 'Isophthalic'),
-            ('off-shore', 'Off-Shore'),
-            ('orthophthalic', 'Orthophthalic'),
-            ('phynolic', 'Phynolic'),
-            ('vinyl ester', 'Vinyl Ester')],
-            'Resin', readonly=False, select=True, required=True),
-        'fixation': fields.selection([
-            ('stainless steel 304', 'Stainless Steel 304'),
-            ('stainless steel 316',
-             'Stainless Steel 316'),
-            ('stainless steel 316L',
-             'Stainless Steel 316L'),
-        ], 'Fixation', readonly=False, select=True, required=True),
-        'color': fields.selection([
-            ('yellow safety', 'Yellow Safety'),
-            ('gray', 'Gray'),
-            ('yellow safety/gray',
-             'Yellow Safety/Gray'),
-            ('green', 'Green'),
-            ('write', 'Write'),
-            ('special', 'Special'),
-        ], 'Color', readonly=False, select=True, required=True),
-        'special color': fields.char('Special Color', size=20,
-                                     help='Insert here the special color.'),
-        'product_configurator_count': fields.integer('Count Products'),
-    }
+    def _count_configured_products(self):
+        return self.env['sale.order.configured.product'].search_count([
+            ('sale_order_id', '=', self.id)
+        ])
 
-    _defaults = {
-        'resin': 'isophthalic',
-                 'fixation': 'stainless steel 304',
-                 'color': 'yellow safety/gray',
-    }
+    resin = fields.Selection([
+        ('isophthalic', 'Isophthalic'),
+        ('off-shore', 'Off-Shore'),
+        ('orthophthalic', 'Orthophthalic'),
+        ('phynolic', 'Phynolic'),
+        ('vinyl ester', 'Vinyl Ester')],
+        'Resin', readonly=False, select=True,
+        required=True, default="isophthalic")
+    fixation = fields.Selection([
+        ('stainless steel 304', 'Stainless Steel 304'),
+        ('stainless steel 316',
+         'Stainless Steel 316'),
+        ('stainless steel 316L',
+         'Stainless Steel 316L'),
+        ], 'Fixation', readonly=False, select=True,
+            required=True, default="stainless steel 304")
+    color = fields.Selection([
+        ('yellow safety', 'Yellow Safety'),
+        ('gray', 'Gray'),
+        ('yellow safety/gray',
+         'Yellow Safety/Gray'),
+        ('green', 'Green'),
+        ('write', 'Write'),
+        ('special', 'Special'),
+        ], 'Color', readonly=False, select=True, required=True,
+            default="yellow safety/gray")
+    special_color = fields.Char('Special Color', size=20,
+                                help='Insert here the special color.')
+    product_configurator_count = fields.Integer(
+        'Count Products', compute=_count_configured_products)
