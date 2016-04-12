@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
 # it under the terms of the GNU Affero General Public License as published by #
@@ -23,7 +23,7 @@
                     para provisório""",
     'category': 'Sales',
     'license': 'AGPL-3',
-    'author': 'Trust-Code',
+    'author': 'Trustcode',
     'website': 'www.trustcode.com.br',
     'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
                      'Danimar Ribeiro <danimaribeiro@gmail.com>'

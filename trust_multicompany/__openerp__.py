@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
 #              Mackilem Van der Laan <mack.vdl@gmail.com>                     #
 #                                                                             #
@@ -26,7 +26,7 @@
     'summary': """Esse módulo implementa melhorias para o recurso de multi empresa.""",
     'version': '8.0.1.0.0',
     'category': '',
-    'author': 'TrustCode',
+    'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',

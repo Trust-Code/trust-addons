@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
 #              Mackilem Van der Laan <mack.vdl@gmail.com>                     #
 #                                                                             #
@@ -26,7 +26,7 @@
     'summary': """ADD 2 buttons on CRM Form for schedule and logged calls""",
     'version': '8.0',
     'category': 'Tools',
-    'author': 'TrustCode',
+    'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
 # it under the terms of the GNU Affero General Public License as published by #
@@ -24,13 +24,10 @@
         sendo utilizado listas de preço.''',
     'category': 'sale',
     'license': 'AGPL-3',
-    'author': 'Trust-Code',
-    'website': 'www.trust-code.com.br',
-    'version': '7.0',
+    'author': 'Trustcode',
+    'website': 'www.trustcode.com.br',
+    'version': '8.0.1.0.0',
     'depends': ['product', 'account', 'sale'],
     'data': ['account_tax_view.xml', ],
-    'test': [],
-    'demo': [],
     'installable': True,
-    'active': False,
 }

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
 # it under the terms of the GNU Affero General Public License as published by #
@@ -18,11 +18,11 @@
 ###############################################################################
 
 {
-    'name': 'Base Account Module - TrustCode',
-    'summary': """Account Base Module for TrustCode""",
+    'name': 'Base Account Module - Trustcode',
+    'summary': """Account Base Module for Trustcode""",
     'version': '8.0',
     'category': 'Tools',
-    'author': 'TrustCode',
+    'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',

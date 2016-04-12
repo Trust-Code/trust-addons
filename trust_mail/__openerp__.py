@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
@@ -25,7 +25,7 @@
     'summary': """Pesquisa o servidor de saída correspondente ao email-from""",
     'version': '8.0',
     'category': 'Tools',
-    'author': 'TrustCode',
+    'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',

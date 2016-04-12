@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ###############################################################################
 #                                                                             #
-# Copyright (C) 2015 TrustCode - www.trustcode.com.br                         #
+# Copyright (C) 2015 Trustcode - www.trustcode.com.br                         #
 #              Danimar Ribeiro <danimaribeiro@gmail.com>                      #
 #                                                                             #
 # This program is free software: you can redistribute it and/or modify        #
@@ -26,7 +26,7 @@
     'summary': 'Payment Acquirer: Cielo Checkout Implementation',
     'version': '1.0',
     'description': """Cielo Checkout Payment Acquirer""",
-    'author': 'TrustCode',
+    'author': 'Trustcode',
     'depends': ['payment', 'website_sale', 'l10n_br_base'],
     'data': [
         'views/cielo.xml',

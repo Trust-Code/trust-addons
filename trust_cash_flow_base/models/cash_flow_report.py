@@ -16,7 +16,7 @@ import openerp.addons.decimal_precision as dp
 from openerp import api, fields, models
 
 
-class CashFlowReport(models.Model):
+class CashFlowReport(models.TransientModel):
     _name = 'cash.flow'
     _description = u'Relatório de Fluxo de Caixa'
 
@@ -81,7 +81,7 @@ class CashFlowReport(models.Model):
                       move.reconcile_partial_id.id)])
                 debit = sum(line.credit for line in move_ids)
                 credit = sum(line.debit for line in move_ids)
-                amount = debit - credit
+                amount = credit - debit
 
             moves.append({
                 'name': move.ref,
@@ -112,7 +112,7 @@ class CashFlowReport(models.Model):
             self.env['cash.flow.line'].create(lines)
 
 
-class CashFlowReportLine(models.Model):
+class CashFlowReportLine(models.TransientModel):
     _name = 'cash.flow.line'
 
     name = fields.Char(string="Descrição", required=True)
