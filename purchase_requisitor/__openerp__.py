@@ -21,7 +21,7 @@
     'summary': 'Insere um campo para selecionar o comprador',
     'category': 'Trust-Code',
     'license': 'AGPL-3',
-    'author': 'Trustcode Tecnologia Ltda',
+    'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
                      'Danimar Ribeiro <danimaribeiro@gmail.com>'

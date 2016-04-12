@@ -20,6 +20,7 @@
 ###############################################################################
 
 
+from openerp import SUPERUSER_ID
 from openerp import api, models
 
 
@@ -29,11 +30,10 @@ class ResUser(models.Model):
     def authenticate(self, db, login, password, user_agent_env):
         result = super(ResUser, self).authenticate(db, login, password,
                                                    user_agent_env)
-
         if result:
             cr = self.pool.cursor()
             try:
-                user = self.pool['res.users'].browse(cr, result, result)
+                user = self.pool['res.users'].browse(cr, SUPERUSER_ID, result)
                 if user.employee_ids:
                     employee = user.employee_ids[0]
                     if employee and employee.state == 'absent':

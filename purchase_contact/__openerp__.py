@@ -19,9 +19,9 @@
 {
     'name': 'Purchase Contact',
     'summary': 'Insere um campo para selecionar o contato da compra',
-    'category': 'Trust-Code',
+    'category': 'Trustcode',
     'license': 'AGPL-3',
-    'author': 'Trustcode Tecnologia Ltda',
+    'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
     'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
                      'Danimar Ribeiro <danimaribeiro@gmail.com>'
