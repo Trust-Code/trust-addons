@@ -73,6 +73,16 @@ class CashFlowReport(models.Model):
         ])
         moves = []
         for move in moveline_ids:
+            debit, credit = move.credit, move.debit
+            amount = move.debit - move.credit
+            if move.reconcile_partial_id:
+                move_ids = moveline_obj.search(
+                    [('reconcile_partial_id', '=',
+                      move.reconcile_partial_id.id)])
+                debit = sum(line.credit for line in move_ids)
+                credit = sum(line.debit for line in move_ids)
+                amount = debit - credit
+
             moves.append({
                 'name': move.ref,
                 'cashflow_id': self.id,
@@ -80,9 +90,9 @@ class CashFlowReport(models.Model):
                 'journal_id': move.journal_id.id,
                 'account_id': move.account_id.id,
                 'date': move.date_maturity,
-                'debit': move.credit,
-                'credit': move.debit,
-                'amount': move.debit - move.credit,
+                'debit': debit,
+                'credit': credit,
+                'amount': amount,
             })
         return moves
 
