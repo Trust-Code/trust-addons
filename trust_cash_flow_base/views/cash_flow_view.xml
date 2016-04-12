@@ -25,7 +25,7 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="cash_flow_form_action">
-			<field name="name">Cash Flow Report</field>
+			<field name="name">Fluxo de Caixa</field>
 			<field name="res_model">cash.flow</field>
 			<field name="view_type">form</field>
 			<field name='view_mode'>tree,form</field>

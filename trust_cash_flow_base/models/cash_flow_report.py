@@ -18,7 +18,7 @@ from openerp import api, fields, models
 
 class CashFlowReport(models.Model):
     _name = 'cash.flow'
-    _description = 'Cash Flow Report'
+    _description = u'Relatório de Fluxo de Caixa'
 
     @api.one
     def calc_final_amount(self):
@@ -28,28 +28,20 @@ class CashFlowReport(models.Model):
         balance += self.start_amount
         self.final_amount = balance
 
-    def calc_cash_bank_balance(self):
-        self.env.cr.execute("""select sum(l.debit-l.credit) as balance
-            from account_move_line l
-            left join account_account a on (l.account_id = a.id)
-            where type = 'liquidity'""")
-        return self.env.cr.fetchone()[0]
-
-    name = fields.Char(string="Description", required=True)
-    start_date = fields.Date(string="Start Date", required=True,
+    name = fields.Char(string="Descrição", required=True)
+    start_date = fields.Date(string="Data Inicio", required=True,
                              default=fields.date.today())
     end_date = fields.Date(
-        string="End Date", required=True,
+        string="Data Fim", required=True,
         default=fields.date.today()+datetime.timedelta(6*365/12))
-    start_amount = fields.Float(string="Start Amount",
-                                default=calc_cash_bank_balance,
+    start_amount = fields.Float(string="Valor Inicial",
                                 digits_compute=dp.get_precision('Account'))
-    final_amount = fields.Float(string="Final Amount",
+    final_amount = fields.Float(string="Valor Final",
                                 compute="calc_final_amount",
                                 digits_compute=dp.get_precision('Account'))
     line_ids = fields.One2many(
         "cash.flow.line", "cashflow_id",
-        string="Cash Flow Lines")
+        string="Linhas Fluxo de Caixa")
 
     @api.multi
     def calculate_liquidity(self):
@@ -113,24 +105,19 @@ class CashFlowReport(models.Model):
 class CashFlowReportLine(models.Model):
     _name = 'cash.flow.line'
 
-    name = fields.Char(string="Description", required=True)
-    date = fields.Date(string="Date")
-    line_type = fields.Selection([('recurring', 'Recurring'),
-                                  ('variable', 'Variable')],
-                                 string="Treasury Line Type")
-    partner_id = fields.Many2one("res.partner", string="Partner")
-    account_id = fields.Many2one("account.account", string="Account")
-    journal_id = fields.Many2one("account.journal", string="Journal",
-                                 domain=[("type", "=", "purchase")])
-    invoice_id = fields.Many2one("account.invoice", string="Invoice",
-                                 domain=[("type", "=", "in_invoice")])
-    debit = fields.Float(string="Debit",
+    name = fields.Char(string="Descrição", required=True)
+    date = fields.Date(string="Data")
+    partner_id = fields.Many2one("res.partner", string="Parceiro")
+    account_id = fields.Many2one("account.account", string="Conta")
+    journal_id = fields.Many2one("account.journal", string="Diário")
+    invoice_id = fields.Many2one("account.invoice", string="Fatura")
+    debit = fields.Float(string="Débito",
                          digits_compute=dp.get_precision('Account'))
-    credit = fields.Float(string="Credit",
+    credit = fields.Float(string="Crédito",
                           digits_compute=dp.get_precision('Account'))
-    amount = fields.Float(string="Amount",
+    amount = fields.Float(string="Saldo(C-D)",
                           digits_compute=dp.get_precision('Account'))
-    balance = fields.Float(string="Balance",
+    balance = fields.Float(string="Saldo Acumulado",
                            digits_compute=dp.get_precision('Account'))
     cashflow_id = fields.Many2one("cash.flow",
-                                  string="Cash Flow")
+                                  string="Fluxo de Caixa")
