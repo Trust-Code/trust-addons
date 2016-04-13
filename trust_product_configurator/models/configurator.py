@@ -25,6 +25,9 @@ class ProductAttributeConfiguredProduct(models.Model):
         string='Produto Configurado')
     attribute = fields.Many2one(
         comodel_name='product.attribute', string='Atributo')
+    attr_type = fields.Selection(string='Tipo', store=False,
+                                 related='attribute.attr_type')
+    numeric_value = fields.Float('Valor Numérico', digits=(12, 6))
     value = fields.Many2one(
         comodel_name='product.attribute.value', string='Valor',
         domain="[('id', 'in', possible_values[0][2])]")
