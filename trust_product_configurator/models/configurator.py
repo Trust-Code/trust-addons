@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
+from lxml import etree
 from openerp import api, fields, models, _
 from openerp.exceptions import Warning as UserError
 
@@ -39,6 +39,34 @@ class ProductAttributeConfiguredProduct(models.Model):
 class SaleOrderConfiguredProducts(models.Model):
     _name = 'sale.order.configured.product'
     _description = 'Produtos configurados no pedido de venda'
+
+    # Prova de conceito - adicionar campo dinâmico na tela
+    # funciona bem e o campo é enviado ao write
+    @api.model
+    def fields_view_get(self, view_id=None, view_type=False, toolbar=False,
+                        submenu=False):
+        res = super(SaleOrderConfiguredProducts, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if view_type == 'form':
+            eview = etree.fromstring(res['arch'])
+            summary = eview.xpath("//field[@name='quantity']")
+            if len(summary):
+                summary = summary[0]
+                summary.addnext(etree.Element('field', {'name': 'teste',
+                                                        'string': 'Teste',
+                                                        }))
+                print res
+                res['fields']['teste'] = {
+                    'change_default': False, 'string': 'Teste',
+                    'searchable': True, 'views': {}, 'required': False,
+                    'manual': False, 'readonly': True,
+                    'depends': [], 'company_dependent': False,
+                    'sortable': True, 'type': 'integer', 'store': True
+                }
+            res['arch'] = etree.tostring(eview)
+
+        return res
 
     @api.multi
     def name_get(self):
