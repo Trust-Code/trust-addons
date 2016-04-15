@@ -31,42 +31,162 @@ class ProductAttributeConfiguredProduct(models.Model):
     value = fields.Many2one(
         comodel_name='product.attribute.value', string='Valor',
         domain="[('id', 'in', possible_values[0][2])]")
+    value_str = fields.Char("Valor Selecionado", size=40)
     possible_values = fields.Many2many(
         comodel_name='product.attribute.value', string="Valores possíveis",
         compute='_get_possible_attribute_values', readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        print vals
+        if 'numeric_value' in vals:
+            vals['value_str'] = vals['numeric_value']
+        if 'value' in vals:
+            value = self.env['product.attribute.value'].browse(vals['value'])
+            vals['value_str'] = value.name
+        return super(ProductAttributeConfiguredProduct, self).write(vals)
+
+
+class ProductConfiguratorBomLine(models.Model):
+    _name = 'product.configurator.bom.line'
+
+    product_line = fields.Many2one(
+        comodel_name='sale.order.configured.product',
+        string='Produto Configurado')
+
+    bom_line_id = fields.Many2one('mrp.bom.line', string='Linha BOM')
+    product_template_id = fields.Many2one(
+        string='Subproduto', store=False,
+        related='bom_line_id.product_template')
+    quantity = fields.Float(related="bom_line_id.product_qty",
+                            string="Quantidade")
+    configured = fields.Boolean(string="Configurado", default=False)
+
+    @api.multi
+    def open_wizard_configure(self):
+        print "ok"
+        pass
+
+
+class ProductConfiguratorWizard(models.TransientModel):
+    _name = 'product.configurator.wizard'
+
+    sale_product_id = fields.Many2one('sale.order.configured.product',
+                                      string="Produto Configurado")
+    product_id = fields.Many2one(related='sale_product_id.product_tmpl_id')
+
+    @api.multi
+    def write(self, vals):
+        for key, value in vals.iteritems():
+            if key.startswith('dynamic_'):
+                id_attr = int(key.replace('dynamic_', ''))
+                prod_attribute = self.sale_product_id.product_attributes.\
+                    filtered(lambda x: x.attribute.id == id_attr)
+                if isinstance(value, basestring):
+                    value_id = int(value.replace('value_', ''))
+                    prod_attribute.value = value_id
+                else:
+                    prod_attribute.numeric_value = value
+
+        return super(ProductConfiguratorWizard, self).write(vals)
+
+    @api.multi
+    def read(self, fields=None, load='_classic_read'):
+        result = super(ProductConfiguratorWizard, self).read(fields, load)
+        for res in result:
+            current_id = self.browse(res['id'])
+            if current_id:
+                for prod_attr in current_id.sale_product_id.product_attributes:
+                    attr_name = 'dynamic_%s' % prod_attr.attribute.id
+                    if prod_attr.attribute.attr_type == 'selection':
+                        if prod_attr.value.id:
+                            res[attr_name] = 'value_%s' % prod_attr.value.id
+                    else:
+                        res[attr_name] = prod_attr.numeric_value
+        return result
+
+    @api.model
+    def fields_view_get(self, view_id=None, view_type=False, toolbar=False,
+                        submenu=False):
+        res = super(ProductConfiguratorWizard, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if view_type == 'form':
+            eview = etree.fromstring(res['arch'])
+            sale_product_id = eview.xpath("//field[@name='sale_product_id']")
+            if len(sale_product_id) and "current_id" in self.env.context:
+                sale_product_id = sale_product_id[0]
+
+                current_id = self.browse(
+                    self.env.context['current_id'])
+                add_attributes = []
+                for attribute in current_id.product_id.attribute_line_ids:
+                    values = []
+                    for value in attribute.value_ids:
+                        values.append({
+                            'id': 'value_%s' % value.id,
+                            'name': value.name,
+                        })
+
+                    add_attributes.append({
+                        'name': 'dynamic_%s' % attribute.attribute_id.id,
+                        'string': attribute.attribute_id.name,
+                        'type': attribute.attribute_id.attr_type,
+                        'required': attribute.required,
+                        'values': values,
+                    })
+
+                for add_attr in add_attributes:
+                    sale_product_id.addnext(etree.Element(
+                        'field', {'name': add_attr['name'],
+                                  'string': add_attr['string'],
+                                  'modifiers': '{ "required": true }'}
+                        ))
+                    vals = {
+                        'string': add_attr['string'],
+                        'required': add_attr['required'],
+                        'type': add_attr['type'],
+                    }
+                    selection = []
+                    if add_attr['type'] == 'selection':
+                        for value in add_attr['values']:
+                            selection.append(
+                                [value['id'], value['name']]
+                            )
+                        vals['selection'] = selection
+
+                    res['fields'][add_attr['name']] = vals
+
+            res['arch'] = etree.tostring(eview)
+        return res
 
 
 class SaleOrderConfiguredProducts(models.Model):
     _name = 'sale.order.configured.product'
     _description = 'Produtos configurados no pedido de venda'
 
-    # Prova de conceito - adicionar campo dinâmico na tela
-    # funciona bem e o campo é enviado ao write
-    @api.model
-    def fields_view_get(self, view_id=None, view_type=False, toolbar=False,
-                        submenu=False):
-        res = super(SaleOrderConfiguredProducts, self).fields_view_get(
-            view_id=view_id, view_type=view_type, toolbar=toolbar,
-            submenu=submenu)
-        if view_type == 'form':
-            eview = etree.fromstring(res['arch'])
-            summary = eview.xpath("//field[@name='quantity']")
-            if len(summary):
-                summary = summary[0]
-                summary.addnext(etree.Element('field', {'name': 'teste',
-                                                        'string': 'Teste',
-                                                        }))
-                print res
-                res['fields']['teste'] = {
-                    'change_default': False, 'string': 'Teste',
-                    'searchable': True, 'views': {}, 'required': False,
-                    'manual': False, 'readonly': True,
-                    'depends': [], 'company_dependent': False,
-                    'sortable': True, 'type': 'integer', 'store': True
-                }
-            res['arch'] = etree.tostring(eview)
-
-        return res
+    @api.multi
+    def open_wizard_configure(self):
+        mod_obj = self.env['ir.model.data']
+        result = mod_obj.get_object_reference(
+            'trust_product_configurator',
+            'view_product_configurator_wizard_form')
+        wiz_id = self.env['product.configurator.wizard'].create({
+            'sale_product_id': self.id,
+        })
+        return {
+            'name': 'Configurar produto',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.configurator.wizard',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_id': wiz_id.id,
+            'views': [(result[1], 'form')],
+            'target': 'new',
+            'context': {'current_id': wiz_id.id},
+            'flags': {'form': {'action_buttons': True, 'options':
+                               {'mode': 'edit'}}},
+        }
 
     @api.multi
     def name_get(self):
@@ -85,7 +205,7 @@ class SaleOrderConfiguredProducts(models.Model):
         domain="[('configurator_template', '=', True)]",
         readonly=True, states={'draft': [('readonly', False)]})
     quantity = fields.Integer(
-        string="Quantidade", readonly=True,
+        string="Quantidade", readonly=True, default=1.0,
         states={'draft': [('readonly', False)]})
 
     product_attributes = fields.One2many(
@@ -93,6 +213,13 @@ class SaleOrderConfiguredProducts(models.Model):
         inverse_name='product_line',
         string='Atributos de produto', copy=True,
         readonly=True, states={'draft': [('readonly', False)]})
+
+    bom_line_ids = fields.One2many(
+        comodel_name='product.configurator.bom.line',
+        inverse_name='product_line',
+        string='Subprodutos', copy=True,
+        readonly=True, states={'draft': [('readonly', False)]}
+    )
 
     @api.multi
     @api.onchange('product_tmpl_id')
@@ -102,6 +229,20 @@ class SaleOrderConfiguredProducts(models.Model):
             [(2, x.id) for x in self.product_attributes] +
             [(0, 0, x) for x in
              self.product_tmpl_id._get_product_attributes_dict()])
+
+        if self.product_tmpl_id:
+            bom = self.env['mrp.bom'].search(
+                [('product_tmpl_id', '=', self.product_tmpl_id.id)], limit=1)
+
+            lines = []
+            for bom_line in bom.bom_line_ids:
+                lines.append((0, 0, {
+                    'product_line': self.id,
+                    'bom_line_id': bom_line.id,
+                }))
+            self.bom_line_ids = (
+                lines
+            )
 
     def _check_line_confirmability(self):
         if any(not bool(line.value) for line in self.product_attributes):

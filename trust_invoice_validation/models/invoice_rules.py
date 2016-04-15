@@ -46,9 +46,10 @@ class AccountInvoiceRules(models.Model):
 #  - env: ORM model environment """)
     message = fields.Char('Validation Message', size=150)
 
-    use_in = fields.Selection([('account.invoice', 'Account Invoice'),
-                               ('account.invoice.line', 'Account Invoice Line')],
-                              string='Use in')
+    use_in = fields.Selection([
+        ('account.invoice', 'Account Invoice'),
+        ('account.invoice.line', 'Account Invoice Line')
+    ], string='Use in')
 
     @api.multi
     def validate(self, invoice, line=False):

@@ -24,9 +24,11 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     def _count_configured_products(self):
-        return self.env['sale.order.configured.product'].search_count([
+        total = self.env['sale.order.configured.product'].search_count([
             ('sale_order_id', '=', self.id)
         ])
+        print "passou aqui %d" % total
+        return total
 
     resin = fields.Selection([
         ('isophthalic', 'Isophthalic'),

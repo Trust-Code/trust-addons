@@ -20,6 +20,16 @@
 from openerp import api, fields, models
 
 
+class ProductAttribute(models.Model):
+    _inherit = "product.attribute"
+
+    attr_type = fields.Selection(required=True, selection=[
+        ('selection', 'Select'),
+        ('integer', 'Integer'),
+        ('float', 'Numeric'),
+        ('char', 'Text')], string="Type", default='selection')
+
+
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
