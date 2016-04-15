@@ -38,7 +38,6 @@ class ProductAttributeConfiguredProduct(models.Model):
 
     @api.multi
     def write(self, vals):
-        print vals
         if 'numeric_value' in vals:
             vals['value_str'] = vals['numeric_value']
         if 'value' in vals:
@@ -88,7 +87,8 @@ class ProductConfiguratorWizard(models.TransientModel):
                 else:
                     prod_attribute.numeric_value = value
 
-        return super(ProductConfiguratorWizard, self).write(vals)
+        super(ProductConfiguratorWizard, self).write(vals)
+        return {'type': 'ir.actions.act_window_close'}
 
     @api.multi
     def read(self, fields=None, load='_classic_read'):

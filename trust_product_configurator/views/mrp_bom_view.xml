@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+    <record id="configurator_mrp_bom_line_tree" model="ir.ui.view">
+			<field name="name">configurator.mrp.bom.line.tree</field>
+			<field name="model">mrp.bom</field>
+			<field name="inherit_id" ref="mrp.mrp_bom_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='bom_line_ids']/tree" position="attributes">
+				    <attribute name="editable"></attribute>
+				</xpath>
+        <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="before">
+          <field name="product_template" />
+        </xpath>
+			</field>
+		</record>
+
+
+    <record id="configurator_mrp_bom_line_form" model="ir.ui.view">
+      <field name="name">configurator.mrp.bom.line.form</field>
+      <field name="model">mrp.bom.line</field>
+      <field name="arch" type="xml">
+        <form string="Valores de Atributo">
+          <sheet>
+            <group>
+                <group>
+                  <field name="product_template" />
+                  <field name="product_id" />
+                  <field name="type" />
+                  <field name="product_qty" />
+                  <field name="product_rounding" />
+                </group>
+                <group>
+                  <field name="product_efficiency" />
+                  <field name="date_start" />
+                  <field name="date_stop" />
+                  <field name="attribute_value_ids" widget="many2many_tags" domain="[('product_ids.product_tmpl_id', '=', parent.product_tmpl_id)]"/>
+                  <field name="property_ids" widget="many2many_tags"/>
+                </group>
+            </group>
+            <group string="Expressão Python">
+              <field name="rule_expression" nolabel="1" />
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+  </data>
+</openerp>

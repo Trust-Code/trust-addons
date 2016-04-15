@@ -10,14 +10,22 @@ from openerp.exceptions import Warning as UserError
 class MrpBomLine(models.Model):
     _inherit = 'mrp.bom.line'
 
+    product_id = fields.Many2one(required=False)
+    product_template = fields.Many2one('product.template',
+                                       string='Modelo de produto')
+
     rule_expression = fields.Text('Regra (python)',
-                                  default="""
-# Python code. Use failed = True to block the invoice confirmation.
-# You can use the following variables :
-#  - obj_env: ORM environment of the objet which is used
-#  - invoice: invoice is always available
-#  - line: line is available if this rule is for the line
-#  - env: ORM model environment """)
+                                  default="""# Código python
+# Você pode usar as sequintes variáveis:
+#  - obj_env: Variavel ORM do objeto atual
+#  - bom: lista de materiais que está sendo avaliada
+#  - bom_line: linha da lista de materiais que esta sendo avaliada
+#  - product: Produto que esta propriedade pertence
+#  - env: ORM environment
+# ----------------------------------------------------------------
+# Retorno:
+#  - quantidade: quantidade do material a usar (0 - para remover)
+""")
 
     quantity_use = fields.Float(string="Quantidade Calculada", digits=(18, 6))
 

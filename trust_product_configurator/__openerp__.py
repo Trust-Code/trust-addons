@@ -37,6 +37,7 @@
         'views/product_view.xml',
         'views/configurator_view.xml',
         'views/sale_view.xml',
+        'views/mrp_bom_view.xml',
     ],
     'application': True,
 }
