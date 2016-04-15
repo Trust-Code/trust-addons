@@ -25,13 +25,34 @@ class CashFlowReport(models.TransientModel):
         ])
         moves = []
         for purchase in purchase_ids:
+            invs = purchase.invoice_ids.filtered(lambda x: x.state != 'draft')
+            if invs:
+                continue
+            if purchase.payment_term_id:
+                values = purchase.payment_term_id.compute(
+                    purchase.amount_total)
+                index = 1
+                for item in values[0]:
+                    moves.append({
+                        'name': '%s/%s' % (purchase.name, index),
+                        'cashflow_id': self.id,
+                        'partner_id': purchase.partner_id.id,
+                        'account_id':
+                        purchase.partner_id.property_account_payable.id,
+                        'date': item[0],
+                        'debit': item[1],
+                        'credit': 0.0,
+                        'amount': 0.0 - item[1],
+                    })
+                    index += 1
+                continue
             moves.append({
                 'name': purchase.name,
                 'cashflow_id': self.id,
                 'partner_id': purchase.partner_id.id,
                 'account_id': purchase.partner_id.property_account_payable.id,
                 'date': purchase.minimum_planned_date,
-                'debit': 0.0 - purchase.amount_total,
+                'debit': purchase.amount_total,
                 'credit': 0.0,
                 'amount': 0.0 - purchase.amount_total,
             })
@@ -51,6 +72,23 @@ class CashFlowReport(models.TransientModel):
         moves = []
         for sale in sale_ids:
             date = datetime.datetime.strptime(sale.commitment_date, DSDTT)
+            if sale.payment_term:
+                values = sale.payment_term.compute(sale.amount_total)
+                index = 1
+                for item in values[0]:
+                    moves.append({
+                        'name': '%s/%s' % (sale.name, index),
+                        'cashflow_id': self.id,
+                        'partner_id': sale.partner_id.id,
+                        'account_id':
+                        sale.partner_id.property_account_receivable.id,
+                        'date': item[0],
+                        'debit': 0.0,
+                        'credit': item[1],
+                        'amount': item[1],
+                    })
+                    index += 1
+                continue
             moves.append({
                 'name': sale.name,
                 'cashflow_id': self.id,
