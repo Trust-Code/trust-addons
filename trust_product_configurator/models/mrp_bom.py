@@ -19,19 +19,19 @@ class MrpBom(models.Model):
                 [('product_id', '=', False),
                  ('product_tmpl_id', '=', template.id)], limit=1)
 
-    def _compute_bom_line(self, bom_line, attributes):
+    def _compute_bom_line(self, bom_line, product, attributes):
 
         bom_id = self._bom_search(product=bom_line.product_id,
                                   template=bom_line.product_template)
         items = []
         if bom_id:
             for line in bom_id.bom_line_ids:
-                items += self._compute_bom_line(line, attributes)
+                items += self._compute_bom_line(line, product, attributes)
 
         quantity = bom_line.compute_rule(attributes)
         if isinstance(quantity, bool) or quantity:
             vals = (0, 0, {'product_qty': quantity or bom_line.product_qty,
-                           'product_id': bom_line.product_id.id,
+                           'product_id': bom_line.product_id.id or product.id,
                            'type': 'normal',
                            'product_template': bom_line.product_template.id})
             return items + [vals]
@@ -45,7 +45,17 @@ class MrpBom(models.Model):
 
         items = []
         for line in self.bom_line_ids:
-            items += self._compute_bom_line(line, attributes)
+            if line.product_template.configurator_template:
+
+                attr_values = properties.filtered(
+                    lambda x: x.product_tmpl_id.id == line.product_template.id)\
+                    .mapped('value')
+
+                product = self.env['product.product'].create(
+                    {'product_tmpl_id': line.product_template.id,
+                     'attribute_value_ids': [(6, 0, attr_values.ids)]})
+
+            items += self._compute_bom_line(line, product, attributes)
 
         self.create({'name': self.product_tmpl_id.name,
                      'product_tmpl_id': self.product_tmpl_id.id,
