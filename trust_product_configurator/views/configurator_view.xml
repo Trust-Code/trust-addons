@@ -56,6 +56,7 @@
 						<group string="Escolher o produto e quantidade">
 							<group>
 								<field name="product_tmpl_id" context="{'default_configurator_template': True}" />
+								<field name="configured" />
 								<button name="open_wizard_configure" string="Configurar Produto" type="object" />
 							</group>
 							<group>
@@ -64,9 +65,10 @@
 						</group>
 						<group name="bom_group" string="Subprodutos">
 							<field name="bom_line_ids" nolabel="1">
-								<tree create="0" delete="0" editable="0">
+								<tree create="0" editable="0">
+									<field name="bom_line_id" invisible="1" />
 									<field name="product_template_id" />
-									<field name="configured" readonly="1" />
+									<field name="configured" />
 									<field name="quantity" readonly="1" />
 								</tree>
 							</field>
@@ -75,9 +77,10 @@
 							<field name="product_attributes" nolabel="1"
 									attrs="{'invisible': [('product_attributes','=',[])]}"
 									options="{'no_create': True, 'no_delete': True}">
-									<tree create="0" delete="0" editable="1">
-											<field name="attribute" readonly="1" />
-											<field name="value_str" readonly="1" />
+									<tree create="0" editable="1">
+										<field name="product_tmpl_id" readonly="1" />
+										<field name="attribute" readonly="1" />
+										<field name="value_str" readonly="1" />
 									</tree>
 							</field>
 						</group>

@@ -23,6 +23,7 @@ class ProductAttributeConfiguredProduct(models.Model):
     product_line = fields.Many2one(
         comodel_name='sale.order.configured.product',
         string='Produto Configurado')
+    product_tmpl_id = fields.Many2one('product.template', string='Produto')
     attribute = fields.Many2one(
         comodel_name='product.attribute', string='Atributo')
     attr_type = fields.Selection(string='Tipo', store=False,
@@ -72,7 +73,8 @@ class ProductConfiguratorWizard(models.TransientModel):
 
     sale_product_id = fields.Many2one('sale.order.configured.product',
                                       string="Produto Configurado")
-    product_id = fields.Many2one(related='sale_product_id.product_tmpl_id')
+    product_id = fields.Many2one('product.template',
+                                 string='Produto a configurar')
 
     @api.multi
     def write(self, vals):
@@ -86,7 +88,12 @@ class ProductConfiguratorWizard(models.TransientModel):
                     prod_attribute.value = value_id
                 else:
                     prod_attribute.numeric_value = value
-
+        if self.sale_product_id.product_tmpl_id.id == self.product_id.id:
+            self.sale_product_id.configured = True
+        else:
+            for line in self.sale_product_id.bom_line_ids:
+                if line.product_template_id.id == self.product_id.id:
+                    line.configured = True
         super(ProductConfiguratorWizard, self).write(vals)
         return {'type': 'ir.actions.act_window_close'}
 
@@ -171,8 +178,22 @@ class SaleOrderConfiguredProducts(models.Model):
         result = mod_obj.get_object_reference(
             'trust_product_configurator',
             'view_product_configurator_wizard_form')
+        product = self.product_tmpl_id.id
+        if self.configured:
+            for line in self.bom_line_ids:
+                if not line.configured:
+                    for attr in line.product_template_id.attribute_line_ids:
+                        self.env['sale.order.configured.product.attribute']\
+                            .create({
+                                'attribute': attr.attribute_id.id,
+                                'product_tmpl_id': line.product_template_id.id,
+                                'product_line': self.id,
+                            })
+                    product = line.product_template_id.id
+                    break
         wiz_id = self.env['product.configurator.wizard'].create({
             'sale_product_id': self.id,
+            'product_id': product,
         })
         return {
             'name': 'Configurar produto',
@@ -204,6 +225,7 @@ class SaleOrderConfiguredProducts(models.Model):
         'product.template', string="Template de produto",
         domain="[('configurator_template', '=', True)]",
         readonly=True, states={'draft': [('readonly', False)]})
+    configured = fields.Boolean('Configurado?')
     quantity = fields.Integer(
         string="Quantidade", readonly=True, default=1.0,
         states={'draft': [('readonly', False)]})
