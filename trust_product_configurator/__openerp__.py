@@ -11,7 +11,7 @@
 # This program is distributed in the hope that it will be useful,             #
 # but WITHOUT ANY WARRANTY; without even the implied warranty of              #
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-# GNU General Public License for more details.                                #
+# GNU General Public License for more details.  May be a weird question.      #
 #                                                                             #
 # You should have received a copy of the GNU General Public License           #
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
@@ -32,6 +32,7 @@
     'depends': [
         'sale', 'mrp', 'trust_sales_order_followup',
         'product_variants_no_automatic_creation',
+        'mrp_bom_through_attributes',
     ],
     'data': [
         'views/product_view.xml',

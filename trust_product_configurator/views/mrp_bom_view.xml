@@ -25,8 +25,8 @@
           <sheet>
             <group>
                 <group>
-                  <field name="product_template" />
-                  <field name="product_id" />
+                  <field name="product_template" string="Modelo Produto" />
+                  <field name="product_id" domain="[('product_tmpl_id', '=', product_template)]" />
                   <field name="type" />
                   <field name="product_qty" />
                   <field name="product_rounding" />
@@ -35,7 +35,8 @@
                   <field name="product_efficiency" />
                   <field name="date_start" />
                   <field name="date_stop" />
-                  <field name="attribute_value_ids" widget="many2many_tags" domain="[('product_ids.product_tmpl_id', '=', parent.product_tmpl_id)]"/>
+                  <field name="attribute_value_ids" widget="many2many_tags"
+										domain="[('product_ids.product_tmpl_id', '=', parent.product_tmpl_id)]"/>
                   <field name="property_ids" widget="many2many_tags"/>
                 </group>
             </group>

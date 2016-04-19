@@ -82,7 +82,8 @@ class ProductConfiguratorWizard(models.TransientModel):
             if key.startswith('dynamic_'):
                 id_attr = int(key.replace('dynamic_', ''))
                 prod_attribute = self.sale_product_id.product_attributes.\
-                    filtered(lambda x: x.attribute.id == id_attr)
+                    filtered(lambda x: x.attribute.id == id_attr and
+                             x.product_tmpl_id.id == self.product_id.id)
                 if isinstance(value, basestring):
                     value_id = int(value.replace('value_', ''))
                     prod_attribute.value = value_id
@@ -178,22 +179,28 @@ class SaleOrderConfiguredProducts(models.Model):
         result = mod_obj.get_object_reference(
             'trust_product_configurator',
             'view_product_configurator_wizard_form')
-        product = self.product_tmpl_id.id
+        product = self.product_tmpl_id
         if self.configured:
             for line in self.bom_line_ids:
                 if not line.configured:
-                    for attr in line.product_template_id.attribute_line_ids:
-                        self.env['sale.order.configured.product.attribute']\
-                            .create({
-                                'attribute': attr.attribute_id.id,
-                                'product_tmpl_id': line.product_template_id.id,
-                                'product_line': self.id,
-                            })
-                    product = line.product_template_id.id
+                    product = line.product_template_id
                     break
+        for attr in product.attribute_line_ids:
+            prod_attr_obj = self.env['sale.order.configured.product.attribute']
+            prod_attr = prod_attr_obj.search(
+                [('attribute', '=', attr.attribute_id.id),
+                 ('product_tmpl_id', '=', product.id),
+                 ('product_line', '=', self.id)])
+            if not prod_attr:
+                prod_attr_obj.create({
+                    'attribute': attr.attribute_id.id,
+                    'product_tmpl_id': product.id,
+                    'product_line': self.id,
+                })
+
         wiz_id = self.env['product.configurator.wizard'].create({
             'sale_product_id': self.id,
-            'product_id': product,
+            'product_id': product.id,
         })
         return {
             'name': 'Configurar produto',
@@ -247,11 +254,6 @@ class SaleOrderConfiguredProducts(models.Model):
     @api.onchange('product_tmpl_id')
     def onchange_product_tmpl_id(self):
         self.ensure_one()
-        self.product_attributes = (
-            [(2, x.id) for x in self.product_attributes] +
-            [(0, 0, x) for x in
-             self.product_tmpl_id._get_product_attributes_dict()])
-
         if self.product_tmpl_id:
             bom = self.env['mrp.bom'].search(
                 [('product_tmpl_id', '=', self.product_tmpl_id.id)], limit=1)
@@ -267,7 +269,7 @@ class SaleOrderConfiguredProducts(models.Model):
             )
 
     def _check_line_confirmability(self):
-        if any(not bool(line.value) for line in self.product_attributes):
+        if any(not bool(line.value_str) for line in self.product_attributes):
             raise UserError(
                 _("Você não pode confirmar antes de selecionar os atributos."))
 
@@ -279,10 +281,12 @@ class SaleOrderConfiguredProducts(models.Model):
         if self.product_tmpl_id:
             self._check_line_confirmability()
             if self.order_line_id:
-                self.order_line_id.product_id.unlink()
                 self.order_line_id.unlink()
+                self.order_line_id.product_id.unlink()
 
-            attr_values = self.product_attributes.mapped('value')
+            attr_values = self.product_attributes.filtered(
+                lambda x: x.product_tmpl_id.id == self.product_tmpl_id.id)\
+                .mapped('value')
             # Filter the product with the exact number of attributes values
             product = product_obj.create(
                 {'product_tmpl_id': self.product_tmpl_id.id,
@@ -293,4 +297,12 @@ class SaleOrderConfiguredProducts(models.Model):
                 'price_unit': product.list_price,
                 'order_id': self.sale_order_id.id,
             })
+
+            bom = self.env['mrp.bom'].search(
+                [('product_tmpl_id', '=', self.product_tmpl_id.id),
+                 ('product_id', '=', False)])
+
+            bom.action_compute_bom_trhough_attributes(
+                product=product,
+                properties=self.product_attributes)
             self.write({'order_line_id': sale_line.id, 'state': 'done'})

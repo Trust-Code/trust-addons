@@ -7,6 +7,52 @@ from openerp.tools.safe_eval import safe_eval
 from openerp.exceptions import Warning as UserError
 
 
+class MrpBom(models.Model):
+    _inherit = 'mrp.bom'
+
+    def _bom_search(self, product=None, template=None):
+        if product:
+            return self.env['mrp.bom'].search(
+                [('product_id', '=', product.id)], limit=1)
+        if template:
+            return self.env['mrp.bom'].search(
+                [('product_id', '=', False),
+                 ('product_tmpl_id', '=', template.id)], limit=1)
+
+    def _compute_bom_line(self, bom_line, attributes):
+
+        bom_id = self._bom_search(product=bom_line.product_id,
+                                  template=bom_line.product_template)
+        items = []
+        if bom_id:
+            for line in bom_id.bom_line_ids:
+                items += self._compute_bom_line(line, attributes)
+
+        quantity = bom_line.compute_rule(attributes)
+        if isinstance(quantity, bool) or quantity:
+            vals = (0, 0, {'product_qty': quantity or bom_line.product_qty,
+                           'product_id': bom_line.product_id.id,
+                           'type': 'normal',
+                           'product_template': bom_line.product_template.id})
+            return items + [vals]
+        return items
+
+    @api.multi
+    def action_compute_bom_trhough_attributes(self, product=None,
+                                              properties=None):
+        attributes = [{'id': x.attribute.id, 'name': x.attribute.name,
+                       'value': x.value_str} for x in properties]
+
+        items = []
+        for line in self.bom_line_ids:
+            items += self._compute_bom_line(line, attributes)
+
+        self.create({'name': self.product_tmpl_id.name,
+                     'product_tmpl_id': self.product_tmpl_id.id,
+                     'product_id': product.id, 'product_qty': 1.0,
+                     'type': 'normal', 'bom_line_ids': items})
+
+
 class MrpBomLine(models.Model):
     _inherit = 'mrp.bom.line'
 
@@ -21,6 +67,7 @@ class MrpBomLine(models.Model):
 #  - bom: lista de materiais que está sendo avaliada
 #  - bom_line: linha da lista de materiais que esta sendo avaliada
 #  - product: Produto que esta propriedade pertence
+#  - attributes: Atributos escolhidos no configurador
 #  - env: ORM environment
 # ----------------------------------------------------------------
 # Retorno:
@@ -29,12 +76,11 @@ class MrpBomLine(models.Model):
 
     quantity_use = fields.Float(string="Quantidade Calculada", digits=(18, 6))
 
-    @api.multi
+    @api.model
     def compute_rule(self, attributes):
-        for bom_line in self:
-            result = self._rule_eval('mrp.bom.line', bom_line.bom_id,
-                                     bom_line, attributes)
-            bom_line.quantity_use = result
+        result = self._rule_eval('mrp.bom.line', self.bom_id,
+                                 self, attributes)
+        return result
 
     @api.model
     def _exception_rule_eval_context(self, name, bom, bom_line, product,
@@ -50,7 +96,7 @@ class MrpBomLine(models.Model):
 
     @api.model
     def _rule_eval(self, name, bom, bom_line, attributes):
-        expr = bom.rule_expression
+        expr = bom_line.rule_expression
         space = self._exception_rule_eval_context(
             name, bom, bom_line, bom_line.product_template, attributes)
         try:
@@ -63,4 +109,4 @@ class MrpBomLine(models.Model):
                 _('Error'),
                 _('Error when evaluating the invoice '
                   'rule:\n %s \n(%s)') % (bom.name, e))
-        return space.get('failed', False)
+        return space.get('quantidade', False)

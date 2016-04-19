@@ -24,11 +24,9 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     def _count_configured_products(self):
-        total = self.env['sale.order.configured.product'].search_count([
+        return self.env['sale.order.configured.product'].search_count([
             ('sale_order_id', '=', self.id)
         ])
-        print "passou aqui %d" % total
-        return total
 
     resin = fields.Selection([
         ('isophthalic', 'Isophthalic'),
@@ -45,7 +43,7 @@ class SaleOrder(models.Model):
         ('stainless steel 316L',
          'Stainless Steel 316L'),
         ], 'Fixation', readonly=False, select=True,
-            required=True, default="stainless steel 304")
+        required=True, default="stainless steel 304")
     color = fields.Selection([
         ('yellow safety', 'Yellow Safety'),
         ('gray', 'Gray'),
@@ -55,7 +53,7 @@ class SaleOrder(models.Model):
         ('write', 'Write'),
         ('special', 'Special'),
         ], 'Color', readonly=False, select=True, required=True,
-            default="yellow safety/gray")
+        default="yellow safety/gray")
     special_color = fields.Char('Special Color', size=20,
                                 help='Insert here the special color.')
     product_configurator_count = fields.Integer(
