@@ -10,6 +10,21 @@ from openerp.exceptions import Warning as UserError
 class MrpBom(models.Model):
     _inherit = 'mrp.bom'
 
+    @api.model
+    def _bom_find(self, product_tmpl_id=None, product_id=None,
+                  properties=None):
+        domain = []
+        if product_id:
+            domain += [('product_id', '=', product_id)]
+        if product_tmpl_id and not product_id:
+            domain += [('product_id', '=', False),
+                       ('product_tmpl_id', '=', product_tmpl_id)]
+        if self.env.context.get('company_id', False):
+            domain += [('company_id', '=', self.env.context['company_id'])]
+
+        return self.env['mrp.bom'].search(domain, limit=1,
+                                          order='sequence, product_id').id
+
     def _bom_search(self, product=None, template=None):
         if product:
             return self.env['mrp.bom'].search(
@@ -33,7 +48,9 @@ class MrpBom(models.Model):
             vals = (0, 0, {'product_qty': quantity or bom_line.product_qty,
                            'product_id': bom_line.product_id.id or product.id,
                            'type': 'normal',
-                           'product_template': bom_line.product_template.id})
+                           'product_template': bom_line.product_template.id,
+                           'bom_id': bom_line.bom_id.id,
+                           'bom_name': bom_line.bom_id.name})
             return items + [vals]
         return items
 
@@ -43,29 +60,55 @@ class MrpBom(models.Model):
         attributes = [{'id': x.attribute.id, 'name': x.attribute.name,
                        'value': x.value_str} for x in properties]
 
+        products = {self.product_tmpl_id.id: product.id}
         items = []
         for line in self.bom_line_ids:
+            prod = product
             if line.product_template.configurator_template:
 
                 attr_values = properties.filtered(
                     lambda x: x.product_tmpl_id.id == line.product_template.id)\
                     .mapped('value')
 
-                product = self.env['product.product'].create(
+                prod = self.env['product.product'].create(
                     {'product_tmpl_id': line.product_template.id,
                      'attribute_value_ids': [(6, 0, attr_values.ids)]})
+                products[line.product_template.id] = prod.id
 
-            items += self._compute_bom_line(line, product, attributes)
+            items += self._compute_bom_line(line, prod, attributes)
 
-        self.create({'name': self.product_tmpl_id.name,
-                     'product_tmpl_id': self.product_tmpl_id.id,
-                     'product_id': product.id, 'product_qty': 1.0,
-                     'type': 'normal', 'bom_line_ids': items})
+        keyfunc = lambda x: x[2]['bom_id']
+
+        items = sorted(items, key=keyfunc)
+        from itertools import groupby
+
+        agrupados = groupby(items, keyfunc)
+        for k, g in agrupados:
+            bom = self.env['mrp.bom'].browse(k)
+            print bom.name
+
+            new_bom = self.create({
+                'name': bom.product_tmpl_id.name,
+                'product_tmpl_id': bom.product_tmpl_id.id,
+                'product_id': products[bom.product_tmpl_id.id],
+                'product_qty': bom.product_qty,
+                'type': 'normal'
+            })
+            new_lines = [x for x in g]
+            for x in new_lines:
+                x[2]['bom_id'] = new_bom.id
+            new_bom.write({'bom_line_ids': new_lines})
+
+
+class MrpBomExpression(models.Model):
+    _name = 'mrp.bom.expression'
+    _description = ''
 
 
 class MrpBomLine(models.Model):
     _inherit = 'mrp.bom.line'
 
+    bom_name = fields.Char('Nome')
     product_id = fields.Many2one(required=False)
     product_template = fields.Many2one('product.template',
                                        string='Modelo de produto')
