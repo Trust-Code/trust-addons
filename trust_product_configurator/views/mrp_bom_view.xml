@@ -10,10 +10,10 @@
 				<xpath expr="//field[@name='bom_line_ids']/tree" position="attributes">
 				    <attribute name="editable"></attribute>
 				</xpath>
-        <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="before">
-					<field name="bom_name" />
-          <field name="product_template" />
-        </xpath>
+		        <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="before">
+							<field name="bom_name" />
+		          <field name="product_template" />
+		        </xpath>
 			</field>
 		</record>
 
@@ -41,8 +41,8 @@
                   <field name="property_ids" widget="many2many_tags"/>
                 </group>
             </group>
-            <group string="Expressão Python">
-              <field name="rule_expression" nolabel="1" />
+            <group string="Expressões Python">
+              <field name="expression_ids" nolabel="1" />
             </group>
           </sheet>
         </form>

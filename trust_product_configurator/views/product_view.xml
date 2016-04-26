@@ -9,11 +9,14 @@
 			<field name="inherit_id" ref="product.product_template_only_form_view" />
 			<field name="arch" type="xml">
 				<div name="options" position="inside">
-            <div>
-                <field name="configurator_template"/>
-                <label for="configurator_template"/>
-            </div>
-        </div>
+		            <div>
+		                <field name="configurator_template"/>
+		                <label for="configurator_template"/>
+		            </div>
+        		</div>
+				<tree string="Variants" position="attributes">
+					<attribute name="editable"></attribute>
+				</tree>
 			</field>
 		</record>
 
@@ -88,6 +91,23 @@
 								<field name="rule_expression" nolabel="1" />
 							</group>
 						</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="configurator_product_attribute_line_form" model="ir.ui.view">
+			<field name="name">configurator.product.attribute.line.form</field>
+			<field name="model">product.attribute.line</field>
+			<field name="arch" type="xml">
+				<form string="Atributos de Produto">
+					<sheet>
+						<group>
+							<field name="attribute_id" />
+							<field name="required" />
+							<field name="value_ids" widget="many2many_tags" />
+							<field name="default" />
+						</group>
+					</sheet>
 				</form>
 			</field>
 		</record>

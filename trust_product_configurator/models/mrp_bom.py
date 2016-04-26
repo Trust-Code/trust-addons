@@ -102,16 +102,9 @@ class MrpBom(models.Model):
 
 class MrpBomExpression(models.Model):
     _name = 'mrp.bom.expression'
-    _description = ''
+    _description = u'Expressão BOM'
 
-
-class MrpBomLine(models.Model):
-    _inherit = 'mrp.bom.line'
-
-    bom_name = fields.Char('Nome')
-    product_id = fields.Many2one(required=False)
-    product_template = fields.Many2one('product.template',
-                                       string='Modelo de produto')
+    name = fields.Char('Nome', size=20)
 
     rule_expression = fields.Text('Regra (python)',
                                   default="""# Código python
@@ -127,7 +120,17 @@ class MrpBomLine(models.Model):
 #  - quantidade: quantidade do material a usar (0 - para remover)
 """)
 
+
+class MrpBomLine(models.Model):
+    _inherit = 'mrp.bom.line'
+
+    bom_name = fields.Char('Nome')
+    product_id = fields.Many2one(required=False)
+    product_template = fields.Many2one('product.template',
+                                       string='Modelo de produto')
     quantity_use = fields.Float(string="Quantidade Calculada", digits=(18, 6))
+    expression_ids = fields.Many2many('mrp.bom.expression',
+                                      string="Expressões")
 
     @api.model
     def compute_rule(self, attributes):
@@ -149,14 +152,13 @@ class MrpBomLine(models.Model):
 
     @api.model
     def _rule_eval(self, name, bom, bom_line, attributes):
-        expr = bom_line.rule_expression
+        expressions = bom_line.expression_ids
         space = self._exception_rule_eval_context(
             name, bom, bom_line, bom_line.product_template, attributes)
         try:
-            safe_eval(expr,
-                      space,
-                      mode='exec',
-                      nocopy=True)  # nocopy allows to return 'result'
+            for expr in expressions:
+                safe_eval(expr.rule_expression,# nocopy allows to return value
+                          space, mode='exec', nocopy=True)
         except Exception as e:
             raise UserError(
                 _('Error'),
