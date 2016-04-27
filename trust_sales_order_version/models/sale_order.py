@@ -26,7 +26,7 @@ from openerp import api, fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    version = fields.Char(u'Versão', size=4, compute='_compute_version')
+    version = fields.Integer(u'Versão',compute='_compute_version')
 
     @api.multi
     def _compute_version(self):
@@ -40,7 +40,7 @@ class SaleOrder(models.Model):
 class IrAttachment(models.Model):
     _inherit = 'ir.attachment'
 
-    res_version = fields.Char(u'Versão', size=4)
+    res_version = fields.Integer(u'Versão', size=4)
 
 
     @api.model
@@ -50,8 +50,8 @@ class IrAttachment(models.Model):
             get_version = obj_so.version
     
             if get_version:
-                values.update({'res_version': chr(ord(get_version) + 1)})
+                values.update({'res_version': get_version + 1})
             else:
-                values.update({'res_version': 'A'})
+                values.update({'res_version': 1})
 
         return super(IrAttachment, self).create(values)
