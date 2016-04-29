@@ -78,6 +78,7 @@ class TrustReportController(ReportController):
 
                 if not filename:
                     filename = reportname + '.pdf'
+                filename = '"%s"' % filename
                 response.headers.add(
                     'Content-Disposition',
                     'attachment; filename=%s;' %
