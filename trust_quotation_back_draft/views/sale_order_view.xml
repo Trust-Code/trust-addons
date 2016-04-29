@@ -7,11 +7,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-            	<header>
-                  	<xpath expr="//div[@name='buttons']" position="inside">
-						<button name="back_quotation_draft" states="sent" string="Back to Draft" groups="base.group_user" class="oe_highlight"/>
-					</xpath>
-				</header>
+				<button name="cancel" position="before">
+					<button name="back_quotation_draft" states="sent" string="Back to Draft" groups="base.group_user" class="oe_highlight"/>
+				</button>
 			</field>
 		</record>
 
