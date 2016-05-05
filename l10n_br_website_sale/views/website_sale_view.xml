@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop BR">
+          <xpath expr="." position="inside">
+              <script type="text/javascript" src="/l10n_br_website_sale/static/src/js/website_sale.js"></script>
+          </xpath>
+        </template>
+
+		<template id="l10n_br_website_sale_checkout" inherit_id="website_sale.checkout"
+			name="Website Sale Checkout BR">
+
+            <xpath expr="//div[@class='col-md-8 oe_cart']/div[1]/div[3]" position="replace">
+            </xpath>
+            <xpath expr="//div[@class='col-md-8 oe_cart']/div[1]/div[8]" position="replace">
+            </xpath>
+            <xpath expr="//div[@class='col-md-8 oe_cart']/div[1]/div[8]" position="replace">
+            </xpath>
+
+
+            <xpath expr="//div[@class='col-md-8 oe_cart']/div[1]/div[9]" position="after">
+                <div t-attf-class="form-group #{error.get('l10n_br_city_id') and 'has-error' or ''} col-lg-6">
+                     <label class="control-label" for="l10n_br_city_id">Cidade</label>
+					 <input id="l10n_br_city_id" type="hidden" t-att-value="checkout.get('l10n_br_city_id').id" />
+                     <select id="select_l10n_br_city_id" name="l10n_br_city_id" class="form-control">
+                         <option value="">Cidade...</option>
+                     </select>
+                 </div>
+            </xpath>
+
+
+            <xpath expr="//div[@class='col-md-8 oe_cart']/div[1]/div[7]" position="after">
+                <div t-attf-class="form-group #{error.get('number') and 'has-error' or ''} col-lg-6">
+                    <label class="control-label" for="number">Número</label>
+                    <input type="text" name="number" class="form-control" t-att-value="checkout.get('number')"/>
+                </div>
+                <div t-attf-class="form-group #{error.get('district') and 'has-error' or ''} col-lg-6">
+                    <label class="control-label" for="district">Bairro</label>
+                    <input type="text" name="district" class="form-control" t-att-value="checkout.get('district')"/>
+                </div>
+                <div t-attf-class="form-group #{error.get('street2') and 'has-error' or ''} col-lg-6">
+                    <label class="control-label" for="street2">Complemento</label>
+                    <input type="text" name="street2" class="form-control" t-att-value="checkout.get('street2')"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//div[@class='col-md-8 oe_cart']/div[1]/div[5]" position="after">
+                <div t-attf-class="form-group #{error.get('cnpj_cpf') and 'has-error' or ''} col-lg-6">
+                    <label class="control-label" for="contact_name">CPF</label>
+                    <input type="text" name="cnpj_cpf" class="form-control" t-att-value="checkout.get('cnpj_cpf')"/>
+                </div>
+                <div t-attf-class="form-group #{error.get('zip') and 'has-error' or ''} col-lg-6">
+                    <label class="control-label" for="zip">CEP</label>
+                    <input type="text" name="zip" class="form-control" t-att-value="checkout.get('zip')"/>
+                </div>
+            </xpath>
+
+		</template>
+    </data>
+</openerp>
