@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+        <template id="assets_backend" name="trust_my_task_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/trust_my_task/static/src/js/trust_my_task.js"/>
+            </xpath>
+        </template>
+
+        <record model="ir.ui.view" id="trust_mytask_view_task_kanban">
+            <field name="name">project.task.kanban</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_kanban_bottom_right']/img"
+                    position='after'>
+                    <div class="pull-left" style="padding-right:5px;">
+                        <a class="oe_my_task" title="Marcar a tarefa como minha" t-att-data-id="record.id.value" style="font-size:22px;">
+                            <i class="fa fa-user"></i>
+                        </a>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+	</data>
+</openerp>
