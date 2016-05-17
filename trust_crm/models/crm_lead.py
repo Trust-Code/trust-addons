@@ -26,14 +26,13 @@ from openerp import api, models
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-
     @api.multi
     def handle_partner_assignation(self, action='create',
                                    partner_id=False, context=None):
         partner_ids = super(CrmLead, self).handle_partner_assignation(
             action=action, partner_id=partner_id, context=context)
 
-        for lead in self:            
+        for lead in self:
             partner_id = partner_ids[lead.id]
             partner = self.env['res.partner'].browse(partner_id)
             if partner.parent_id:

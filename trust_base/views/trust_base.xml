@@ -3,20 +3,20 @@
     <data>
         <template id="assets_backend" name="trust_base assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <link rel="stylesheet" href="/trust_base/static/src/css/trust_base.css"/>                
+                <link rel="stylesheet" href="/trust_base/static/src/css/trust_base.css"/>
             </xpath>
         </template>
-        <template id="trust_login_layout" name="Login Layout" inherit_id="web.login_layout">        
+        <template id="trust_login_layout" name="Login Layout" inherit_id="web.login_layout">
               <t t-set="head">
-                  <link href="/trust_base/static/src/css/trust_base.css" rel="stylesheet"/>                  
+                  <link href="/trust_base/static/src/css/trust_base.css" rel="stylesheet"/>
               </t>
          </template>
          <template id="trust_menu_secondary" name="" inherit_id="web.menu_secondary">
          	<xpath expr="div[@class='oe_footer']" position="inside">
-	        	<div class="oe_footer">	               
+	        	<div class="oe_footer" style="float:left;width:100%;">
 	               Suporte via <a href="http://www.trustcode.com.br" target="_blank"><span style="color:#5F9EA0">Trustcode</span></a>
 	           	</div>
          	</xpath>
-         </template> 
+         </template>
     </data>
 </openerp>
