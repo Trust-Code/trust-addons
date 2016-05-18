@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop BR">
+          <xpath expr="." position="inside">
+                <link href="/website_sale_multi_image_zoom/static/src/css/smoothproducts.css" rel="stylesheet" type="text/css" />
+				<script type="text/javascript" src="/website_sale_multi_image_zoom/static/src/js/smoothproducts.js"></script>
+				<script type="text/javascript" src="/website_sale_multi_image_zoom/static/src/js/website_sale_multi_image_zoom.js"></script>
+          </xpath>
+        </template>
+
+        <template id="multi_image_gallery_zoom"
+                  inherit_id="website_sale.product"
+                  name="Galeria de imagens de produto"
+                  customize_show="True"
+                  active="False">
+            <xpath expr="//section[@id='product_detail']/div[@class='row']/div[@class='col-sm-7 col-md-7 col-lg-7']" position="replace">
+                <div class='col-sm-7 col-md-7 col-lg-7' style="text-align:center;">
+
+                    <div class="sp-loading"><img src="/website_sale_multi_image_zoom/static/src/images/loading.gif" alt="" /><br />Carregando imagens</div>
+                    <div class="sp-wrap">
+                        <t t-foreach="product.image_ids" t-as="image">
+                            <a t-attf-href="#{website.image_url(image, 'image_main')}"><img t-attf-src="#{website.image_url(image, 'image_main')}" alt="" /></a>
+                        </t>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+    </data>
+</openerp>
