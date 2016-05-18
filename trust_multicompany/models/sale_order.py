@@ -20,7 +20,7 @@
 ###############################################################################
 
 
-from openerp import api, fields, models, tools
+from openerp import api, models
 from openerp.exceptions import Warning
 
 
@@ -36,25 +36,26 @@ class SaleMulticompany (models.Model):
 
         company = self.env['res.company'].browse(company_id)
         if company.out_invoice_fiscal_category_id:
-            result['value'][
-                'fiscal_category_id'] = company.out_invoice_fiscal_category_id.id
+            result['value']['fiscal_category_id'] = \
+                company.out_invoice_fiscal_category_id.id
             fiscal_position = self._fiscal_position_map(
                 result, False, partner_id=partner_id,
                 partner_invoice_id=partner_id, company_id=company_id,
                 fiscal_category_id=company.out_invoice_fiscal_category_id.id)
 
-            result['value'].update(
-                {'fiscal_position': fiscal_position['value']['fiscal_position']})
+            result['value'].update({
+                'fiscal_position': fiscal_position['value']['fiscal_position']
+            })
 
         return result
 
     @api.multi
     def _verify_company(self, vals):
         result = True
-        msg_warning = ''
-        sale_fields = {'partner_id': 'res.partner',
-                       'warehouse_id': 'stock.warehouse'
-                       }
+        msg = u''
+        sale_fields = {
+            'partner_id': 'res.partner', 'warehouse_id': 'stock.warehouse'
+        }
 
         if 'company_id' in vals:
             company_id = vals['company_id']
@@ -70,16 +71,16 @@ class SaleMulticompany (models.Model):
             if obj_SF.company_id.id and obj_SF.company_id.id != company_id:
                 result = False
                 obj_comp = self.env['res.company'].browse(company_id)
-                msg_warning += "\n" + \
-                    (u"(%s, possuí empresa %s que é diferente de %s da cotação)"
-                     % (obj_SF._description, obj_SF.company_id.name, obj_comp.name))
+                msg = u"(%s possuí empresa %s que é diferente da cotação %s)" \
+                    % (obj_SF._description, obj_SF.company_id.name,
+                       obj_comp.name)
 
         if not result:
             raise Warning(
                 u"Movimentação não permitida!",
                 u"Em função do controle multiempresa, não é \
-                 permitido salvar cotações com empresas diferentes %s"
-                % (msg_warning))
+                 permitido salvar cotações com empresas diferentes %s\n"
+                % (msg))
 
         return result
 

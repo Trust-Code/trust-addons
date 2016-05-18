@@ -79,6 +79,7 @@ html, body {
 .sp-large a img {
 	max-width: 100%;
 	height: auto;
+	max-height: 450px;
 }
 .sp-large a {
 	display: block;

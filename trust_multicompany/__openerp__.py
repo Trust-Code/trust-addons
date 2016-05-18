@@ -23,18 +23,18 @@
 
 {
     'name': 'Trust Multicompany',
-    'summary': """Esse módulo implementa melhorias para o recurso de multi empresa.""",
+    'summary': """Esse módulo implementa melhorias para o
+        recurso de multi empresa.""",
     'version': '8.0.1.0.0',
     'category': '',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
-    'contributors': ['Danimar Ribeiro <danimaribeiro@gmail.com>',
-                     'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
-                     ],
+    'contributors': [
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
+    ],
     'depends': [
         'project', 'l10n_br_sale'
     ],
-    'data': [
-             ],
 }
