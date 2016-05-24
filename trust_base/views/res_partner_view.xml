@@ -11,12 +11,8 @@
 					<attribute name="attrs">{'invisible': 0}</attribute>
 					<attribute name="string">Endereços</attribute>
 				</page>
-				<field name="state_id" position="attributes">
-					<attribute name="attrs">{'required': 1}</attribute>
-				</field>
 			</field>
 		</record>
 
 	</data>
 </openerp>
-			
