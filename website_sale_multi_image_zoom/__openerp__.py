@@ -14,9 +14,10 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
     'depends': [
-        'product_multi_image',
+        'base_multi_image', 'product_multi_image',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/product_templates.xml',
     ],
 }

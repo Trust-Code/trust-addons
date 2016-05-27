@@ -38,5 +38,5 @@
         'views/res_partner_view.xml'
     ],
     'application': True,
-    'auto_install': False
+    'auto_install': True
 }
