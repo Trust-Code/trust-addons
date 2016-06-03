@@ -12,7 +12,7 @@ from StringIO import StringIO
 from openerp import api, fields, models
 
 
-class NfseExportInvoice(models.Model):
+class NfseExportInvoice(models.TransientModel):
     _name = 'nfse.export.invoice'
 
     name = fields.Char('Nome', size=255)
@@ -100,7 +100,8 @@ class NfseExportInvoice(models.Model):
 
         mod_obj = self.env['ir.model.data'].search(
             [('model', '=', 'ir.ui.view'),
-             ('name', '=', 'view_nfse_florianopolis_nfse_export_invoice_form')])
+             ('name', '=',
+              'view_nfse_florianopolis_nfse_export_invoice_form')])
 
         return {
             'type': 'ir.actions.act_window',
