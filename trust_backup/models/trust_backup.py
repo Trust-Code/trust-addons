@@ -21,13 +21,11 @@
 
 from openerp import models, fields, api
 from openerp.exceptions import Warning
-from openerp.service.db import dump_db
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import socket
 import os
 import time
-import zipfile
 import odoorpc
 import logging
 from datetime import datetime, timedelta
@@ -125,9 +123,9 @@ class TrustBackup(models.Model):
         try:
             self.write({'next_backup': datetime.now()})
             self.schedule_backup()
-        except Exception as e:
-            _logger.error(str(e).decode('utf-8', 'ignore'), exc_info=True)
-            raise Warning(str(e))
+        except Exception:
+            _logger.error('Erro ao efetuar backup', exc_info=True)
+            raise Warning('Erro ao executar backup - Verifique o log de erros')
 
     @api.model
     def schedule_backup(self):
@@ -155,24 +153,33 @@ class TrustBackup(models.Model):
                     raise
                 dump = odoo.db.dump(rec.admin_password, rec.database_name)
                 zip_name = '%s_%s.zip' % (rec.database_name,
-                                               time.strftime('%Y%m%d_%H_%M_%S'))
+                                          time.strftime('%Y%m%d_%H_%M_%S'))
                 zip_file = '%s/%s' % (rec.backup_dir, zip_name)
-        
+
                 with open(zip_file, 'wb') as dump_zip:
                     dump_zip.write(dump.read())
-                    dump_zip.close()                
+                    dump_zip.close()
 
                 backup_env = self.env['backup.executed']
 
                 if rec.send_to_s3:
-                    key = rec.send_for_amazon_s3(zip_file, zip_name)
+                    key = rec.send_for_amazon_s3(zip_file, zip_name,
+                                                 rec.database_name)
+                    loc = ''
                     if not key:
                         key = 'Erro ao enviar para o Amazon S3'
+                        loc = zip_file
+                    else:
+                        loc = 'https://s3.amazonaws.com/%s_bkp_pelican/%s' % (
+                            rec.database_name, key
+                        )
                     backup_env.create({'backup_date': datetime.now(),
                                        'configuration_id': rec.id,
                                        's3_id': key, 'name': zip_name,
                                        'state': 'concluded',
-                                       'local_path': zip_file})
+                                       'local_path': loc})
+                    if key:
+                        os.remove(zip_file)
                 else:
                     backup_env.create(
                         {'backup_date': datetime.now(), 'name': zip_name,
@@ -180,22 +187,23 @@ class TrustBackup(models.Model):
                          'local_path': zip_file})
                 rec._set_next_backup()
 
-
-    def send_for_amazon_s3(self, file_to_send, name_to_store):
+    def send_for_amazon_s3(self, file_to_send, name_to_store, database):
         try:
             if self.aws_access_key and self.aws_secret_key:
                 access_key = self.aws_access_key
                 secret_key = self.aws_secret_key
 
                 conexao = S3Connection(access_key, secret_key)
-                bucket = conexao.create_bucket('backups_pelican')
+                bucket_name = '%s_bkp_pelican' % database
+                bucket = conexao.create_bucket(bucket_name)
 
                 k = Key(bucket)
                 k.key = name_to_store
                 k.set_contents_from_filename(file_to_send)
+                return k.key
             else:
                 _logger.error(
                     u'Configurações do Amazon S3 não setadas, \
                     pulando armazenamento de backup')
-        except Exception as ex:
-            _logger.error(str(ex).decode('utf-8', 'ignore'), exc_info=True)
+        except Exception:
+            _logger.error('Erro ao enviar dados para S3', exc_info=True)
