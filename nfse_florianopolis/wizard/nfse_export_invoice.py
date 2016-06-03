@@ -80,9 +80,10 @@ class NfseExportInvoice(models.TransientModel):
         template = env.get_template('nfse.xml')
         xml = template.render(vals)
         xml = xml.replace('&', '&amp;')
-        return {'name': u'{0}_{1}_nfse.xml'.format(invoice.internal_number,
-                                                   invoice.partner_id.name),
-                'content': xml}
+        return {'name': u'{0}_{1}_nfse.xml'.format(
+            invoice.internal_number,
+            re.sub('[^A-Za-z]', '', invoice.partner_id.name)),
+            'content': xml}
 
     def _save_zip(self, xmls):
         tmp = '/tmp/odoo/nfse-export/'
