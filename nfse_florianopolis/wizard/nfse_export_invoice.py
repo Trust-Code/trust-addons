@@ -4,12 +4,15 @@
 
 import os
 import io
+import re
 import base64
 import os.path
+from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 from zipfile import ZipFile
 from StringIO import StringIO
 from openerp import api, fields, models
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class NfseExportInvoice(models.TransientModel):
@@ -23,33 +26,47 @@ class NfseExportInvoice(models.TransientModel):
 
     def _invoice_vals(self, invoice):
         tomador = {
-            'cnpj_cpf': invoice.partner_id.cnpj_cpf,
-            'inscricao_municipal': invoice.partner_id.inscr_mun,
+            'cnpj_cpf': re.sub('[^0-9]', '', invoice.partner_id.cnpj_cpf),
+            'inscricao_municipal': re.sub(
+                '[^0-9]', '', invoice.partner_id.inscr_mun or '0000000'),
             'name': invoice.partner_id.name,
             'street': invoice.partner_id.street,
             'number': invoice.partner_id.number,
             'district': invoice.partner_id.district,
-            'zip': invoice.partner_id.zip,
-            'city_code': invoice.partner_id.l10n_br_city_id.ibge_code,
+            'zip': re.sub('[^0-9]', '', invoice.partner_id.zip),
+            'city_code': '%s%s' % (
+                invoice.partner_id.state_id.ibge_code,
+                invoice.partner_id.l10n_br_city_id.ibge_code),
             'uf_code': invoice.partner_id.state_id.code,
             'email': invoice.partner_id.email,
-            'phone': invoice.partner_id.phone,
+            'phone': re.sub('[^0-9]', '', invoice.partner_id.phone),
         }
         items = []
         for line in invoice.invoice_line:
             items.append({
                 'name': line.product_id.name,
-                'CST': line.product_id.name,
+                'CNAE': re.sub('[^0-9]', '',
+                               invoice.company_id.cnae_main_id.code),
+                'CST': '1',
                 'aliquota': line.issqn_percent,
                 'valor_unitario': line.price_unit,
-                'quantidade': line.quantity,
+                'quantidade': int(line.quantity),
                 'valor_total': line.price_total,
             })
+        emissao = datetime.strptime(invoice.date_hour_invoice,
+                                    DEFAULT_SERVER_DATETIME_FORMAT)
+        cfps = '9201'
+        if invoice.company_id.l10n_br_city_id.id !=\
+           invoice.partner_id.l10n_br_city_id.id:
+            cfps = '9202'
+        import ipdb; ipdb.set_trace()
+        if invoice.company_id.state_id.id != invoice.partner_id.state_id.id:
+            cfps = '9203'
         return {
             'tomador': tomador,
             'items': items,
-            'data_emissao': invoice.date_hour_invoice,
-            'cfps': '9202',
+            'data_emissao': emissao.strftime('%Y-%m-%dZ'),
+            'cfps': cfps,
             'base_calculo': invoice.issqn_base,
             'valor_issqn': invoice.issqn_value,
             'valor_total': invoice.amount_total
