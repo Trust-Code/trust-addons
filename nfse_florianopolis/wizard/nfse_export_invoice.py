@@ -59,7 +59,6 @@ class NfseExportInvoice(models.TransientModel):
         if invoice.company_id.l10n_br_city_id.id !=\
            invoice.partner_id.l10n_br_city_id.id:
             cfps = '9202'
-        import ipdb; ipdb.set_trace()
         if invoice.company_id.state_id.id != invoice.partner_id.state_id.id:
             cfps = '9203'
         return {
