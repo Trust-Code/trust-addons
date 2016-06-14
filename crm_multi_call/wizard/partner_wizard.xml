@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="trustcode_wizard_form_view">
+				<field name="name">wizard.multi.call.form</field>
+				<field name="model">multi.call</field>
+				<field name="arch" type="xml">
+						<form string="Criar Agenda de Ligações">
+								<group>
+										<field name="res_user_id"
+													 widget="many2many_checkboxes"/>
+
+								</group>
+
+								<footer>
+						        <button name="create_calls"
+														type="object"
+						                string="Aplicar"
+														class="oe_highlight"/>
+						        or
+						        <button special="cancel" string="Cancelar"/>
+						    </footer>
+
+						</form>
+				</field>
+		</record>
+
+		<act_window id="trustcode_multi_call_wizard"
+		                    name="Criar Agendamentos de Ligações"
+		                    src_model="res.partner"
+		                    res_model="multi.call"
+		                    view_mode="form"
+		                    target="new"
+		                    key2="client_action_multi"/>
+
+	</data>
+</openerp>
