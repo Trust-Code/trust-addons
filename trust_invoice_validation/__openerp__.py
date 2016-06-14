@@ -32,8 +32,8 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'sale', 'account', 'l10n_br_account_product'        
-    ],
+        'sale', 'account', 'l10n_br_account_product'
+        ],
     'data': [
         'views/invoice_rules_view.xml',
     ],

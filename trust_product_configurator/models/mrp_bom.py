@@ -67,9 +67,8 @@ class MrpBom(models.Model):
             if line.product_template.configurator_template:
 
                 attr_values = properties.filtered(
-                    lambda x: x.product_tmpl_id.id == line.product_template.id)\
-                    .mapped('value')
-
+                    lambda x: x.product_tmpl_id.id ==
+                    line.product_template.id).mapped('value')
                 prod = self.env['product.product'].create(
                     {'product_tmpl_id': line.product_template.id,
                      'attribute_value_ids': [(6, 0, attr_values.ids)]})
@@ -77,15 +76,12 @@ class MrpBom(models.Model):
 
             items += self._compute_bom_line(line, prod, attributes)
 
-        keyfunc = lambda x: x[2]['bom_id']
-
-        items = sorted(items, key=keyfunc)
+        items = sorted(items, key=lambda x: x[2]['bom_id'])
         from itertools import groupby
 
-        agrupados = groupby(items, keyfunc)
+        agrupados = groupby(items, lambda x: x[2]['bom_id'])
         for k, g in agrupados:
             bom = self.env['mrp.bom'].browse(k)
-            print bom.name
 
             new_bom = self.create({
                 'name': bom.product_tmpl_id.name,
@@ -157,7 +153,8 @@ class MrpBomLine(models.Model):
             name, bom, bom_line, bom_line.product_template, attributes)
         try:
             for expr in expressions:
-                safe_eval(expr.rule_expression,# nocopy allows to return value
+                safe_eval(expr.rule_expression,
+                          # nocopy allows to return value
                           space, mode='exec', nocopy=True)
         except Exception as e:
             raise UserError(

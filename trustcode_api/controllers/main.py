@@ -22,7 +22,6 @@
 
 from openerp.addons.web import http
 from openerp.addons.web.http import request
-from openerp.addons.website_blog.controllers.main import WebsiteBlog
 
 
 class LeadCapture(http.Controller):

@@ -25,9 +25,6 @@ import pprint
 
 from openerp import http, SUPERUSER_ID
 from openerp.http import request
-from openerp.tools.translate import _
-from openerp.addons.website.models.website import slug
-from openerp.addons.web.controllers.main import login_redirect
 
 from openerp.addons.website_sale.controllers.main import website_sale
 
@@ -43,7 +40,7 @@ class WebsiteSale(website_sale):
         if data['state_id'] == u'':
             result['state_id'] = 'error'
         if len(data['phone']) < 10:
-            result['phone'] = 'error'        
+            result['phone'] = 'error'
         return result
 
 

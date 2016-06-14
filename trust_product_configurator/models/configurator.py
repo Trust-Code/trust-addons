@@ -64,7 +64,6 @@ class ProductConfiguratorBomLine(models.Model):
 
     @api.multi
     def open_wizard_configure(self):
-        print "ok"
         pass
 
 

@@ -22,7 +22,7 @@
 
 {
     'name': 'Task Spent Time Control',
-    'summary': """Faz a controle do tempo gasto nas tarefas em projetos, 
+    'summary': """Faz a controle do tempo gasto nas tarefas em projetos,
     ligando com o módulo de presenças 'hr_attendance'""",
     'version': '8.0.1.0.0',
     'category': 'Project',

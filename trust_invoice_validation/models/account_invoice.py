@@ -20,8 +20,7 @@
 ###############################################################################
 
 
-from openerp import api, fields, models
-from openerp.exceptions import Warning as UserError
+from openerp import api, models
 
 
 class AccountInvoice(models.Model):

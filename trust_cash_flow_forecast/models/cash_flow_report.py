@@ -4,7 +4,6 @@
 
 
 import datetime
-import openerp.addons.decimal_precision as dp
 from openerp import api, fields, models
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DSDT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DSDTT
