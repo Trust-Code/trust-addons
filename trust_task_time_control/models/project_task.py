@@ -78,7 +78,7 @@ class ProjectTask (models.Model):
     @api.multi
     def write(self, vals):
         if "stage_id" in vals:
-            next_stage = self.env['project.task.type'].browse(vals["stage_id"])               
+            next_stage = self.env['project.task.type'].browse(vals["stage_id"])
             if next_stage.count_time:
                 if self.other_task_time_open():
                     raise Warning(u"Movimentação não Permitida!",
@@ -89,7 +89,7 @@ class ProjectTask (models.Model):
                         self.count_time_start(next_stage.name)
             else:
                 self.count_time_stop()
-                
+
         elif "kanban_state" in vals:
             if vals["kanban_state"] == "blocked":
                 self.count_time_stop()
@@ -101,7 +101,7 @@ class ProjectTask (models.Model):
                     self.count_time_start(self.stage_id.name)
         elif "user_id" in vals and self.stage_id.count_time:
             self.count_time_stop(self.user_id)
-        
+
         return super(ProjectTask, self).write(vals)
 
 

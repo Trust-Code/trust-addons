@@ -23,7 +23,7 @@
 
 {
     'name': 'Trustcode - CRM Modifications',
-    'summary': """Associate the lead with the new company 
+    'summary': """Associate the lead with the new company
         instead of the contact""",
     'version': '8.0',
     'category': 'Tools',

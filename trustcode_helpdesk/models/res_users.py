@@ -20,7 +20,7 @@
 ###############################################################################
 
 
-from openerp import api, fields, models
+from openerp import fields, models
 
 
 class ResUsers(models.Model):

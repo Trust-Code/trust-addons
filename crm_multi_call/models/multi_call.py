@@ -23,7 +23,7 @@ from openerp import api, models, fields
 class wizard(models.TransientModel):
     _name = 'multi.call'
 
-    res_user_id = fields.Many2many ('res.users', string="Atendentes")
+    res_user_id = fields.Many2many('res.users', string="Atendentes")
 
     @api.multi
     def create_calls(self):
@@ -36,13 +36,14 @@ class wizard(models.TransientModel):
         for c in customers_ids:
             crm_phonecall = self.env['crm.phonecall']
             crm_phonecall.create({
-                'name':c.category_id.name,
-                'partner_phone': '%s-%s-%s-%s' %(c.phone,c.mobile,c.x_phone1,c.fax),
-                'partner_id':c.id,
+                'name': c.category_id.name,
+                'partner_phone': '%s-%s-%s-%s' % (c.phone, c.mobile,
+                                                  c.x_phone1, c.fax),
+                'partner_id': c.id,
                 'user_id': self.res_user_id[indice_usuario].id
             })
 
-            somador +=1
-            if somador >= cpu and indice_usuario < len(self.res_user_id) -1:
+            somador += 1
+            if somador >= cpu and indice_usuario < len(self.res_user_id) - 1:
                 indice_usuario += 1
                 somador = 0

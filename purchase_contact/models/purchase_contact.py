@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
 ###############################################################################
 
-from openerp import api, fields, models
+from openerp import fields, models
 
 
 class PurchaseContact(models.Model):

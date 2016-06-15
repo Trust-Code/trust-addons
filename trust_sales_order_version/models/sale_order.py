@@ -26,12 +26,12 @@ from openerp import api, fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    version = fields.Integer(u'Versão',compute='_compute_version')
+    version = fields.Integer(u'Versão', compute='_compute_version')
 
     @api.multi
     def _compute_version(self):
         obj_attach = self.env['ir.attachment'].search(
-            [('res_id', '=', self.id)], 
+            [('res_id', '=', self.id)],
             order='id desc', limit=1)
 
         self.version = obj_attach.res_version
@@ -42,13 +42,12 @@ class IrAttachment(models.Model):
 
     res_version = fields.Integer(u'Versão', size=4)
 
-
     @api.model
-    def create(self, values):        
+    def create(self, values):
         if 'res_model' in values and values['res_model'] == 'sale.order':
             obj_so = self.env['sale.order'].browse(values['res_id'])
             get_version = obj_so.version
-    
+
             if get_version:
                 values.update({'res_version': get_version + 1})
             else:

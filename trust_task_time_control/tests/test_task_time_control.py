@@ -20,10 +20,7 @@
 ###############################################################################
 
 
-import time
 from openerp.tests import common
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-from mock import patch
 
 
 class TestTaskTime(common.TransactionCase):
@@ -33,11 +30,13 @@ class TestTaskTime(common.TransactionCase):
         self.project = self.env['project.project'].create(
             {'name': 'Test Project'})
 
-        self.task_one = self.env['project.task'].create({'name': 'task one',
-                                                         'project_id': self.project.id})
+        self.task_one = self.env['project.task'].create({
+            'name': 'task one', 'project_id': self.project.id
+        })
 
-        self.task_two = self.env['project.task'].create({'name': 'task two',
-                                                         'project_id': self.project.id})
+        self.task_two = self.env['project.task'].create({
+            'name': 'task two', 'project_id': self.project.id
+        })
 
         self.stage_running = self.env.ref('project.project_tt_deployment')
         self.stage_running.count_time = True
@@ -49,13 +48,13 @@ class TestTaskTime(common.TransactionCase):
                          'Não registrou corretamente entrada do usuário')
 
         self.assertEqual(len(self.task_one.work_ids), 0,
-                         'Registrou trabalho em uma tarefa que não conta tempo')
+                         'Não deveria contar tempo nesta tarefa')
         self.assertEqual(len(self.task_two.work_ids), 0,
-                         'Registrou trabalho em uma tarefa que não conta tempo')
+                         'Não deveria contar tempo nesta tarefa')
 
         self.task_one.stage_id = self.stage_running.id
 
         self.assertEqual(len(self.task_one.work_ids), 1,
                          'Não registrou o tempo na tarefa um')
         self.assertEqual(len(self.task_two.work_ids), 0,
-                         'Registrou trabalho em uma tarefa que não conta tempo')
+                         'Não deveria contar tempo nesta tarefa')

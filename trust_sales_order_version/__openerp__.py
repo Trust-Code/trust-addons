@@ -22,7 +22,7 @@
 
 {
     'name': 'Sales Order Versioning',
-    'summary': """Módulo que cria um campo para controlar a versão da 
+    'summary': """Módulo que cria um campo para controlar a versão da
             cotação enviada ao cliente.""",
     'version': '8.0.1.0.0',
     'category': 'Localisation',
@@ -35,8 +35,8 @@
     'depends': [
         'trust_sale',
     ],
-    'data': [       
-        'views/sale_order_view.xml' 
+    'data': [
+        'views/sale_order_view.xml'
     ],
     'instalable': True
 }

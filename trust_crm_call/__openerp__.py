@@ -35,6 +35,7 @@
     'depends': [
         'crm',
     ],
-    'data': ['views/crm_view.xml',
+    'data': [
+        'views/crm_view.xml',
     ],
 }

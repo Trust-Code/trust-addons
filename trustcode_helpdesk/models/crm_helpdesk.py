@@ -89,7 +89,7 @@ class CrmHelpDesk(models.Model):
                 return partner
             else:
                 raise Warning('Atenção!',
-                              'Sua empresa ainda não está configurada na base da Trustcode')
+                              'Empresa não configurada na base da Trustcode')
         else:
             raise Warning('Atenção!',
                           'Configure seu CNPJ corretamente')
@@ -160,7 +160,10 @@ class CrmHelpDesk(models.Model):
                 interact = {
                     'trustcode_id': interaction.trustcode_id,
                     'name': interaction.name,
-                    'responsible': ("Suporte - %s" % interaction.responsible_id.name) if interaction.interacao_trustcode else interaction.responsible,
+                    'responsible':
+                    ("Suporte - %s" % interaction.responsible_id.name)
+                    if interaction.interacao_trustcode
+                    else interaction.responsible,
                     'state': interaction.state,
                     'date': interaction.date,
                     'interacao_trustcode': interaction.interacao_trustcode,

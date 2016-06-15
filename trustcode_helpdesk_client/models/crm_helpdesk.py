@@ -104,7 +104,8 @@ class CrmHelpesk(models.Model):
                         help_sol.priority = item['priority']
                         for interact in item['interactions']:
                             inter = env_inter.search(
-                                [('trustcode_id', '=', interact['trustcode_id'])])
+                                [('trustcode_id', '=', interact['trustcode_id']
+                                  )])
                             if inter:
                                 inter.state = interact['state']
                                 inter.name = interact['name']
