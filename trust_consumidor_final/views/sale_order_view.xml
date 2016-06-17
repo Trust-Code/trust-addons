@@ -7,7 +7,7 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_contact.view_reforce_contact_form"/>
             <field name="arch" type="xml">
-	            <field name="partner_contact_id" position="after">
+	            <field name="partner_shipping_id" position="after">
                 	<field name="ind_final" />
 	            </field>	           
             </field>
