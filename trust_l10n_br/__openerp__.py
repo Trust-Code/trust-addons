@@ -39,5 +39,6 @@
         'data/account.account.template.csv',
         'data/account_chart_template.xml',
     ],
-    'instalable': False
+    'instalable': False,
+    'auto_install': False,
 }
