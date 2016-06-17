@@ -37,9 +37,9 @@ class HrAttendance (models.Model):
                           u"Existem duas tarefas no estágio em andamento.")
         if len(running_tasks) == 1:
             task = running_tasks[0]
-            task.count_time_stop()
+            task.count_time_stop(task.user_id.id)
 
             if self.state == 'absent':
-                task.count_time_start(task.stage_id.name)
+                task.count_time_start(task.stage_id.name, task.user_id.id)
 
         return super(HrAttendance, self).attendance_action_change()

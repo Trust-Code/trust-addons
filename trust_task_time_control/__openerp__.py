@@ -33,7 +33,7 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'project', 'hr_attendance'
+        'project', 'hr_attendance', 'base_action_rule'
     ],
     'data': ['views/project_task_view.xml',
              'views/color_icon_presence.xml',
