@@ -93,7 +93,8 @@ class ProjectTask (models.Model):
         elif "kanban_state" in vals:
             if vals["kanban_state"] == "blocked":
                 self.count_time_stop(self.user_id.id)
-            elif vals["kanban_state"] == "normal" and self.presence_state(self.user_id.id):
+            elif vals["kanban_state"] == "normal" and\
+                    self.presence_state(self.user_id.id):
                 if self.other_task_time_open(self.user_id.id):
                     raise Warning(u"Alteração não Permitida!",
                                   u"Já existe outra tarefa contando tempo.")
