@@ -3,3 +3,4 @@ bank-payment
 account-fiscal-rule https://github.com/odoo-brazil/account-fiscal-rule.git
 l10n-brazil https://github.com/Trust-Code/l10n-brazil.git
 odoo-brazil-eletronic-documents https://github.com/Trust-Code/odoo-brazil-eletronic-documents.git
+odoo-utils https://github.com/Trust-Code/odoo-utils.git

@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'sale', 'sale_order_dates',
+        'sale', 'sale_order_dates', 'trust_cash_flow_base'
     ],
     'data': [
         'views/cash_flow_view.xml'
