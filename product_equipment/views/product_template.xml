@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-
         <record id="view_product_template_form" model="ir.ui.view">
             <field name="name">view.product.template.form</field>
             <field name="model">product.template</field>
@@ -11,14 +10,123 @@
                     <page string="Equipment">
                         <group>
                             <group>
-                                <field name="CPU"/>
-                                <field name="ram_memory"/>
-                                <field name="hd_memory"/>
+                                <field name="group"/>
+																<field name="equipment_id" domain="[('group', '=', group)]" />
+																<field name="create_uid" readonly="1"/>
                             </group>
                             <group>
                             </group>
                         </group>
                     </page>
+										<page attrs="{'invisible':[('group', '!=', '1')]}" string="Computadores">
+											<group>
+												<group string="Dados de Cadastro">
+													<field name="tag_comp"/>
+													<field name="customer_id" domain="[('customer', '=', 'True')]" />
+													<field name="sector"/>
+													<field name="employee_id" domain="[('employee', '=', 'True')]"/>
+												</group>
+												<group string="Acesso Remoto">
+													<field name="access_code"/>
+													<field name="remote_access_password"/>
+												</group>
+												<group string="Configurações de Rede">
+													<field name="web_type"/>
+													<field name="web_name"/>
+													<field name="user_local_login"/>
+													<field name="user_local_password"/>
+													<field name="ip_type"/>
+													<field name="mac_address"/>
+													<field name="ip_address"/>
+													<field name="sub_web_mask"/>
+													<field name="gateway"/>
+													<field name="dns1"/>
+													<field name="dns2"/>
+													<field name="remote_access_door"/>
+												</group>
+												<group string="Hardware">
+													<field name="processor"/>
+													<field name="memory"/>
+													<field name="hd"/>
+													<field name="motherboard_manufacturer"/>
+													<field name="equipment_name"/>
+												</group>
+												<group string="Impressoras">
+													<field name="server_print"/>
+													<field name="printer_model"/>
+													<field name="printer_path"/>
+													<field name="web_printer"/>
+												</group>
+												<group string="Programas">
+													<field name="routine_prog_user"/>
+												</group>
+												<group string="E-mail">
+													<field name="email_bool"/>
+													<field name="email_use_type"/>
+													<field name="email_account"/>
+													<field name="email_password"/>
+												</group>
+												<group string="Servidor">
+													<field name="pop_server"/>
+													<field name="smtp_server"/>
+													<field name="pop_door"/>
+													<field name="smtp_door"/>
+												</group>
+												<group string="Observações">
+													<field name="outlook_obs"/>
+													<field name="other_obs"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '2')]}" string="Servidores">
+											<group>
+												<group string="Tag">
+													<field name="tag_server"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '3')]}" string="Dispositivos Móveis">
+											<group>
+												<group string="Tag">
+													<field name="tag_mobile"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '4')]}" string="Acessórios">
+											<group>
+												<group string="Tag">
+													<field name="tag_accessories"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '5')]}" string="Equipamentos de Rede">
+											<group>
+												<group string="Tag">
+													<field name="tag_net_equipment"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '6')]}" string="Equipamentos de Telefonia">
+											<group>
+												<group string="Tag">
+													<field name="tag_tel_equipment"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '7')]}" string="Equipamentos de CFTV">
+											<group>
+												<group string="Tag">
+													<field name="tag_cftv_equipment"/>
+												</group>
+											</group>
+										</page>
+										<page attrs="{'invisible':[('group', '!=', '8')]}" string="Outros">
+											<group>
+												<group string="Tag">
+													<field name="tag_others"/>
+												</group>
+											</group>
+										</page>
                 </page>
             </field>
         </record>
