@@ -8,4 +8,4 @@ from openerp import fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    crm_help_id = fields.Many2one('crm.helpdesk')
+    crm_help_id = fields.Many2one('crm.helpdesk', string="Chamado Origem")

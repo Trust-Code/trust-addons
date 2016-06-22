@@ -16,16 +16,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: sale_contact
+#: help:sale.order,partner_contact_id:0
+msgid "Insert here the comercial contact."
+msgstr "Insira aqui o contato comercial."
+
+#. module: sale_contact
 #: model:ir.model,name:sale_contact.model_sale_order
 msgid "Sales Order"
-msgstr "Pedido de Venda"
+msgstr "Pedidos de Venda"
 
 #. module: sale_contact
-#: view:sale.order:0
-msgid "partner_contact_id"
-msgstr "Contato"
-
-#. module: sale_contact
-#: view:sale.order:0
+#: field:sale.order,partner_contact_id:0
 msgid "partner_id"
 msgstr "Contato"
