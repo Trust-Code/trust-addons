@@ -26,9 +26,14 @@
 													<field name="sector"/>
 													<field name="employee_id" domain="[('employee', '=', 'True')]"/>
 												</group>
-												<group string="Acesso Remoto">
-													<field name="access_code"/>
-													<field name="remote_access_password"/>
+												<group string="Dados do Produto">
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
+													<field name="service_tag"/>
+													<field name="buy_date"/>
+													<field name="guarantee_control"/>
+													<field name="gurantee_period" attrs="{'required':[('guarantee_control', '==', 'yes')]}"/>
 												</group>
 												<group string="Configurações de Rede">
 													<field name="web_type"/>
@@ -44,6 +49,10 @@
 													<field name="dns2"/>
 													<field name="remote_access_door"/>
 												</group>
+												<group string="Acesso Remoto">
+													<field name="access_code"/>
+													<field name="remote_access_password"/>
+												</group>
 												<group string="Hardware">
 													<field name="processor"/>
 													<field name="memory"/>
@@ -51,18 +60,22 @@
 													<field name="motherboard_manufacturer"/>
 													<field name="equipment_name"/>
 												</group>
+												<group string="Sistema">
+													<field name="op_system"/>
+													<field name="op_system_version"/>
+													<field name="antivirus"/>
+													<field name="antivirus_version"/>
+													<field name="routine_prog_user"/>
+												</group>
 												<group string="Impressoras">
 													<field name="server_print"/>
 													<field name="printer_model"/>
 													<field name="printer_path"/>
 													<field name="web_printer"/>
 												</group>
-												<group string="Programas">
-													<field name="routine_prog_user"/>
-												</group>
 												<group string="E-mail">
 													<field name="email_bool"/>
-													<field name="email_use_type"/>
+													<field name="email_use_type" attrs="{'required':[('email_bool', '==', '1')]}"/>
 													<field name="email_account"/>
 													<field name="email_password"/>
 												</group>
@@ -72,59 +85,159 @@
 													<field name="pop_door"/>
 													<field name="smtp_door"/>
 												</group>
-												<group string="Observações">
-													<field name="outlook_obs"/>
-													<field name="other_obs"/>
-												</group>
+											</group>
+											<group string="Observações">
+												<field name="outlook_obs"/>
+												<field name="other_obs"/>
+												<field name="other_gen_info"/>
 											</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '2')]}" string="Servidores">
 											<group>
-												<group string="Tag">
-													<field name="tag_server"/>
+													<group string="Dados de Cadastro">
+														<field name="tag_server"/>
+														<field name="customer_id"/>
+													</group>
+													<group string="Acesso Remoto">
+														<field name="remote_acces_path_ts"/>
+														<field name="ts_remote_access_door"/>
+														<field name="access_code"/>
+														<field name="remote_access_password"/>
+													</group>
+													<group string="Dados do Produto">
+														<field name="manufacturer"/>
+														<field name="model"/>
+														<field name="serial_num"/>
+														<field name="service_tag_server"/>
+														<field name="buy_date"/>
+														<field name="guarantee_control"/>
+														<field name="gurantee_period" attrs="{'required':[('guarantee_control', '==', 'yes')]}"/>
+														<field name="processor"/>
+														<field name="memory"/>
+														<field name="hd"/>
+														<field name="motherboard_manufacturer"/>
+														<field name="server_function"/>
+														<field name="equipment_name"/>
+													</group>
+													<group string="Rede">
+														<field name="web_type"/>
+														<field name="web_name"/>
+														<field name="admin_user_login"/>
+														<field name="admin_user_password"/>
+														<field name="mac_address"/>
+														<field name="ip_address"/>
+														<field name="sub_web_mask"/>
+														<field name="gateway"/>
+														<field name="dns1"/>
+														<field name="dns2"/>
+													</group>
+													<group string="Sistema">
+														<field name="op_system"/>
+														<field name="op_system_version"/>
+														<field name="antivirus"/>
+														<field name="antivirus_version"/>
+													</group>
+													<group>
+													</group>
 												</group>
-											</group>
+												<group string="Adendos">
+													<field name="other_info_and_obs"/>
+												</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '3')]}" string="Dispositivos Móveis">
 											<group>
-												<group string="Tag">
+												<group string="Dados do Equipamento">
 													<field name="tag_mobile"/>
+													<field name="mobile_equipment_type"/>
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
 												</group>
+												<group string="Dados de Rede">
+													<field name="mac_address"/>
+													<field name="ip_address"/>
+												</group>
+												<group string="Dados do Sistema">
+													<field name="op_system"/>
+													<field name="op_system_version"/>
+												</group>
+											</group>
+											<group string="Adendos">
+												<field name="other_info_and_obs"/>
 											</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '4')]}" string="Acessórios">
 											<group>
-												<group string="Tag">
+												<group string="Dados de Cadastro">
 													<field name="tag_accessories"/>
+													<field name="accessories_equipment_type"/>
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
 												</group>
+												<group string="Dados de Rede">
+													<field name="mac_address"/>
+													<field name="ip_address"/>
+												</group>
+											</group>
+											<group string="Adendos">
+												<field name="other_info_and_obs"/>
 											</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '5')]}" string="Equipamentos de Rede">
 											<group>
-												<group string="Tag">
+												<group string="Dados de Cadastro">
 													<field name="tag_net_equipment"/>
+													<field name="net_equipment_type"/>
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
 												</group>
+											</group>
+											<group string="Adendos">
+												<field name="other_info_and_obs"/>
 											</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '6')]}" string="Equipamentos de Telefonia">
 											<group>
-												<group string="Tag">
+												<group string="Dados de Cadastro">
 													<field name="tag_tel_equipment"/>
+													<field name="tel_equipment_type"/>
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
 												</group>
+											</group>
+											<group string="Adendos">
+												<field name="other_info_and_obs"/>
 											</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '7')]}" string="Equipamentos de CFTV">
 											<group>
-												<group string="Tag">
+												<group string="Dados de Cadastro">
 													<field name="tag_cftv_equipment"/>
+													<field name="cftv_equipment_type"/>
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
 												</group>
+											</group>
+											<group string="Adendos">
+												<field name="other_info_and_obs"/>
 											</group>
 										</page>
 										<page attrs="{'invisible':[('group', '!=', '8')]}" string="Outros">
 											<group>
-												<group string="Tag">
+												<group string="Dados de Cadastro">
 													<field name="tag_others"/>
+													<field name="other_equipment_type"/>
+													<field name="manufacturer"/>
+													<field name="model"/>
+													<field name="serial_num"/>
 												</group>
+											</group>
+											<group string="Adendos">
+												<field name="other_info_and_obs"/>
 											</group>
 										</page>
                 </page>

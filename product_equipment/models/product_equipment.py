@@ -55,7 +55,7 @@ class ProductTemplate(models.Model):
         string='Tipo de Equipamento',
         required=True)
 
-    tag_comp = fields.Integer(required=True)
+    tag_comp = fields.Integer(string="Etiqueta", required=True)
     customer_id = fields.Many2one('res.partner', string="Cliente",
                                   required=True)
     sector = fields.Char(max_length=30, string="Alocação", required=True)
@@ -67,6 +67,20 @@ class ProductTemplate(models.Model):
     remote_access_password = fields.Char(max_length=30,
                                          string="Senha de Acesso Remoto",
                                          required=True)
+    manufacturer = fields.Char(max_length=30, string="Fabricante",
+                               required=True)
+    model = fields.Char(max_length=30, string="Modelo", required=True)
+    serial_num = fields.Char(max_length=30, string="Número de Série",
+                             required=True)
+    service_tag = fields.Char(max_length=30,
+                              string="Etiqueta de Serviço (Dell)")
+    buy_date = fields.Date(string="Data de Compra")
+    guarantee_control = fields.Selection([
+        ('yes', 'Sim'),
+        ('no', 'Não'), ],
+        string="Controla Garantia?",
+        required=True)
+    gurantee_period = fields.Char(max_length=30, string="Prazo de Garantia")
     processor = fields.Char(max_length=30, string="Processador",
                             required=True)
     memory = fields.Char(max_length=30, string="Memória", required=True)
@@ -128,8 +142,7 @@ class ProductTemplate(models.Model):
     email_use_type = fields.Selection([
         ('1', 'Webmail'),
         ('2', 'Outlook'),
-        ('3', 'Outros'),
-        ('4', 'Não usa e-mail'), ],
+        ('3', 'Outros'), ],
         string="Forma de Uso de E-mail",
         required=True)
     email_account = fields.Char(
@@ -144,17 +157,58 @@ class ProductTemplate(models.Model):
         max_length=30, string="Porta Pop")
     smtp_door = fields.Char(
         max_length=30, string="Porta SMTP")
-    outlook_obs = fields.Char(
-        max_length=100,
-        string="Observações para Cadastramento de Conta Outlook")
-    other_obs = fields.Char(
-        max_length=100,
-        string="Outras Observações do Equipamento/Setor/Usuário")
-
-    tag_server = fields.Integer(required=True)
-    tag_mobile = fields.Integer(required=True)
-    tag_accessories = fields.Integer(required=True)
-    tag_net_equipment = fields.Integer(required=True)
-    tag_tel_equipment = fields.Integer(required=True)
-    tag_cftv_equipment = fields.Integer(required=True)
-    tag_others = fields.Integer(required=True)
+    outlook_obs = fields.Text(
+        string="Cadastramento de Conta Outlook")
+    other_obs = fields.Text(
+        string="Equipamento/Setor/Usuário")
+    other_gen_info = fields.Text(
+        string="Informações Gerais")
+    op_system = fields.Char(max_length=30, string="Sistema Operacional",
+                            required=True)
+    op_system_version = fields.Char(max_length=30,
+                                    string="Versão do Sistema Operacional",
+                                    required=True)
+    antivirus = fields.Char(max_length=30, string="Antivírus", required=True)
+    antivirus_version = fields.Char(max_length=30,
+                                    string="Versão do Antivírus",
+                                    required=True)
+    tag_server = fields.Integer(string="Etiqueta", required=True)
+    remote_acces_path_ts = fields.Char(max_length=30,
+                                       string="Rota de Acesso Remoto via TS")
+    ts_remote_access_door = fields.Integer(string="Porta de Acesso Remoto TS")
+    service_tag_server = fields.Char(max_length=30,
+                                     string="Etiqueta de Serviço (Dell)",
+                                     required=True)
+    server_function = fields.Char(max_length=50, string="Função do Servidor",
+                                  required=True)
+    admin_user_login = fields.Char(max_length=30,
+                                   string="Login do Usuário Administrador",
+                                   required=True)
+    admin_user_password = fields.Char(max_length=30,
+                                      string="Login do Usuário Administrador",
+                                      required=True)
+    other_info_and_obs = fields.Text(string="Outras Informações e Observações")
+    tag_mobile = fields.Integer(string="Etiqueta", required=True)
+    mobile_equipment_type = fields.Char(max_length=30,
+                                        string="Tipo de Equipamento",
+                                        required=True)
+    tag_accessories = fields.Integer(string="Etiqueta", required=True)
+    accessories_equipment_type = fields.Char(max_length=30,
+                                             string="Tipo de Equipamento",
+                                             required=True)
+    tag_net_equipment = fields.Integer(string="Etiqueta", required=True)
+    net_equipment_type = fields.Char(max_length=30,
+                                     string="Tipo de Equipamento",
+                                     required=True)
+    tag_tel_equipment = fields.Integer(string="Etiqueta", required=True)
+    tel_equipment_type = fields.Char(max_length=30,
+                                     string="Tipo de Equipamento",
+                                     required=True)
+    tag_cftv_equipment = fields.Integer(string="Etiqueta", required=True)
+    cftv_equipment_type = fields.Char(max_length=30,
+                                      string="Tipo de Equipamento",
+                                      required=True)
+    tag_others = fields.Integer(string="Etiqueta", required=True)
+    other_equipment_type = fields.Char(max_length=30,
+                                       string="Tipo de Equipamento",
+                                       required=True)
