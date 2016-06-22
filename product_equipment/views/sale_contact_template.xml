@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+        <record id="view_product_template_form" model="ir.ui.view">
+            <field name="name">sale.contact.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+             <notebook colspan="4" position="inside">
+               <page string="Cadastro Global">
+                 <group>
+                   <group string="Cadastro de Rede">
+                     <field name="web_name"/>
+                     <field name="web_type"/>
+                     <field name="admin_user_login"/>
+                     <field name="admin_user_password"/>
+                     <field name="wifi_name"/>
+                     <field name="access_password"/>
+                     <field name="dhcp_server"/>
+                     <field name="dns1_server"/>
+                     <field name="dns2_server"/>
+                     <field name="dhcp_controller"/>
+                   </group>
+                   <group string="Provedor de Internet 1">
+                     <field name="net_provider_1"/>
+                     <field name="broad_band_type_1"/>
+                     <field name="net_speed_1"/>
+                     <field name="ip_address_type_1"/>
+                     <field name="ip_address_1"/>
+                     <field name="ddns_address_1"/>
+                     <field name="ddns_password_1"/>
+                   </group>
+                   <group string="Provedor de Internet 2">
+                     <field name="net_provider_2"/>
+                     <field name="broad_band_type_2"/>
+                     <field name="net_speed_2"/>
+                     <field name="ip_address_type_2"/>
+                     <field name="ip_address_2"/>
+                     <field name="ddns_address_2"/>
+                     <field name="ddns_password_2"/>
+                   </group>
+                   <group string="Provedor">
+                     <field name="email_host_prov"/>
+                     <field name="login"/>
+                     <field name="password"/>
+                   </group>
+                 </group>
+                 <group string="Adendos">
+                   <field name="other_host_info"/>
+                   <field name="sys_util_partner"/>
+                   <field name="other_gen_info"/>
+                 </group>
+               </page>
+             </notebook>
+           </field>
+         </record>
+       </data>
+     </openerp>

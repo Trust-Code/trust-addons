@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<openerp>
+  <data>
+
+		<record id="crm_helpdesk_sale_order_link_form" model="ir.ui.view">
+			<field name="name">crm_helpdesk_sale_order_link.form</field>
+			<field name="model">crm.helpdesk</field>
+			<field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
+			<field name="arch" type="xml">
+				<group position="before">
+					<div class="oe_right oe_button_box" name="buttons">
+            <button class="oe_inline oe_stat_button" type="object"
+                    name="action_help2quotation" icon="fa-strikethrough" string="Gerar Cotação"
+                    context="{'default_partner_id': partner_id, 'default_crm_help_id': id }"/>
+          </div>
+	      </group>
+      </field>
+		</record>
+  </data>
+</openerp>

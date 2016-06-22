@@ -3,9 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Product Equipment',
-    'summary': """Adiciona alguns campos na visão de
-    produtos relacionados a TI.""",
+    'name': 'Helpdesk',
+    'summary': "Cria um botão que transfere do helpdesk para a cotação.",
     'version': '8.0.1.0.0',
     'category': 'Website',
     'author': 'Trustcode',
@@ -14,11 +13,9 @@
     'contributors': [
         'Alessandro Fernandes Martini <alessandrofmartini@gmail.com>'
     ],
-    'depends': [
-        'product', 'account'
-    ],
+    'depends': ['crm_helpdesk', 'sale'],
     'data': [
-        'views/product_template.xml',
-        'views/sale_contact_template.xml',
+        'views/crm_helpdesk_sale_order_link_view.xml',
+        'views/crm_helpdesk_sale_order.xml',
     ],
 }
