@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-		<record id="ir_cron_trust_backup_scheduler" model="ir.cron" forcecreate="True">		
+		<record id="ir_cron_trust_backup_scheduler" model="ir.cron" forcecreate="True">
 			<field name="name">Trust Backup Scheduler</field>
 			<field name="user_id" ref="base.user_root" />
 			<field name="interval_number">30</field>
@@ -21,7 +21,7 @@
 			<field name="arch" type="xml">
 				<form string="Test">
 					<sheet>
-						 <div class="oe_title">	                        
+						 <div class="oe_title">
 	                        <h1>Configure o backup periódico</h1>
 	                    </div>
 						<div class="oe_right oe_button_box" name="buttons">
@@ -30,23 +30,25 @@
 								<field string="Backups" name="backup_count" widget="statinfo" />
 							</button>
 							<button class="oe_inline oe_stat_button" type="object"
-								name="execute_backup" icon="fa-play" string="Executar">								
+								name="execute_backup" icon="fa-play" string="Executar">
 							</button>
 						</div>
 						<group>
 							<field name="host" />
 							<field name="port" />
 							<field name="database_name" />
-							<field name="admin_password" />
+							<field name="admin_password" password="True"/>
 							<field name="interval" />
 							<field name="backup_dir" />
 							<field name="send_to_s3" />
 							<field name="aws_access_key"
-								attrs="{'invisible': [('send_to_s3', '=', False)], 
-	                        									'required': [('send_to_s3', '=', True)]}" />
+								attrs="{'invisible': [('send_to_s3', '=', False)],
+	                        									'required': [('send_to_s3', '=', True)]}"
+                                 password="True" />
 							<field name="aws_secret_key"
-								attrs="{'invisible': [('send_to_s3', '=', False)], 
-	                        									'required': [('send_to_s3', '=', True)]}" />
+								attrs="{'invisible': [('send_to_s3', '=', False)],
+	                        									'required': [('send_to_s3', '=', True)]}"
+                                password="True" />
 							<field name="next_backup" />
 						</group>
 					</sheet>
