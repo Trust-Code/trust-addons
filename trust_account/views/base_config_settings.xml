@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="config_account">
+            <field name="name">config_account</field>
+            <field name="model">base.config.settings</field>
+            <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='font']/parent::group" position="after">
+                    <separator string= "Configurações de Contas de Parceiros"/>
+                    <group>
+                        <label for="id" string="Contas" />
+                        <div>
+                            <div>
+                                <label for="account_bool" />
+                                <field name="account_bool" class="oe_inline" />
+                            </div>
+                            <div>
+                                <label for="account_receivable" />
+                                <field name="account_receivable" class="oe_inline" />
+                            </div>
+                            <div>
+                                <label for="account_payable" />
+                                <field name="account_payable" class="oe_inline" />
+                            </div>
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

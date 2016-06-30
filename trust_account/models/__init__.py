@@ -18,4 +18,4 @@
 ###############################################################################
 
 
-from . import account_invoice
+from . import account_invoice, base_config_settings

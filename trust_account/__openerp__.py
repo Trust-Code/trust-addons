@@ -31,7 +31,7 @@
     'depends': [
         'account',
     ],
-    'data': [
+    'data': ['views/base_config_settings.xml',
     ],
     'application': True,
     'auto_install': False
