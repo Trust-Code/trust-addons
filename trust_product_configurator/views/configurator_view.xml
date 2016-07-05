@@ -63,7 +63,7 @@
 								<field name="quantity" />
 							</group>
 						</group>
-						<group name="bom_group" string="Subprodutos">
+						<group name="bom_group" string="Lista de Materiais">
 							<field name="bom_line_ids" nolabel="1">
 								<tree create="0" editable="0">
 									<field name="bom_line_id" invisible="1" />

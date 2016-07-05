@@ -1,0 +1,92 @@
+[1mdiff --git a/trust_product_configurator/models/configurator.py b/trust_product_configurator/models/configurator.py[m
+[1mindex 95ae574..d488a46 100644[m
+[1m--- a/trust_product_configurator/models/configurator.py[m
+[1m+++ b/trust_product_configurator/models/configurator.py[m
+[36m@@ -95,7 +95,7 @@[m [mclass ProductConfiguratorWizard(models.TransientModel):[m
+                 if line.product_template_id.id == self.product_id.id:[m
+                     line.configured = True[m
+         super(ProductConfiguratorWizard, self).write(vals)[m
+[31m-        return {'type': 'ir.actions.act_window_close'}[m
+[32m+[m[32m        return {'type': 'ir.actions.client', 'tag': 'history_back'}[m
+ [m
+     @api.multi[m
+     def read(self, fields=None, load='_classic_read'):[m
+[36m@@ -209,10 +209,10 @@[m [mclass SaleOrderConfiguredProducts(models.Model):[m
+             'view_type': 'form',[m
+             'res_id': wiz_id.id,[m
+             'views': [(result[1], 'form')],[m
+[31m-            'target': 'new',[m
+[32m+[m[32m            'target': 'current',[m
+             'context': {'current_id': wiz_id.id},[m
+             'flags': {'form': {'action_buttons': True, 'options':[m
+[31m-                               {'mode': 'edit'}}},[m
+[32m+[m[32m                               {'mode': 'create'}}},[m
+         }[m
+ [m
+     @api.multi[m
+[36m@@ -245,7 +245,7 @@[m [mclass SaleOrderConfiguredProducts(models.Model):[m
+     bom_line_ids = fields.One2many([m
+         comodel_name='product.configurator.bom.line',[m
+         inverse_name='product_line',[m
+[31m-        string='Subprodutos', copy=True,[m
+[32m+[m[32m        string='Lista de Materiais', copy=True,[m
+         readonly=True, states={'draft': [('readonly', False)]}[m
+     )[m
+ [m
+[36m@@ -259,10 +259,11 @@[m [mclass SaleOrderConfiguredProducts(models.Model):[m
+ [m
+             lines = [][m
+             for bom_line in bom.bom_line_ids:[m
+[31m-                lines.append((0, 0, {[m
+[31m-                    'product_line': self.id,[m
+[31m-                    'bom_line_id': bom_line.id,[m
+[31m-                }))[m
+[32m+[m[32m                if bom_line.product_template.configurator_template:[m
+[32m+[m[32m                    lines.append((0, 0, {[m
+[32m+[m[32m                        'product_line': self.id,[m
+[32m+[m[32m                        'bom_line_id': bom_line.id,[m
+[32m+[m[32m                    }))[m
+             self.bom_line_ids = ([m
+                 lines[m
+             )[m
+[1mdiff --git a/trust_product_configurator/models/sale.py b/trust_product_configurator/models/sale.py[m
+[1mindex a25a902..6d7c8f5 100755[m
+[1m--- a/trust_product_configurator/models/sale.py[m
+[1m+++ b/trust_product_configurator/models/sale.py[m
+[36m@@ -24,8 +24,9 @@[m [mclass SaleOrder(models.Model):[m
+     _inherit = 'sale.order'[m
+ [m
+     def _count_configured_products(self):[m
+[32m+[m[32m        print "ola"[m
+         return self.env['sale.order.configured.product'].search_count([[m
+             ('sale_order_id', '=', self.id)[m
+         ])[m
+     product_configurator_count = fields.Integer([m
+[31m-        'Count Products', compute=_count_configured_products)[m
+[32m+[m[32m        'Count Products', compute=_count_configured_products, store=False)[m
+[1mdiff --git a/trust_product_configurator/views/configurator_view.xml b/trust_product_configurator/views/configurator_view.xml[m
+[1mindex d4b1170..2f4d8f4 100644[m
+[1m--- a/trust_product_configurator/views/configurator_view.xml[m
+[1m+++ b/trust_product_configurator/views/configurator_view.xml[m
+[36m@@ -63,7 +63,7 @@[m
+ 								<field name="quantity" />[m
+ 							</group>[m
+ 						</group>[m
+[31m-						<group name="bom_group" string="Subprodutos">[m
+[32m+[m						[32m<group name="bom_group" string="Lista de Materiais">[m
+ 							<field name="bom_line_ids" nolabel="1">[m
+ 								<tree create="0" editable="0">[m
+ 									<field name="bom_line_id" invisible="1" />[m
+[1mdiff --git a/trust_product_configurator/views/product_view.xml b/trust_product_configurator/views/product_view.xml[m
+[1mindex 783b583..4c3f929 100644[m
+[1m--- a/trust_product_configurator/views/product_view.xml[m
+[1m+++ b/trust_product_configurator/views/product_view.xml[m
+[36m@@ -104,7 +104,7 @@[m
+ 						<group>[m
+ 							<field name="attribute_id" />[m
+ 							<field name="required" />[m
+[31m-							<field name="value_ids" widget="many2many_tags" />[m
+[32m+[m							[32m<field name="value_ids" widget="many2many_tags" context="{ 'default_attribute_id': attribute_id }" />[m
+ 							<field name="default" />[m
+ 						</group>[m
+ 					</sheet>[m

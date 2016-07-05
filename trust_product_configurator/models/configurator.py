@@ -95,7 +95,7 @@ class ProductConfiguratorWizard(models.TransientModel):
                 if line.product_template_id.id == self.product_id.id:
                     line.configured = True
         super(ProductConfiguratorWizard, self).write(vals)
-        return {'type': 'ir.actions.act_window_close'}
+        return {'type': 'ir.actions.client', 'tag': 'history_back'}
 
     @api.multi
     def read(self, fields=None, load='_classic_read'):
@@ -209,10 +209,10 @@ class SaleOrderConfiguredProducts(models.Model):
             'view_type': 'form',
             'res_id': wiz_id.id,
             'views': [(result[1], 'form')],
-            'target': 'new',
+            'target': 'current',
             'context': {'current_id': wiz_id.id},
             'flags': {'form': {'action_buttons': True, 'options':
-                               {'mode': 'edit'}}},
+                               {'mode': 'create'}}},
         }
 
     @api.multi
@@ -245,7 +245,7 @@ class SaleOrderConfiguredProducts(models.Model):
     bom_line_ids = fields.One2many(
         comodel_name='product.configurator.bom.line',
         inverse_name='product_line',
-        string='Subprodutos', copy=True,
+        string='Lista de Materiais', copy=True,
         readonly=True, states={'draft': [('readonly', False)]}
     )
 
@@ -259,10 +259,11 @@ class SaleOrderConfiguredProducts(models.Model):
 
             lines = []
             for bom_line in bom.bom_line_ids:
-                lines.append((0, 0, {
-                    'product_line': self.id,
-                    'bom_line_id': bom_line.id,
-                }))
+                if bom_line.product_template.configurator_template:
+                    lines.append((0, 0, {
+                        'product_line': self.id,
+                        'bom_line_id': bom_line.id,
+                    }))
             self.bom_line_ids = (
                 lines
             )
