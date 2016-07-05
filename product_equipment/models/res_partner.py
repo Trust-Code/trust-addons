@@ -5,34 +5,25 @@
 from openerp import fields, models
 
 
-class ClientTemplate(models.Model):
+class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    web_name = fields.Char(max_length=30, string="Nome da Rede", required=True)
+    web_name = fields.Char(max_length=30, string="Nome da Rede")
     web_type = fields.Selection([
         ('work', 'Grupo de Trabalho'),
         ('domain', 'Domínio'), ],
-        string="Tipo de Rede",
-        required=True)
+        string="Tipo de Rede")
     admin_user_login = fields.Char(max_length=30,
-                                   string="Login Administrador do Domínio",
-                                   required=True)
+                                   string="Login Administrador do Domínio")
     admin_user_password = fields.Char(max_length=30,
-                                      string="Senha Administrador do Domínio",
-                                      required=True)
-    wifi_name = fields.Char(max_length=30, string="Nome da Rede Wireless",
-                            required=True)
-    access_password = fields.Char(max_length=30, string="Senha de Acesso",
-                                  required=True)
-    dhcp_server = fields.Char(max_length=30, string="Servidor DHCP (Gateway)",
-                              required=True)
-    dns1_server = fields.Char(max_length=30, string="Servidor DNS1",
-                              required=True)
-    dns2_server = fields.Char(max_length=30, string="Servidor DNS2",
-                              required=True)
+                                      string="Senha Administrador do Domínio")
+    wifi_name = fields.Char(max_length=30, string="Nome da Rede Wireless")
+    access_password = fields.Char(max_length=30, string="Senha de Acesso")
+    dhcp_server = fields.Char(max_length=30, string="Servidor DHCP (Gateway)")
+    dns1_server = fields.Char(max_length=30, string="Servidor DNS1")
+    dns2_server = fields.Char(max_length=30, string="Servidor DNS2")
     dhcp_controller = fields.Char(max_length=30,
-                                  string="Equipamento Controlador do DHCP",
-                                  required=True)
+                                  string="Equipamento Controlador do DHCP",)
     net_provider_1 = fields.Char(max_length=30,
                                  string="Provedor de Internet 1 (Operadora)")
     broad_band_type_1 = fields.Char(max_length=30,

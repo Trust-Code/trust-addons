@@ -24,8 +24,11 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     def _count_configured_products(self):
-        return self.env['sale.order.configured.product'].search_count([
-            ('sale_order_id', '=', self.id)
-        ])
+        for item in self:
+            value = self.env['sale.order.configured.product'].search_count([
+                ('sale_order_id', '=', item.id)
+            ])
+            item.product_configurator_count = value
+
     product_configurator_count = fields.Integer(
-        'Count Products', compute=_count_configured_products)
+        'Count Products', compute='_count_configured_products', store=False)
