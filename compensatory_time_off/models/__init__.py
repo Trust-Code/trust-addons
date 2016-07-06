@@ -18,4 +18,7 @@
 ###############################################################################
 
 
-from . import attendance
+from . import hr_holidays
+from . import hr_timesheet_overtime
+from . import hr_timesheet_sheet
+from . import hr_analytic_timesheet

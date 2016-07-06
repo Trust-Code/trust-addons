@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="timesheet_overtime" model="ir.ui.view">
+            <field name="name">hr_timesheet_sheet.overtime.form</field>
+            <field name="model">hr_timesheet_sheet.sheet</field>
+            <field name="inherit_id" ref="hr_timesheet_sheet.hr_timesheet_sheet_form"/>
+            <field name="arch" type="xml">
+                <field name="total_timesheet" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="total_difference" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="total_attendance" position="before">
+                    <field name="prev_timesheet_diff" widget="float_time" />
+                    <field name="total_duty_hours" widget="float_time" string="Total de horas" />
+                </field>
+                <field name="total_attendance" position="after">
+                    <field name="total_diff_hours" widget="float_time" />
+                    <field name="overtime_to_pay" widget="float_time" />
+                    <field name="calculate_diff_hours" widget="float_time" />
+                </field>
+                <notebook position="inside">
+                    <page string="Análise de horas extras">
+                        <field name="overtime_day_ids" editable="bottom" />
+                    </page>
+                    <page string="Folgas">
+                        <field name="leave_ids" />
+                    </page>
+                </notebook>
+                <field name="to_invoice" position="after">
+                    <field name="pay_overtime" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
