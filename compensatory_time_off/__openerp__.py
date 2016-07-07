@@ -16,9 +16,11 @@
     'depends': [
         'hr_attendance',
         'hr_timesheet_sheet',
+        'hr_holidays',
         'resource',
     ],
     'data': [
+        'views/hr_holidays.xml',
         'views/timesheet_comptime_view.xml',
         'views/hr_timesheet_sheet.xml',
         'views/hr_timesheet_overtime.xml',

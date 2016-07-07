@@ -23,9 +23,10 @@ class TimeSheetComp(models.Model):
                     total += an_line.unit_amount
             item.overtime_to_pay = total
 
-    total_duty_hours = fields.Char(string='Total de horas')
+    total_duty_hours = fields.Float(string='Total de horas')
     total_diff_hours = fields.Float('Saldo de horas do período',
                                     readonly=True, default=0.0)
+    total_leave_hours = fields.Float(string="Total de horas folga")
     prev_timesheet_diff = fields.Float(compute='_overtime_diff',
                                        string="Última planilha de horários")
     calculate_diff_hours = fields.Float(compute='_overtime_diff',
@@ -70,9 +71,10 @@ class TimeSheetComp(models.Model):
              ('state', '=', 'validate'),
              ('date_from', '>=', self.date_from),
              ('date_to', '<=', self.date_to)])
-        leaves.write({
-            'timesheet_sheet_id': self.id
-        })
+        for leave in leaves:
+            leave.write({
+                'timesheet_sheet_id': self.id
+            })
 
     @api.multi
     def calculate_timesheet(self):
@@ -97,12 +99,14 @@ class TimeSheetComp(models.Model):
                 rrule.DAILY, dtstart=start_date,
                 until=(end_date).replace(hour=0, minute=0, second=0))
 
+            total_leave_hours = 0.0
             leaves = calendar.get_leave_intervals()[0]
             for leave in self.leave_ids:
                 leaves.append(
                     (datetime.strptime(leave.date_from, DATETIME_FORMAT),
                      datetime.strptime(leave.date_to, DATETIME_FORMAT))
                 )
+                total_leave_hours += leave.total_duty_hours_off
 
             dayjob_obj = self.env['hr.timesheet.overtime']
             self.overtime_day_ids.unlink()
@@ -131,9 +135,10 @@ class TimeSheetComp(models.Model):
                     total_worked += attendance_hours
                     total_hours += duty_hours[0]
             self.write({
-                'total_duty_hours': total_hours,
+                'total_duty_hours': total_hours + total_leave_hours,
                 'total_attendance': total_worked,
-                'total_diff_hours': total_worked - total_hours
+                'total_diff_hours': total_worked - total_hours,
+                'total_leave_hours': total_leave_hours,
             })
 
         elif len(contract) > 1:

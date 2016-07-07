@@ -17,6 +17,7 @@
                     <field name="total_duty_hours" widget="float_time" string="Total de horas" />
                 </field>
                 <field name="total_attendance" position="after">
+                    <field name="total_leave_hours" widget="float_time" />
                     <field name="total_diff_hours" widget="float_time" />
                     <field name="overtime_to_pay" widget="float_time" />
                     <field name="calculate_diff_hours" widget="float_time" />
@@ -26,7 +27,23 @@
                         <field name="overtime_day_ids" editable="bottom" />
                     </page>
                     <page string="Folgas">
-                        <field name="leave_ids" />
+                        <field name="leave_ids">
+                            <tree string="Folgas">
+                                <field name="employee_id"/>
+                                <field name="holiday_type" string="Mode" groups="base.group_no_one"/>
+                                <field name="holiday_status_id"/>
+                                <field name="name"/>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="number_of_days" string="Number of Days" sum="Remaining Days"/>
+                                <field name="total_duty_hours_off" sum="Horas de folga totais" />
+                                <field name="state"/>
+                                <field name="category_id" invisible="1"/>
+                                <field name="department_id" invisible="not context.get('set_visible',False)"/>
+                                <field name="manager_id" invisible="1"/>
+                                <field name="user_id" invisible="1"/>
+                            </tree>
+                        </field>
                     </page>
                 </notebook>
                 <field name="to_invoice" position="after">

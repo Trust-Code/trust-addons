@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <tree string="Horas" colors="red:balance_hours&lt;0.0;blue:balance_hours&gt;=0.0">
                     <field name="day" />
-                    <field name="duty_hours" widget="float_time"/>
-                    <field name="worked_hours" widget="float_time" />
-                    <field name="balance_hours" widget="float_time"/>
+                    <field name="duty_hours" widget="float_time" sum="Total" />
+                    <field name="worked_hours" widget="float_time" sum="Total" />
+                    <field name="balance_hours" widget="float_time" sum="Saldo"/>
                 </tree>
             </field>
         </record>
