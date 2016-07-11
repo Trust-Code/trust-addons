@@ -26,8 +26,8 @@ $(document).ready(function() {
             var vals = { 'state_id': $(this).val() };
             openerp.jsonRpc("/shop/get_cities", 'call', vals)
                 .then(function(data) {
+                    var selected = $('#input_l10n_br_city_id').val();
                     $('#select_l10n_br_city_id').find('option').remove().end();
-                    var selected = $('#l10n_br_city_id').val();
                     $('#select_l10n_br_city_id').append('<option value="">Cidade...</option>');
                     $.each(data, function(i, item) {
                         $('#select_l10n_br_city_id').append($('<option>', {
@@ -44,8 +44,8 @@ $(document).ready(function() {
             var vals = { 'state_id': $(this).val() };
             openerp.jsonRpc("/shop/get_cities", 'call', vals)
                 .then(function(data) {
+                    var selected = $('#input_shipping_l10n_br_city_id').val();
                     $('#select_shipping_l10n_br_city_id').find('option').remove().end();
-                    var selected = $('#shipping_l10n_br_city_id').val();
                     $('#select_shipping_l10n_br_city_id').append('<option value="">Cidade...</option>');
                     $.each(data, function(i, item) {
                         $('#select_shipping_l10n_br_city_id').append($('<option>', {

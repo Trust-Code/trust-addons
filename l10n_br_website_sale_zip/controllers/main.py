@@ -15,7 +15,6 @@ class L10nBrWebsiteSaleZip(main.website_sale):
     def search_zip_json(self, zip):
         if len(zip) >= 8:
             cep = re.sub('[^0-9]', '', zip)
-            cep = cep[:5] + '-' + cep[5:]
             zip_ids = request.env['l10n_br.zip'].sudo().zip_search_multi(
                 zip_code=cep)
 

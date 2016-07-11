@@ -25,7 +25,7 @@
             <xpath expr="//label[@for='state_id']/parent::div" position="after">
                 <div t-attf-class="form-group #{error.get('l10n_br_city_id') and 'has-error' or ''} col-lg-6">
                      <label class="control-label" for="l10n_br_city_id">Cidade</label>
-					 <input id="l10n_br_city_id" type="hidden" t-att-value="checkout.get('l10n_br_city_id')" />
+                     <input id="input_l10n_br_city_id" type="hidden" t-att-value="checkout.get('l10n_br_city_id')" />
                      <select id="select_l10n_br_city_id" name="l10n_br_city_id" class="form-control">
                          <option value="">Cidade...</option>
                      </select>
@@ -94,7 +94,7 @@
 			<xpath expr="//label[@for='shipping_state_id']/parent::div" position="after">
 				<div t-attf-class="form-group #{error.get('shipping_l10n_br_city_id') and 'has-error' or ''} col-lg-6">
 					 <label class="control-label" for="shipping_l10n_br_city_id">Cidade</label>
-					 <input id="shipping_l10n_br_city_id" type="hidden" t-att-value="checkout.get('shipping_l10n_br_city_id')" />
+					 <input id="input_shipping_l10n_br_city_id" type="hidden" t-att-value="checkout.get('shipping_l10n_br_city_id')" />
 					 <select id="select_shipping_l10n_br_city_id" name="shipping_l10n_br_city_id" class="form-control">
 						 <option value="">Cidade...</option>
 					 </select>
