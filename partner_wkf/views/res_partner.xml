@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="partner_status_bar">
+            <field name="name">partner_status_bar</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_br_base.view_l10n_br_base_partner_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <sheet position="before">
+                <header>
+                    <button string="Rascunho" type="object" name="draft_respartner" attrs="{'invisible': [('stage_id','=','draft')]}"/>
+                    <button string="Verificar" type="object" name="hold_respartner" class="oe_highlight" attrs="{'invisible': [('stage_id','!=','draft')]}"/>
+                    <button string="Confirmar" type="object" name="confirmed_respartner" class="oe_highlight" attrs="{'invisible': [('stage_id','!=','hold')]}"/>
+                    <field name="stage_id" widget="statusbar"/>
+                </header>
+            </sheet>
+            <field name="cnpj_cpf" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="street" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="zip" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="number" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="district" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="country_id" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="l10n_br_city_id" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+            </field>
+            <field name="phone" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+                <attribute name="data-inputmask">'mask': '(99) 9999-99999'</attribute>
+            </field>
+            <field name="email" position="attributes">
+                <attribute name="attrs">{'required':[('stage_id', '=', 'confirmed')]}</attribute>
+                <attribute name="data-inputmask">'alias': 'email'</attribute>
+            </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="partner_property_wkf">
+            <field name="name">partner_property_wkf</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="property_account_receivable" position="attributes">
+                    <attribute name="attrs">{'required':[('customer', '=', True)]}</attribute>
+                </field>
+                <field name="property_account_payable" position="attributes">
+                    <attribute name="attrs">{'required':[('supplier', '=', True)]}</attribute>
+                </field>
+            </field>
+        </record>        
+    </data>
+</openerp>
