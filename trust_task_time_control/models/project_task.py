@@ -30,7 +30,7 @@ class ProjectTask (models.Model):
 
     def count_time_start(self, stage_name, user_id):
         df = tools.DEFAULT_SERVER_DATETIME_FORMAT
-        self.env['project.task.work'].create(
+        self.env['project.task.work'].sudo().create(
             {'name': u'Tempo Automático (%s)' % (stage_name),
              'task_id': self.id,
              'date': datetime.now().strftime(df),
@@ -41,7 +41,7 @@ class ProjectTask (models.Model):
         return
 
     def count_time_stop(self, user_id):
-        task_work = self.env['project.task.work'].search(
+        task_work = self.env['project.task.work'].sudo().search(
             [('user_id', '=', user_id),
              ('time_open', '=', True)],
             order='id desc', limit=1)
