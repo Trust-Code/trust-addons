@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="task_calendar_smartbutton" model="ir.ui.view">
+            <field name="name">task2calendar.smartbutton.form</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <div class="oe_right" position="inside">
+                    <button class="oe_inline oe_stat_button"
+                            icon="fa-calendar"
+                            type="action"
+                            name="%(calendar.action_calendar_event)d"
+                            context="{'default_task_id': active_id}">
+                        <field name="meeting_count" string="Reuniões" widget="statinfo" />
+                    </button>
+                </div>
+            </field>
+        </record>
+
+        <record id="calendar_task_id" model="ir.ui.view">
+            <field name="name">calendar.task.id</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_form" />
+            <field name="arch" type="xml">
+                <field name="location" position="after">
+                    <field name="task_id" />
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

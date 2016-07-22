@@ -6,7 +6,7 @@
     'name': 'Product Equipment',
     'summary': """Adiciona alguns campos na visão de
     produtos relacionados a TI.""",
-    'version': '8.0.1.0.0',
+    'version': '1.0',
     'category': 'Website',
     'author': 'Trustcode',
     'license': 'AGPL-3',

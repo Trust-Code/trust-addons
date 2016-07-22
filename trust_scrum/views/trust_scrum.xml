@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+        <record id="hr_employee_categ_form" model="ir.ui.view">
+            <field name="name">hr.employee.categ.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="coach_id" position="after">
+                    <field name="tasks_categ" widget="many2many_tags"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="set_task_color">
+            <field name="name">Set Task Color</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="code">
+tasks = env['project.task'].search([])
+for task in tasks:
+    color = task.categ_ids[0].color
+    task.write({'color': color})
+            </field>
+        </record>
+
+        <record id="rule_task_color" model="base.action.rule">
+            <field name="name">Set Task Color</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="kind">on_write</field>
+            <field name="server_action_ids" eval="[(6,0,[ref('set_task_color')])]"/>
+        </record>
+
+        <record id="project_category_color_form" model="ir.ui.view">
+            <field name="name">project.category.color.form</field>
+            <field name="model">project.category</field>
+            <field name="inherit_id" ref="project.project_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="color" widget="color"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
