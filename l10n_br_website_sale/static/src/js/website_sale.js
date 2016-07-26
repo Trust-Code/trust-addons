@@ -13,7 +13,15 @@ $(document).ready(function() {
         };
     $('input[name="zip"]').mask('00000-000');
     $('input[name="shipping_zip"]').mask('00000-000');
-    $('input[name="cnpj_cpf"]').mask('000.000.000-00');
+    $('input[name="cnpj_cpf"]').focus(function(){
+        $('input[name="cnpj_cpf"]').unmask();
+        $('input[name="cnpj_cpf"]').select();
+    });
+    $('input[name="cnpj_cpf"]').blur(function(){
+        var masks = ['000.000.000-00', '00.000.000/0000-00'];
+        mask = ($('input[name="cnpj_cpf"]').val().length>11) ? masks[1] : masks[0];
+        $('input[name="cnpj_cpf"]').mask(mask);
+    });
     $('input[name="phone"]').mask(SPMaskBehavior,
         spOptions);
     $('input[name="shipping_phone"]').mask(SPMaskBehavior,
