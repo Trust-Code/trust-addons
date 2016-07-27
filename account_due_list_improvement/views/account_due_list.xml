@@ -9,9 +9,8 @@
             <field name="arch" type="xml">
                 <tree string="Payments" position="attributes">
                     <attribute name="colors">red:date_maturity&lt;current_date;green:payment_type=='payable';blue:payment_type=='receivable'</attribute>
-                </tree>
-                <tree string="Payments" position="attributes">
                     <attribute name="fonts">bold:date_maturity==current_date)</attribute>
+                    <attribute name="default_order">date_maturity</attribute>
                 </tree>
                 <field name="stored_invoice_id" position="before">
                     <field name="payment_type" />

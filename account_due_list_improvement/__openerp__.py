@@ -4,7 +4,7 @@
 
 {
     'name': 'Account Due List Improvements',
-    'summary': """Melhor a visão de pagamentos e vencimentos""",
+    'summary': """Melhora visão de pagamentos e vencimentos""",
     'version': '8.0.1.0.0',
     'category': 'Website',
     'author': 'Trustcode',
