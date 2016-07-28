@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="trustcode_wizard_escalonador_form_view">
+			<field name="name">wizard.escalonador.form</field>
+			<field name="model">escalonador.wizard</field>
+			<field name="arch" type="xml">
+				<form string="Escalonar Tarefas">
+					<group>
+						<p>Escalonar tarefas para os funcionários com base nos marcadores,
+                           ordenadas por prioridade e data de criação(mais velhas primeiro)</p>
+					</group>
+					<footer>
+				        <button name="escalonador" type="object" string="Escalonar" class="oe_highlight"/>
+						        or
+				        <button special="cancel" string="Cancelar"/>
+				    </footer>
+				</form>
+			</field>
+		</record>
+
+		<act_window id="trustcode_escalonador_wizard"
+                    name="Escalonar Tarefas"
+                    src_model="project.task"
+                    res_model="escalonador.wizard"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+
+        <menuitem
+             action="trustcode_escalonador_wizard"
+             id="trustcode_escalonador_menu"
+             sequence="30"
+             parent="base.menu_definitions">
+        </menuitem>
+	</data>
+</openerp>
