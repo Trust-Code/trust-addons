@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <record id="base_import_partner_view_form" model="ir.ui.view">
+            <field name="name">base.import.partner.form</field>
+            <field name="model">base.import.partner</field>
+            <field name="arch" type="xml">
+                <form string="Importar clientes">
+                    <group>
+                        <field name="xls_import"/>
+                    </group>
+                    <footer>
+                        <button string="Cancelar" special="cancel"/>
+                        <button name="action_import_partners"  string="Importar" type="object"
+                            class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="partner_import_action_form" model="ir.actions.act_window">
+            <field name="name">Importação de clientes</field>
+            <field name="res_model">base.import.partner</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_partner_import" name="Importar clientes" parent="crm.root_menu"
+            action="partner_import_action_form" sequence="20"/>
+
+    </data>
+</openerp>
