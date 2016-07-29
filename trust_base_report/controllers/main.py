@@ -69,9 +69,9 @@ class TrustReportController(ReportController):
                     cr, uid = request.cr, request.uid
                     report = request.registry['report']._get_report_from_name(
                         cr, uid, reportname)
-                    obj = request.registry[report.model].browse(
-                        cr, uid, int(docids))
                     if report.attachment:
+                        obj = request.registry[report.model].browse(
+                            cr, uid, int(docids))
                         filename = eval(report.attachment, {'object': obj})
                     else:
                         filename = (report.name or reportname) + '.pdf'
