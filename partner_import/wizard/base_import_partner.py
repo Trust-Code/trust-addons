@@ -99,9 +99,26 @@ class baseImportPartner(models.TransientModel):
                 'x_num_beneficio': valores[13],
                 'x_phone1': self._next_phone(telefones, 2),
                 'fax': self._next_phone(telefones, 3),
+                'x_tipo': valores[21],
             }
             vals = {k: v for k, v in vals.items() if v}
             if partner:
+                if partner.x_num_beneficio != \
+                   vals.get('x_num_beneficio', False) and \
+                   not partner.x_num_beneficio:
+                    partner.x_num_beneficio = vals['x_num_beneficio']
+                    vals['x_num_beneficio'] = False
+                elif partner.x_num_beneficio_2 != \
+                    vals.get('x_num_beneficio', False) and \
+                        not partner.x_num_beneficio_2:
+                    partner.x_num_beneficio_2 = vals['x_num_beneficio']
+                    vals['x_num_beneficio'] = False
+                elif partner.x_num_beneficio_3 != \
+                    vals.get('x_num_beneficio', False) and \
+                        not partner.x_num_beneficio_3:
+                    partner.x_num_beneficio_3 = vals['x_num_beneficio']
+                    vals['x_num_beneficio'] = False
+                vals = {k: v for k, v in vals.items() if v}
                 partner.write(vals)
             else:
                 self.env['res.partner'].create(vals)
