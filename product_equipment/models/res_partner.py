@@ -8,6 +8,9 @@ from openerp import fields, models
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    equipment_ids = fields.One2many('product.product', 'partner_id',
+                                    string="Equipamentos")
+
     web_name = fields.Char(max_length=30, string="Nome da Rede")
     web_type = fields.Selection([
         ('work', 'Grupo de Trabalho'),

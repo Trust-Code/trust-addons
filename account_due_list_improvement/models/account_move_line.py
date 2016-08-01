@@ -20,7 +20,7 @@ class AccountMoveLine(models.Model):
             if item.payment_type == 'payable':
                 item.amount_paid *= -1
 
-    amount_to_pay = fields.Float(strifffng="A Pagar/Receber",
+    amount_to_pay = fields.Float(string="A Pagar/Receber",
                                  compute="_compute_amounts")
     amount_paid = fields.Float(string="Pago/Recebido",
                                compute="_compute_amounts")

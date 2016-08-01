@@ -51,6 +51,9 @@
                    <field name="other_gen_info"/>
                  </group>
                </page>
+               <page string="Equipamentos">
+                   <field name="equipment_ids" context="{'default_partner_id': active_id, 'default_sale_ok': False, 'default_purchase_ok': False}" widget="many2many" />
+               </page>
              </notebook>
            </field>
          </record>
