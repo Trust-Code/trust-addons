@@ -98,7 +98,7 @@ class baseImportPartner(models.TransientModel):
                 'l10n_br_city_id': self._search_city(state, valores[7]),
                 'state_id': state,
                 'phone': self._next_phone(telefones, 0),
-                'birthdate_date': valores[11],
+                'birthdate_date': birth_date,
                 'mobile': self._next_phone(telefones, 1),
                 'x_num_beneficio': valores[13],
                 'x_phone1': self._next_phone(telefones, 2),
