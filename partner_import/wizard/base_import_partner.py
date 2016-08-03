@@ -5,6 +5,7 @@
 import os
 import re
 import base64
+from datetime import datetime
 from openpyxl import load_workbook
 from openerp import api, fields, models
 
@@ -83,6 +84,9 @@ class baseImportPartner(models.TransientModel):
             telefones = [valores[10], valores[12], valores[17], valores[18],
                          valores[19], valores[20]]
             state = self._search_state(valores[8])
+            birth_date = valores[11]
+            if isinstance(birth_date, basestring):
+                birth_date = datetime.strptime(birth_date, '%d/%m/%Y')
             vals = {
                 'name': valores[0],
                 'cnpj_cpf': cpf,
