@@ -17,6 +17,7 @@ class escalonador_wizard(models.TransientModel):
                     date += timedelta(days=1)
             return date
         scrum_team = self.env['project.scrum.team'].search([], limit=1)
+        team_ids = scrum_team.members.ids
         open_tasks = self.env['project.task'].search(
             [('stage_id.closed', '=', False),
              ('stage_id.cancelled_state', '=', False),
@@ -31,10 +32,13 @@ class escalonador_wizard(models.TransientModel):
         while(len(lista_tarefas) > 0):
             date_start = assert_weekday(date_start)
             date_end = assert_weekday(date_end)
-            for user_id in scrum_team.members:
+            for user in scrum_team.members:
                 for task_id in lista_tarefas:
                     task = self.env['project.task'].browse(task_id)
-                    task.write({'user_id': task.user_id.id or user_id.id,
+                    user_id = user.id
+                    if task.user_id.id in team_ids:
+                        user_id = task.user_id.id
+                    task.write({'user_id': user_id,
                                 'date_start': date_start +
                                 timedelta(hours=3),
                                 'date_end': date_end +
