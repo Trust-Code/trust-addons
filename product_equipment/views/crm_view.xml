@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="crm_helpdesk_type_form_view" model="ir.ui.view">
+            <field name="name">crm.helpdesk.type.form</field>
+            <field name="model">crm.helpdesk.type</field>
+            <field name="arch" type="xml">
+                <form string="Criar Estágio">
+                    <group>
+                        <group>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="fold" />
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_helpdesk_type_tree_view" model="ir.ui.view">
+            <field name="name">crm.helpdesk.type.tree</field>
+            <field name="model">crm.helpdesk.type</field>
+            <field name="arch" type="xml">
+                <tree string="Estágio CRM">
+                    <field name="sequence" widget="handle" />
+                    <field name="name"/>
+                    <field name="fold" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_worflow_view" model="ir.actions.act_window">
+            <field name="name">Estágio CRM</field>
+            <field name="res_model">crm.helpdesk.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            action="crm_worflow_view"
+            id="crm_workflow_menu"
+            sequence="24"
+            parent="base.menu_base_config">
+        </menuitem>
+
+        <record id="crm_workflow_dinamic" model="ir.ui.view">
+            <field name="name">crm.workflow.dinaminc</field>
+            <field name="model">crm.helpdesk</field>
+            <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
+            <field name="arch" type="xml">
+                <field name="state" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="state" position="before">
+                    <field name="stage_id" widget="statusbar" clickable="1" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

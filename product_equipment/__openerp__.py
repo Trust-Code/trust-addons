@@ -4,8 +4,9 @@
 
 {
     'name': 'Product Equipment',
-    'summary': """Adiciona alguns campos na visão de
-    produtos relacionados a TI.""",
+    'summary': """Adiciona alguns campos na visão de \
+    produtos relacionados a TI.
+    Adiciona um workflow dinâmico ao CRM Helpdesk.""",
     'version': '8.0.1.0.0',
     'category': 'Website',
     'author': 'Trustcode',
@@ -15,11 +16,12 @@
         'Alessandro Fernandes Martini <alessandrofmartini@gmail.com>'
     ],
     'depends': [
-        'product', 'account'
+        'product', 'account', 'crm',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/product_template.xml',
         'views/sale_contact_template.xml',
+        'views/crm_view.xml',
     ],
 }
