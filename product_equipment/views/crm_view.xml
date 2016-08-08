@@ -22,7 +22,7 @@
             <field name="name">crm.helpdesk.type.tree</field>
             <field name="model">crm.helpdesk.type</field>
             <field name="arch" type="xml">
-                <tree string="Estágio CRM">
+                <tree string="Estágio Suporte">
                     <field name="sequence" widget="handle" />
                     <field name="name"/>
                     <field name="fold" />
@@ -31,7 +31,7 @@
         </record>
 
         <record id="crm_worflow_view" model="ir.actions.act_window">
-            <field name="name">Estágio CRM</field>
+            <field name="name">Estágio Suporte</field>
             <field name="res_model">crm.helpdesk.type</field>
             <field name="view_mode">tree,form</field>
         </record>
