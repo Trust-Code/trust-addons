@@ -22,10 +22,9 @@
                     <page attrs="{'invisible':[('group', '!=', '1')]}" string="Computadores">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_comp"/>
-                                <field name="customer_id" domain="[('customer', '=', 'True')]" />
+                                <field name="tag"/>
+                                <field name="customer_id" domain="[('customer', '=', True), ('parent_id' , '=', partner_id)]" />
                                 <field name="sector"/>
-                                <field name="employee_id" domain="[('employee', '=', 'True')]"/>
                             </group>
                             <group string="Dados do Produto">
                                 <field name="manufacturer"/>
@@ -39,6 +38,7 @@
                             <group string="Configurações de Rede">
                                 <field name="web_type"/>
                                 <field name="web_name"/>
+                                <field name="equipment_name"/>
                                 <field name="user_local_login"/>
                                 <field name="user_local_password"/>
                                 <field name="ip_type"/>
@@ -59,11 +59,12 @@
                                 <field name="memory"/>
                                 <field name="hd"/>
                                 <field name="motherboard_manufacturer"/>
-                                <field name="equipment_name"/>
+                                <field name="monitor" />
                             </group>
                             <group string="Sistema">
                                 <field name="op_system"/>
                                 <field name="op_system_version"/>
+                                <field name="os_serial_number"/>
                                 <field name="antivirus"/>
                                 <field name="antivirus_version"/>
                                 <field name="routine_prog_user"/>
@@ -73,6 +74,13 @@
                                 <field name="printer_model"/>
                                 <field name="printer_path"/>
                                 <field name="web_printer"/>
+                                <field name="printer_ip_address"/>
+                            </group>
+                            <group string="Pacote de Aplicativos">
+                                <field name="product_name"/>
+                                <field name="product_version"/>
+                                <field name="product_serial_num"/>
+                                <field name="product_obs"/>
                             </group>
                             <group string="E-mail">
                                 <field name="email_bool"/>
@@ -80,7 +88,7 @@
                                 <field name="email_account"/>
                                 <field name="email_password"/>
                             </group>
-                            <group string="Servidor">
+                            <group string="Servidores de E-mail">
                                 <field name="pop_server"/>
                                 <field name="smtp_server"/>
                                 <field name="pop_door"/>
@@ -96,8 +104,8 @@
                     <page attrs="{'invisible':[('group', '!=', '2')]}" string="Servidores">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_server"/>
-                                <field name="customer_id"/>
+                                <field name="tag"/>
+                                <field name="customer_id" domain="[('customer', '=', True), ('parent_id' ,'=', partner_id)]" />
                             </group>
                             <group string="Acesso Remoto">
                                 <field name="remote_acces_path_ts"/>
@@ -148,7 +156,7 @@
                     <page attrs="{'invisible':[('group', '!=', '3')]}" string="Dispositivos Móveis">
                         <group>
                             <group string="Dados do Equipamento">
-                                <field name="tag_mobile"/>
+                                <field name="tag"/>
                                 <field name="mobile_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -170,7 +178,7 @@
                     <page attrs="{'invisible':[('group', '!=', '4')]}" string="Acessórios">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_accessories"/>
+                                <field name="tag"/>
                                 <field name="accessories_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -188,7 +196,7 @@
                     <page attrs="{'invisible':[('group', '!=', '5')]}" string="Equipamentos de Rede">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_net_equipment"/>
+                                <field name="tag"/>
                                 <field name="net_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -202,7 +210,7 @@
                     <page attrs="{'invisible':[('group', '!=', '6')]}" string="Equipamentos de Telefonia">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_tel_equipment"/>
+                                <field name="tag"/>
                                 <field name="tel_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -216,7 +224,7 @@
                     <page attrs="{'invisible':[('group', '!=', '7')]}" string="Equipamentos de CFTV">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_cftv_equipment"/>
+                                <field name="tag"/>
                                 <field name="cftv_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -230,7 +238,7 @@
                     <page attrs="{'invisible':[('group', '!=', '8')]}" string="Outros">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag_others"/>
+                                <field name="tag"/>
                                 <field name="other_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
