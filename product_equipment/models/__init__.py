@@ -5,3 +5,4 @@
 from . import product_equipment
 from . import res_partner
 from . import trust_crm_workflow
+from . import trust_crm_helpdesk

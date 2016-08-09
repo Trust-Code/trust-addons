@@ -23,5 +23,6 @@
         'views/product_template.xml',
         'views/sale_contact_template.xml',
         'views/crm_view.xml',
+        'views/crm_helpdesk.xml',
     ],
 }
