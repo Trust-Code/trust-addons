@@ -22,7 +22,7 @@
 
 {
     'name': 'Cash Flow Report - Base Account',
-    'summary': """Cria um relatório de fluxo de caixa base""",
+    'summary': """Create the base for the cash flow""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'Trustcode',
@@ -32,9 +32,11 @@
                      'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
                      ],
     'depends': [
-        'account'
+        'account', 'web_graph_improved'
     ],
     'data': [
-        'views/cash_flow_view.xml'
+        'views/cash_flow_view.xml',
+        'wizard/cash_flow.xml',
+        'reports/account_cash_flow.xml',
     ],
 }

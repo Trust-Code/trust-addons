@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <template id="account_cash_flow_report">
+             <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                    <div class="page">
+                        <h2>Cash Flow Report</h2>
+                    </div>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Partner</th>
+                                <th>Account</th>
+                                <th>Journal</th>
+                                <th class="text-right">Date</th>
+                                <th class="text-right">Debit</th>
+                                <th class="text-right">Credit</th>
+                                <th class="text-right">Balance (C-D)</th>
+                                <th class="text-right">Accumulated balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="o">
+                                <td><span field="o.description" /></td>
+                                <td><span field="o.partner" /></td>
+                                <td><span field="o.account" /></td>
+                                <td><span field="o.journal" /></td>
+                                <td><span field="o.date" /></td>
+                                <td><span field="o.debit" /></td>
+                                <td><span field="o.credit" /></td>
+                                <td><span field="o.amount" /></td>
+                                <td><span field="o.balance" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </t>
+        </template>
+
+        <report
+            id="account_cash_flow_report"
+            string="Cash Flow Report"
+            model="account.cash.flow.line"
+            report_type="qweb-pdf"
+            name="account_cash_flow.account_cash_flow_report"
+        />
+    </data>
+</openerp>

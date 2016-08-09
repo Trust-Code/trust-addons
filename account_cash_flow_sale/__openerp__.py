@@ -5,7 +5,7 @@
 
 {
     'name': 'Cash Flow Report - Forecast Orders',
-    'summary': """Cria um relatório de fluxo de caixa base""",
+    'summary': """Add confirmed sales order to cash flow""",
     'version': '8.0',
     'category': 'Tools',
     'author': 'Trustcode',
@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'sale', 'sale_order_dates', 'trust_cash_flow_base'
+        'sale', 'sale_order_dates', 'account_cash_flow'
     ],
     'data': [
         'views/cash_flow_view.xml'

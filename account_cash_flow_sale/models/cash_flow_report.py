@@ -10,9 +10,9 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DSDTT
 
 
 class CashFlowReport(models.TransientModel):
-    _inherit = 'cash.flow'
+    _inherit = 'account.cash.flow'
 
-    include_confirmed_quotations = fields.Boolean("Incluir Cotações?")
+    include_confirmed_quotations = fields.Boolean("Include Sales order?")
 
     def _search_purchase(self):
         purchase_obj = self.env['purchase.order']
