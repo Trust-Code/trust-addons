@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="account_analytic_time_count" model="ir.ui.view">
+            <field name="name">account.analytic.time.count</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form" />
+            <field name="arch" type="xml">
+                <field name="manager_id" position="after">
+                    <field name="journal_id" />
+                </field>
+                <field name="partner_id" position="attributes">
+                    <attribute name="context">"{'invisible': 'generic_contract'}"</attribute>
+                </field>
+                <xpath expr="//div[@name=&quot;project&quot;]" position="inside">
+                    <field name="contract_guarantee" />
+                    <label for="contract_guarantee" />
+                    <field name="generic_contract" />
+                    <label for="generic_contract" />
+                </xpath>
+                <page string="Contract Information" position="after">
+                    <page string="Serviços / Produtos Inclusos">
+                        <field name="product_line" widget="many2many" >
+                            <tree>
+                                <field name="product_id" />
+                                <field name="quantity" />
+                                <field name="product_uom_id" />
+                                <field name="discount" />
+                                <field name="expire" />
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <record id="client_contract_res_partner_view" model="ir.ui.view">
+            <field name="name">client.contract.res.partner.view</field>
+            <field name="model">crm.helpdesk</field>
+            <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
+            <field name="arch" type="xml">
+                <page string="Extra Info" position="after">
+                    <page string="Controle de Tempos e Cobrança">
+                        <group>
+                            <group>
+                                <field name="account_analytic_id" />
+                                <field name="product_id" domain="[('account_analytic_id', '=', account_analytic_id)]"/>
+                            </group>
+                            <group></group>
+                        </group>
+                        <field name="control_time" widget="many2many" >
+                            <tree editable="bottom">
+                                <field name="name" />
+                                <!--<field name="account_id" />-->
+                                <field name="date" />
+                                <!--<field name="amount" />
+                                <field name="journal_id" />
+                                <field name="general_account_id" />-->
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="unit_amount" />
+                                <field name="user_id" />
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <record id="trust_time_count_account_analytic_line" model="ir.ui.view">
+            <field name="name">trust.time.count.account.analytic.line</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="account.view_account_analytic_line_form" />
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                        <field name="start_date" />
+                        <field name="end_date" />
+                </field>
+                <field name="amount" position="after">
+                    <field name="discount" readonly="1"/>
+                </field>
+                <field name="unit_amount" position="attributes">
+                    <field name="widget">'float_time'</field>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
