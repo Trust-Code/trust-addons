@@ -12,6 +12,7 @@
                             <field name="sequence" widget="handle"/>
                             <field name="name"/>
                             <field name="fold" />
+                            <field name="count_time" />
                         </group>
                     </group>
                 </form>
@@ -26,6 +27,7 @@
                     <field name="sequence" widget="handle" />
                     <field name="name"/>
                     <field name="fold" />
+                    <field name="count_time" />
                 </tree>
             </field>
         </record>

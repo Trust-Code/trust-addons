@@ -13,6 +13,7 @@ class CrmHelpdeskType(models.Model):
                        required=True)
     fold = fields.Boolean(string='Dobrado na Visão Kanban')
     sequence = fields.Integer(string="Sequência", default=1)
+    count_time = fields.Boolean(string='Conta Tempo')
 
 
 class CrmWorkflow(models.Model):
