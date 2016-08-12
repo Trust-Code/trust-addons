@@ -7,7 +7,7 @@ from openerp import api, fields, models
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import datetime, date
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning as UserError
 
 
 class AccountAnalytic(models.Model):
@@ -114,7 +114,7 @@ class CrmHelpdesk(models.Model):
         categ_account = self.product_id.product_id.categ_id.\
             property_account_income_categ
         if not product_account and categ_account:
-            raise Warning(
+            raise UserError(
                 u'Este Produto E A Sua Categoria Não Possuem uma Conta de \
                 Receita Cadastrad')
         else:
@@ -171,8 +171,9 @@ class CrmHelpdesk(models.Model):
             next_stage = self.env['crm.helpdesk.type'].browse(vals["stage_id"])
             if next_stage.count_time:
                 if self.other_count_time_open(self.user_id.id):
-                    raise Warning(u"Movimentação não Permitida!",
-                                  u"Já existe outra contagem de tempo ativa.")
+                    raise UserError(u"Movimentação não Permitida!",
+                                    u"Já existe outra contagem de \
+                                    tempo ativa.")
                 else:
                     self.count_time_start(vals, next_stage.name,
                                           self.user_id.id)
