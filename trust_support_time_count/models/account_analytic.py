@@ -176,14 +176,11 @@ class CrmHelpdesk(models.Model):
                 else:
                     self.count_time_start(vals, next_stage.name,
                                           self.user_id.id)
-                    print next_stage.name, "TIME START"
             else:
                 self.count_time_stop(next_stage.name, self.user_id.id)
-                print next_stage.name, "TIME STOP"
 
         elif "user_id" in vals and self.stage_id.count_time:
             self.count_time_start(vals, next_stage.name, self.user_id.id)
-            print next_stage.name, "OUTROS"
 
         return super(CrmHelpdesk, self).write(vals)
 
