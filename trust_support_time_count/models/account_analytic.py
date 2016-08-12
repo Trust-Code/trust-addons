@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -43,14 +43,16 @@ class AccountAnalyticProductLine(models.Model):
 
     @api.onchange("product_id")
     def _onchange_product_id(self):
-        self.product_uom_id = self.product_id.uom_id.id
+        un_id = self.product_id.uom_id
+        un = self.env['product.uom'].browse(un_id)
+        self.product_uom_id = un.id
 
-    product_id = fields.Many2one(comodel_name='product.product',
+    product_id = fields.Many2one(comodel_name='product.template',
                                  string='Serviços / Produtos Inclusos')
     account_analytic_id = fields.Many2one(
         comodel_name='account.analytic.account',
         string='Serviços / Produtos Inclusos')
-    product_uom_id = fields.Many2one(comodel_name="product.template",
+    product_uom_id = fields.Many2one(comodel_name="product.uom",
                                      string="Unidade")
     quantity = fields.Float(string="Quantidade")
     discount = fields.Float(string="Desconto %")
@@ -197,7 +199,7 @@ class AccountAnalyticLine(models.Model):
             end = datetime.strptime(self.end_date,
                                     DEFAULT_SERVER_DATETIME_FORMAT)
             total = (end - start)
-            total_hours = float(float(total.seconds)/3600)
+            total_hours = float(total.seconds)/3600
             self.unit_amount = total_hours
 
     start_date = fields.Datetime(string="Data Inicio")
