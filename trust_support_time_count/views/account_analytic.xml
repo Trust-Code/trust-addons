@@ -19,7 +19,7 @@
                     <label for="generic_contract" />
                 </xpath>
                 <page string="Contract Information" position="after">
-                    <page string="Serviços / Produtos Inclusos">
+                    <page string="Serviços / Produtos Inclusos" attrs="{'invisible':[('contract_guarantee', '!=', True)]}">
                         <field name="product_line" widget="many2many" >
                             <tree>
                                 <field name="product_id" />
