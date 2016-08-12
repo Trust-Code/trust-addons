@@ -115,7 +115,7 @@ class CrmHelpdesk(models.Model):
         product_account = self.product_id.product_id.property_account_income
         categ_account = self.product_id.product_id.categ_id.\
             property_account_income_categ
-        if not product_account and categ_account:
+        if not product_account and not categ_account:
             raise UserError(
                 u'Este Produto E A Sua Categoria Não Possuem uma Conta de \
                 Receita Cadastrad')
