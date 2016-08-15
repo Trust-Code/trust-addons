@@ -3,15 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Escalonador de Tarefas',
-    'summary': """Distribui as tarefas não atribuidas pasra funcionarios\n
-                  que estejam capacitados a lidar com elas, seguindo a ordem\n
-                  de prioridade e então de criação. Atribui cores para as\n
-                  tarefas baseado nos marcadores.
-                  Adiciona o campo descrição comercial, e gera relatório\n
-                  para as tarefas.""",
+    'name': 'Scrum Improvements Trustcode',
+    'summary': "Scrum improvements.",
     'version': '1.0',
-    'category': 'MRP',
+    'category': 'Project',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
