@@ -37,7 +37,7 @@
         						    </div>
                                     <div class="row">
                                         <div class="col-xs-12">
-                                            <strong class="small">Descrição: </strong><span t-field="o.commercial_description or o.description"/>
+                                            <strong class="small">Descrição: </strong><span t-raw="o.commercial_description or o.description"/>
                                         </div>
                                     </div>
         						    <table class="table table-condensed table-bordered table-striped" style="padding-top: 5px">
