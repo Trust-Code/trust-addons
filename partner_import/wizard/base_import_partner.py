@@ -78,7 +78,16 @@ class baseImportPartner(models.TransientModel):
             if indice == 0:
                 indice += 1
                 continue
-            cpf = self._format_cpf_cnpj('%0.11d' % (valores[1] or 0))
+            raw_cpf = valores[1]
+            temp_cpf = ''
+            for i in raw_cpf:
+                try:
+                    int(i)
+                    temp_cpf += str(i)
+                except:
+                    pass
+            true_cpf = int(temp_cpf)
+            cpf = self._format_cpf_cnpj('%0.11d' % (true_cpf or 0))
 
             partner = self.env['res.partner'].search([('cnpj_cpf', '=', cpf)])
             telefones = [valores[10], valores[12], valores[17], valores[18],
