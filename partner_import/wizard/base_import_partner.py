@@ -67,9 +67,6 @@ class baseImportPartner(models.TransientModel):
         if len(wb.sheetnames) > 0:
             ws = wb[wb.sheetnames[0]]
 
-        state_env = self.env['res.country.state']
-        partner_env = self.env['res.partner']
-
         indice = 0
         for row in ws.rows:
             valores = []
@@ -78,7 +75,10 @@ class baseImportPartner(models.TransientModel):
             if indice == 0:
                 indice += 1
                 continue
-            cpf = self._format_cpf_cnpj('%0.11d' % (valores[1] or 0))
+            if isinstance(valores[1], basestring):
+                cpf = self._format_cpf_cnpj(valores[1])
+            else:
+                cpf = self._format_cpf_cnpj('%0.11d' % (valores[1] or 0))
 
             partner = self.env['res.partner'].search([('cnpj_cpf', '=', cpf)])
             telefones = [valores[10], valores[12], valores[17], valores[18],
