@@ -29,19 +29,36 @@ class L10nBrWebsiteSale(main.website_sale):
         val = super(L10nBrWebsiteSale, self).checkout_parse(
             address_type, data, remove_prefix)
         if address_type == 'billing':
-            val['cnpj_cpf'] = data['cnpj_cpf']
-            val['number'] = data['number']
-            val['district'] = data['district']
-            val['street2'] = data['street2']
-            val['zip'] = data['zip']
-            val['l10n_br_city_id'] = data['l10n_br_city_id']
+            val['email'] = data['email'] or False
+            val['cnpj_cpf'] = data['cnpj_cpf'] or False
+            val['number'] = data['number'] or False
+            val['district'] = data['district'] or False
+            val['street2'] = data['street2'] or False
+            val['zip'] = data['zip'] or False
+            if isinstance(data, dict):
+                val['l10n_br_city_id'] = data['l10n_br_city_id'] or False
+                val['country_id'] = data['country_id'] or False
+                val['state_id'] = data['state_id'] or False
+            else:
+                val['l10n_br_city_id'] = data['l10n_br_city_id'].id or False
+                val['country_id'] = data['country_id'].id or False
+                val['state_id'] = data['state_id'].id or False
         if address_type == 'shipping':
-            val['shipping_cnpj_cpf'] = data['cnpj_cpf']
-            val['shipping_number'] = data['number']
-            val['shipping_district'] = data['district']
-            val['shipping_street2'] = data['street2']
-            val['shipping_zip'] = data['zip']
-            val['shipping_l10n_br_city_id'] = data['l10n_br_city_id']
+            val['shipping_cnpj_cpf'] = data['cnpj_cpf'] or False
+            val['shipping_number'] = data['number'] or False
+            val['shipping_district'] = data['district'] or False
+            val['shipping_street2'] = data['street2'] or False
+            val['shipping_zip'] = data['zip'] or False
+            if isinstance(data, dict):
+                val['shipping_l10n_br_city_id'] = \
+                    data['l10n_br_city_id'] or False
+                val['shipping_country_id'] = data['country_id'] or False
+                val['shipping_state_id'] = data['state_id'] or False
+            else:
+                val['shipping_l10n_br_city_id'] = \
+                    data['l10n_br_city_id'].id or False
+                val['shipping_country_id'] = data['country_id'].id or False
+                val['shipping_state_id'] = data['state_id'].id or False
         return val
 
     def checkout_form_validate(self, data):
