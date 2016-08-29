@@ -12,7 +12,7 @@ class SaleOrderLine(models.Model):
 
     @api.multi
     def call_cancel_wizard(self):
-        if self.state != 'draft':
+        if self.state == 'done' or self.state == 'cancel':
             raise UserError(
                 'Movimentação Proibida!',
                 'Esta linha do pedido já foi cancelada ou concluída!')

@@ -45,13 +45,16 @@ pedido original'
                       'order_id': self.sale_order_line_id.order_id.id})
             self.sale_order_line_id.write({'product_uom_qty': to_invoice})
 
-        elif to_cancel == amount:
-            self.sale_order_line_id.write({'stage': 'cancel'})
-
-        else:
+        elif to_cancel > amount:
             raise UserError(
                 'Movimentação Bloqueada!',
                 'Quantidade a cancelar é maior que a original do pedido.')
+
+        elif to_cancel == amount:
+            raise UserError(
+                'Movimentação Bloqueada',
+                'Você está tentando cancelar o pedido, para isto utilize o \
+                \botão "Cancelar Pedido"')
 
         return {
             'type': 'ir.actions.client',
