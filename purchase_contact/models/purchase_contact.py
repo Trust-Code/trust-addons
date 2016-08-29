@@ -28,7 +28,6 @@ class PurchaseContact(models.Model):
         'partner_id',
         domain="[('parent_id','=',partner_id),]",
         readonly=True,
-        required=True,
         states={
             'draft': [('readonly', False)],
             'sent': [('readonly', False)]},

@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
-					<field name="partner_contact_id" string="Contato"/>
+					<field name="partner_contact_id" string="Contato" required="True" />
 				</field>
 			</field>
 		</record>
