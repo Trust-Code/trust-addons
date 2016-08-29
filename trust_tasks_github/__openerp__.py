@@ -23,7 +23,7 @@
 {
     'name': 'Tasks Github Integration',
     'summary': """ Relate github issues with task in projects """,
-    'version': '8.0',
+    'version': '8.0.1.0.0',
     'category': 'Tools',
     'author': 'Trustcode',
     'license': 'AGPL-3',

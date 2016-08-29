@@ -27,6 +27,7 @@ from werkzeug.wrappers import BaseResponse
 from werkzeug.datastructures import Headers
 
 from openerp.tools import html_escape
+from openerp.tools.safe_eval import safe_eval
 from openerp.addons.web.http import route, request
 from openerp.addons.web.controllers.main import _serialize_exception
 from openerp.addons.report.controllers.main import ReportController
@@ -72,7 +73,8 @@ class TrustReportController(ReportController):
                     if report.attachment:
                         obj = request.registry[report.model].browse(
                             cr, uid, int(docids))
-                        filename = eval(report.attachment, {'object': obj})
+                        filename = safe_eval(
+                            report.attachment, {'object': obj})
                     else:
                         filename = (report.name or reportname) + '.pdf'
 

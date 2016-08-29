@@ -23,7 +23,7 @@
 {
     'name': 'Installment Plans',
     'summary': """Cria parcelas de pagamento na tela de pedido de venda""",
-    'version': '8.0',
+    'version': '8.0.1.0.0',
     'category': 'Tools',
     'author': 'Trustcode',
     'license': 'AGPL-3',

@@ -5,7 +5,7 @@
 {
     'name': 'Compensatory Time Off - Trustcode',
     'summary': """Compensatory Time Off for HR""",
-    'version': '8.0',
+    'version': '8.0.1.0.0',
     'category': 'Trustcode',
     'author': 'Trustcode',
     'license': 'AGPL-3',
