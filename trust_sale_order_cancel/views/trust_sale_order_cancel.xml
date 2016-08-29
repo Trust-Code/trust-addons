@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="sale_order_cancel_partial_view" model="ir.ui.view">
+            <field name="name">sale.order.cancel.partial.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <field name="price_subtotal" position="after">
+                    <field name="state"/>
+                    <button name="call_cancel_wizard"
+                            help="Cancelar pedido parcialmente"
+                            type="object"
+                            icon="gtk-cancel"/>
+                </field>
+                <tree string="Sales Order Lines" position="attributes">
+                    <attribute name="colors">blue:state == 'confirmed';grey:state == 'cancel';black:state == 'draft'</attribute>
+                </tree>
+            </field>
+        </record>
+
+        <record id="procurement_order_block_cancel" model="ir.ui.view">
+            <field name="name">procurement.order.block.cancel</field>
+            <field name="model">procurement.order</field>
+            <field name="inherit_id" ref="procurement.procurement_form_view" />
+            <field name="arch" type="xml">
+                <button name="cancel" position="attributes" >
+                    <attribute name="invisible">1</attribute>
+                </button>
+            </field>
+        </record>
+
+        <record id="stock_picking_block_cancel" model="ir.ui.view">
+            <field name="name">stock.picking.block.cance</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                <button name="action_cancel" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
