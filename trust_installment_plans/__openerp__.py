@@ -35,6 +35,7 @@
         'base', 'sale', 'account_payment_sale'
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/sale_order_view.xml',
         'views/account_invoice_view.xml',
     ]

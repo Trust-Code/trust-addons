@@ -35,6 +35,7 @@
         'project',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/github_integration_view.xml',
         'views/project_tasks_view.xml'
     ],

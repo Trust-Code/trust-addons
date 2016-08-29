@@ -20,6 +20,7 @@
         'resource',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/hr_holidays.xml',
         'views/timesheet_comptime_view.xml',
         'views/hr_timesheet_sheet.xml',

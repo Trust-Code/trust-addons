@@ -35,6 +35,7 @@
         'mrp_bom_through_attributes',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/product_view.xml',
         'views/configurator_view.xml',
         'views/sale_view.xml',
