@@ -35,6 +35,7 @@
         'sale', 'account', 'l10n_br_account_product'
         ],
     'data': [
+        'security/ir.model.access.csv',
         'views/invoice_rules_view.xml',
     ],
 }

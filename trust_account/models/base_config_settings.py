@@ -35,10 +35,12 @@ class ResPartner(models.Model):
             return values_account
 
         if not receivable and self.env.user.company_id.account_bool:
-            copy_account(self, self.env.user.company_id.account_receivable, cliente)
+            copy_account(self, self.env.user.company_id.account_receivable,
+                         cliente)
 
         if not payable and self.env.user.company_id.account_bool:
-            copy_account(self, self.env.user.company_id.account_payable, fornecedor)
+            copy_account(self, self.env.user.company_id.account_payable,
+                         fornecedor)
 
         return super(ResPartner, self).create(vals)
 

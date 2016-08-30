@@ -21,7 +21,7 @@
     'name': 'Second Unit of Measure',
     'summary': """In the industry segment is very important to control the stock of
         a product with two unit of measures. """,
-    'version': '8.0',
+    'version': '8.0.1.0.0',
     'category': 'MRP',
     'author': 'Trustcode',
     'license': 'AGPL-3',

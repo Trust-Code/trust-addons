@@ -20,7 +20,7 @@
 {
     'name': 'Base Report - Trustcode',
     'summary': """Módulo base de relatórios - Trustcode""",
-    'version': '8.0',
+    'version': '8.0.1.0.0',
     'category': 'Tools',
     'author': 'Trustcode',
     'license': 'AGPL-3',

@@ -20,7 +20,7 @@
 {
     'name': 'Base Account Module - Trustcode',
     'summary': """Account Base Module for Trustcode""",
-    'version': '8.0',
+    'version': '8.0.1.0.0',
     'category': 'Tools',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -31,7 +31,8 @@
     'depends': [
         'account',
     ],
-    'data': ['views/base_config_settings.xml',
+    'data': [
+        'views/base_config_settings.xml',
     ],
     'application': True,
     'auto_install': False
