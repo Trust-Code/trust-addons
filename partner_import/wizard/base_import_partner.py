@@ -18,10 +18,14 @@ class baseImportPartner(models.TransientModel):
 
     def _format_cpf_cnpj(self, cnpj_cpf):
         val = re.sub('[^0-9]', '', cnpj_cpf)
-        if len(val) == 11:
+        if len(val) == 11 or len(val) == 10:
+            if len(val) == 10:
+                val = val.zfill(11)
             return "%s.%s.%s-%s" % (val[0:3], val[3:6], val[6:9],
                                     val[9:11])
-        elif len(val) == 14:
+        elif len(val) == 14 or len(val) == 13:
+            if len(val) == 13:
+                val = val.zfill(14)
             return "%s.%s.%s/%s-%s" % (val[0:2], val[2:5], val[5:8],
                                        val[8:12], val[12:14])
         return cnpj_cpf
