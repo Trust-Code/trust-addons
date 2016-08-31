@@ -21,7 +21,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
         lista = []
 
         for item in sale_order_line:
-            if item.state != 'done' and item.state != 'cancel':
+            if item.state != 'done' and item.state != 'cancel'\
+                    and item.product_uom_qty > 0:
                 lista.append((0, 0, {'sale_order_line_id': item.id,
                                      'name': item.name,
                                      'quantidade': item.product_uom_qty,
@@ -33,27 +34,51 @@ class SaleAdvancePaymentInv(models.TransientModel):
 
     @api.multi
     def faturar_parcial(self):
+        error_message = ''
         lines = self.sale_order_line_id
         order_lines = self.env['sale.order.line'].browse(0)
         for line in lines:
-            if line.a_faturar and line.a_faturar > 0 and\
-                    line.a_faturar < line.quantidade and\
-                    line.sale_order_line_id.state != 'done' and\
-                    line.sale_order_line_id.state != 'cancel':
+            if line.a_faturar:
+                if line.a_faturar < 0:
+                    message = "Você não pode faturar uma quantidade menor que \
+zero.\n"
+                    error_message += message
+                if line.a_faturar > line.quantidade:
+                    message = "Você não pode faturar uma quantidade maior que \
+a do pedido.\n"
+                    error_message += message
+                if line.sale_order_line_id.state == 'done':
+                    message = "Você está tentando faturar uma linha que já \
+está concluída.\n"
+                    error_message += message
+                if line.sale_order_line_id.state == 'cancel':
+                    message = "Você está tentando faturar uma linha que já foi \
+cancelada\n"
+                    error_message += message
+
+            if line.a_faturar == 0:
+                message = "Você não pode faturar zero produtos.\n"
+                error_message += message
+
+            if len(error_message) == 0:
                 sale_order_line = self.env['sale.order.line'].\
                     browse(line.sale_order_line_id.id)
                 to_invoice = line.a_faturar
                 remain = line.quantidade - to_invoice
-                new_line = sale_order_line.copy({'product_uom_qty': to_invoice,
-                                                 'state': 'done', })
-                sale_order_line.write({'product_uom_qty': remain})
+                if remain != 0:
+                    new_line = sale_order_line.copy(
+                        {'product_uom_qty': to_invoice,
+                         'state': 'done', })
+                    sale_order_line.write({'product_uom_qty': remain})
+                else:
+                    new_line = line.sale_order_line_id
+                    new_line.write({'state': 'done'})
                 order_lines += new_line
-                # self.env.cr.commit()
+
             else:
                 raise UserError(
                     'Movimentação Não Permitida',
-                    'A quantia à faturar deve ser menor que a quantia do pedido e \
-maior que zero.')
+                    error_message)
         if order_lines:
             order = new_line[0].order_id
             invoice_line_ids = order_lines.invoice_line_create()

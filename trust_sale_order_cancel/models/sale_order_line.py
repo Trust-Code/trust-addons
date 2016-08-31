@@ -18,7 +18,7 @@ class SaleOrderLine(models.Model):
                 'Esta linha do pedido já foi cancelada ou concluída!')
 
         return({
-            'name': 'sale_order_cancel_action',
+            'name': 'Cancelar Produtos Parcialmente',
             'type': 'ir.actions.act_window',
             'res_model': 'sale.order.line.cancel',
             'view_type': 'form',
