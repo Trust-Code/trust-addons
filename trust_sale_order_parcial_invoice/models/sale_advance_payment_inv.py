@@ -36,7 +36,6 @@ class SaleAdvancePaymentInv(models.TransientModel):
         lines = self.sale_order_line_id
         order_lines = self.env['sale.order.line'].browse(0)
         for line in lines:
-            import ipdb; ipdb.set_trace()
             if line.a_faturar and line.a_faturar > 0 and\
                     line.a_faturar < line.quantidade and\
                     line.sale_order_line_id.state != 'done' and\

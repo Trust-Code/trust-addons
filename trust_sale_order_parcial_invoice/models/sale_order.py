@@ -15,7 +15,6 @@ class SaleOrder(models.Model):
             [('origin', '=', self.name)])
         for i in invoices:
             invoice_ids.append(i.id)
-        import ipdb; ipdb.set_trace()
 
         return({
             'name': u'Faturas Provisórias de %s' % self.name,
