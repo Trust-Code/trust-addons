@@ -1,73 +1,25 @@
 # -*- coding: utf-8 -*-
 # © 2016 Alessandro Fernandes Martini, Trustcode
+# © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import api, fields, models
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import datetime, date
+from openerp import api, fields, models
 from openerp.exceptions import Warning as UserError
-
-
-class AccountAnalytic(models.Model):
-    _inherit = "account.analytic.account"
-
-    contract_guarantee = fields.Boolean(string='Contrato Suporte / Garantia')
-    generic_contract = fields.Boolean(
-        string='Contrato Genérico para Clientes sem Contratos')
-    product_line = fields.One2many(
-        comodel_name="account.analytic.product.line",
-        inverse_name='account_analytic_id', string="")
-    crm_helpdesk_id = fields.One2many(comodel_name='crm.helpdesk',
-                                      inverse_name='account_analytic_id')
-    journal_id = fields.Many2one(comodel_name='account.analytic.journal',
-                                 relation='analytic_account_id',
-                                 string='Diário Padrão')
-
-
-class AccountAnalyticJournal(models.Model):
-    _inherit = "account.analytic.journal"
-
-    analytic_account_id = fields.One2many(
-        comodel_name='account.analytic.account',
-        inverse_name='journal_id')
-
-
-class AccountAnalyticProductLine(models.Model):
-    _name = "account.analytic.product.line"
-
-    @api.multi
-    def name_get(self):
-        return [(rec.id, rec.product_id.name) for rec in self]
-
-    @api.onchange("product_id")
-    def _onchange_product_id(self):
-        un_id = self.product_id.uom_id
-        un = self.env['product.uom'].browse(un_id)
-        self.product_uom_id = un.id
-
-    product_id = fields.Many2one(comodel_name='product.template',
-                                 string='Serviços / Produtos Inclusos')
-    account_analytic_id = fields.Many2one(
-        comodel_name='account.analytic.account',
-        string='Serviços / Produtos Inclusos')
-    product_uom_id = fields.Many2one(comodel_name="product.uom",
-                                     string="Unidade")
-    quantity = fields.Float(string="Quantidade")
-    discount = fields.Float(string="Desconto %")
-    expire = fields.Date(string="Data de Vencimento")
-    crm_support_product_id = fields.One2many(comodel_name='crm.helpdesk',
-                                             inverse_name='product_id')
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class CrmHelpdesk(models.Model):
     _inherit = "crm.helpdesk"
 
     @api.onchange("partner_id")
-    def _onchange_field(self):
+    def _onchange_partner_id(self):
         vals = {}
         if self.partner_id:
+            self.email_from = self.partner_id.email
+            self.phone = self.partner_id.phone
+            self.mobile = self.partner_id.mobile
             account_analytic_id_search = self.env['account.analytic.account'].\
                 search([('partner_id', '=', self.partner_id.id)], limit=1)
 
@@ -86,18 +38,17 @@ class CrmHelpdesk(models.Model):
                     'message': ('Este cliente não possui um contrato, e não \
                                 existe um Contrato Genérico.')
                 }
-
             return vals
+
     account_analytic_id = fields.Many2one(
         comodel_name='account.analytic.account',
         inverse_name="crm_helpdesk_id",
-        string='Contratos Ativos', required=True)
+        string='Contratos Ativos')
     control_time = fields.One2many(comodel_name="account.analytic.line",
                                    inverse_name='control_time_crm',
                                    string="")
     product_id = fields.Many2one(comodel_name="account.analytic.product.line",
-                                 inverse_name="product_line",
-                                 required="True",
+                                 inverse_name="product_line_ids",
                                  string="Produto")
 
     def other_count_time_open(self, user_id):
@@ -148,7 +99,6 @@ class CrmHelpdesk(models.Model):
         return
 
     def count_time_stop(self, stage_name, user_id):
-        # import ipdb; ipdb.set_trace()
         crm_support = self.env['account.analytic.line'].sudo().search(
             [('user_id', '=', user_id),
              ('time_open', '=', True),
@@ -186,25 +136,3 @@ class CrmHelpdesk(models.Model):
             self.count_time_start(vals, next_stage.name, self.user_id.id)
 
         return super(CrmHelpdesk, self).write(vals)
-
-
-class AccountAnalyticLine(models.Model):
-    _inherit = "account.analytic.line"
-
-    @api.onchange("end_date")
-    def _onchange_end_date(self):
-        if self.start_date and self.end_date:
-            start = datetime.strptime(self.start_date,
-                                      DEFAULT_SERVER_DATETIME_FORMAT)
-            end = datetime.strptime(self.end_date,
-                                    DEFAULT_SERVER_DATETIME_FORMAT)
-            total = (end - start)
-            total_hours = float(total.seconds)/3600
-            self.unit_amount = total_hours
-
-    start_date = fields.Datetime(string="Data Inicio")
-    discount = fields.Float(string="Desconto %")
-    end_date = fields.Datetime(string="Data Final")
-    control_time_crm = fields.Many2one(comodel_name='crm.helpdesk',
-                                       inverse_name='control_time')
-    time_open = fields.Boolean()

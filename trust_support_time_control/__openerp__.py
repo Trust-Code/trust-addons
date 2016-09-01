@@ -4,8 +4,9 @@
 
 {
     'name': "Contador de Tempo em Suporte",
-    'description': """Module Description""",
-    'version': '0.0',
+    'summary': """Habilita a contagem de tempo para issues""",
+    'description': """Habilita a contagem de tempo para issues""",
+    'version': '8.0.1.0.0',
     'category': 'MRP',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -16,10 +17,13 @@
                      <alessandrofmartini@gmail.com>'
                      ],
     'depends': [
-        'account',
+        'account', 'account_analytic_analysis',
+        'crm_helpdesk', 'crm_helpdesk_workflow'
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/account_analytic.xml',
+        'views/crm_helpdesk.xml',
     ],
     'application': True,
 }

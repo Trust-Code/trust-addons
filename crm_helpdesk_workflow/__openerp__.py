@@ -3,11 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Product Equipment',
-    'summary': """Adiciona alguns campos na visão de \
-    produtos relacionados a TI.""",
+    'name': 'CRM Helpdesk Improvements',
+    'summary': """Adiciona um workflow dinâmico ao CRM Helpdesk.""",
     'version': '8.0.1.0.0',
-    'category': 'Website',
+    'category': 'CRM',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
@@ -15,11 +14,10 @@
         'Alessandro Fernandes Martini <alessandrofmartini@gmail.com>'
     ],
     'depends': [
-        'product', 'account',
+        'product_equipment', 'crm',
     ],
     'data': [
         'security/ir.model.access.csv',
-        'views/product_template.xml',
-        'views/res_partner.xml',
+        'views/crm_helpdesk.xml',
     ],
 }

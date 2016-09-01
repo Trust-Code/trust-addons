@@ -5,20 +5,38 @@
 from openerp import api, fields, models
 
 
+class CrmHelpdeskType(models.Model):
+    _name = "crm.helpdesk.type"
+    _order = 'sequence'
+
+    name = fields.Char(max_length=20, string="Nome do Estágio",
+                       required=True)
+    sequence = fields.Integer(string="Sequência", default=1)
+    count_time = fields.Boolean(string='Conta Tempo')
+
+
 class CrmHelpdesk(models.Model):
     _inherit = "crm.helpdesk"
+
+    def _default_stage_id(self):
+        stage = self.env["crm.helpdesk.type"].search([], limit=1,
+                                                     order='sequence asc')
+        return stage and stage[0]
 
     phone = fields.Char(max_length=30, string="Telefone")
     mobile = fields.Char(max_length=30, string="Celular")
     equip_tag = fields.Many2one(comodel_name='product.template',
                                 inverse_name='tag',
                                 string="Etiqueta do Equip.")
-    att_description = fields.Text()
+    att_description = fields.Text(string="Descrição")
     priority = fields.Selection([('0', 'Baixa'),
                                  ('1', 'Normal'),
                                  ('2', 'Média'),
                                  ('3', 'Alta')],
                                 string="Prioridade")
+
+    stage_id = fields.Many2one(comodel_name='crm.helpdesk.type',
+                               default=_default_stage_id, string="Estágio")
 
     @api.multi
     def equipment_history(self):

@@ -20,46 +20,13 @@
                 </xpath>
                 <page string="Contract Information" position="after">
                     <page string="Serviços / Produtos Inclusos" attrs="{'invisible':[('contract_guarantee', '!=', True)]}">
-                        <field name="product_line" widget="many2many" >
+                        <field name="product_line_ids" widget="many2many" >
                             <tree>
                                 <field name="product_id" />
                                 <field name="product_uom_id" readonly="1" />
                                 <field name="quantity" />
                                 <field name="discount" />
                                 <field name="expire" />
-                            </tree>
-                        </field>
-                    </page>
-                </page>
-            </field>
-        </record>
-
-        <record id="client_contract_res_partner_view" model="ir.ui.view">
-            <field name="name">client.contract.res.partner.view</field>
-            <field name="model">crm.helpdesk</field>
-            <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
-            <field name="arch" type="xml">
-                <page string="Extra Info" position="after">
-                    <page string="Controle de Tempos e Cobrança">
-                        <group>
-                            <group>
-                                <field name="account_analytic_id" />
-                                <field name="product_id" domain="[('account_analytic_id', '=', account_analytic_id)]"/>
-                            </group>
-                            <group></group>
-                        </group>
-                        <field name="control_time" widget="many2many" >
-                            <tree editable="bottom">
-                                <field name="name" />
-                                <!--<field name="account_id" />-->
-                                <field name="date" />
-                                <!--<field name="amount" />
-                                <field name="journal_id" />
-                                <field name="general_account_id" />-->
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="unit_amount" />
-                                <field name="user_id" />
                             </tree>
                         </field>
                     </page>
