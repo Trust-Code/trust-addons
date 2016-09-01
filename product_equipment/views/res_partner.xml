@@ -52,7 +52,17 @@
                  </group>
                </page>
                <page string="Equipamentos">
-                   <field name="equipment_ids" context="{'default_partner_id': active_id, 'default_sale_ok': False, 'default_purchase_ok': False}" widget="many2many" />
+                   <field name="equipment_ids" context="{'default_partner_id': active_id, 'default_sale_ok': False, 'default_purchase_ok': False}" widget="many2many" >
+                       <tree>
+                           <field name="tag" />
+                           <field name="group" />
+                           <field name="name" />
+                           <field name="sector" />
+                           <field name="customer_id" />
+                           <field name="customer_phone" />
+                           <field name="access_code" />
+                       </tree>
+                   </field>
                </page>
              </notebook>
            </field>

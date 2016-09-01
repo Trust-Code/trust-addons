@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="account_analytic_time_count" model="ir.ui.view">
+            <field name="name">account.analytic.time.count</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form" />
+            <field name="arch" type="xml">
+                <field name="manager_id" position="after">
+                    <field name="journal_id" />
+                </field>
+                <field name="partner_id" position="attributes">
+                    <attribute name="context">"{'invisible': 'generic_contract'}"</attribute>
+                </field>
+                <xpath expr="//div[@name=&quot;project&quot;]" position="inside">
+                    <field name="contract_guarantee" />
+                    <label for="contract_guarantee" />
+                    <field name="generic_contract" />
+                    <label for="generic_contract" />
+                </xpath>
+                <page string="Contract Information" position="after">
+                    <page string="Serviços / Produtos Inclusos" attrs="{'invisible':[('contract_guarantee', '!=', True)]}">
+                        <field name="product_line_ids" widget="many2many" >
+                            <tree>
+                                <field name="product_id" />
+                                <field name="product_uom_id" readonly="1" />
+                                <field name="quantity" />
+                                <field name="discount" />
+                                <field name="expire" />
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <record id="trust_time_count_account_analytic_line" model="ir.ui.view">
+            <field name="name">trust.time.count.account.analytic.line</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="account.view_account_analytic_line_form" />
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                        <field name="start_date" />
+                        <field name="end_date" />
+                </field>
+                <field name="amount" position="after">
+                    <field name="discount" readonly="1"/>
+                </field>
+                <field name="unit_amount" position="attributes">
+                    <field name="widget">'float_time'</field>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
