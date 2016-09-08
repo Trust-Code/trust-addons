@@ -13,6 +13,7 @@ class CrmHelpdeskType(models.Model):
                        required=True)
     sequence = fields.Integer(string="Sequência", default=1)
     count_time = fields.Boolean(string='Conta Tempo')
+    finished = fields.Boolean(string='Finalizado')
 
 
 class CrmHelpdesk(models.Model):

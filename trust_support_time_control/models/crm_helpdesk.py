@@ -58,7 +58,8 @@ class CrmHelpdesk(models.Model):
              ('time_open', '=', True)],
             order='id desc', limit=1)
 
-        if other_time_open.time_open and other_time_open.task_id.id != self.id:
+        if other_time_open.time_open and \
+           other_time_open.control_time_crm.id != self.id:
             state = True
         return state
 
@@ -66,10 +67,12 @@ class CrmHelpdesk(models.Model):
         product_account = self.product_id.product_id.property_account_income
         categ_account = self.product_id.product_id.categ_id.\
             property_account_income_categ
+        if not self.account_analytic_id.journal_id:
+            raise UserError(u'Configure o diário no contrato')
         if not product_account and not categ_account:
             raise UserError(
-                u'Este Produto E A Sua Categoria Não Possuem uma Conta de \
-                Receita Cadastrad')
+                u'Este Produto e a Categoria Não Possuem uma Conta de \
+                Receita Cadastrada')
         else:
             if product_account:
                 self.env['account.analytic.line'].sudo().create(
@@ -82,7 +85,8 @@ class CrmHelpdesk(models.Model):
                      'user_id': user_id,
                      'start_date':  datetime.now(),
                      'control_time_crm': self.id,
-                     'time_open': True})
+                     'time_open': True,
+                     'product_id': self.product_id.product_id.id})
             else:
                 self.env['account.analytic.line'].sudo().create(
                     {'name': u'Tempo Automático (%s)' % (stage_name),
@@ -94,7 +98,8 @@ class CrmHelpdesk(models.Model):
                      'user_id': user_id,
                      'start_date':  datetime.now(),
                      'control_time_crm': self.id,
-                     'time_open': True})
+                     'time_open': True,
+                     'product_id': self.product_id.product_id.id})
 
         return
 
@@ -134,5 +139,11 @@ class CrmHelpdesk(models.Model):
 
         elif "user_id" in vals and self.stage_id.count_time:
             self.count_time_start(vals, next_stage.name, self.user_id.id)
-
+        if vals.get('stage_id'):
+            stage = self.env['crm.helpdesk.type'].browse(vals['stage_id'])
+            if stage.finished:
+                vals['state'] = 'done'
+            else:
+                vals['state'] = 'open'
+                vals['date_closed'] = None
         return super(CrmHelpdesk, self).write(vals)

@@ -45,7 +45,7 @@ class AccountAnalyticProductLine(models.Model):
         un = self.env['product.uom'].browse(un_id)
         self.product_uom_id = un.id
 
-    product_id = fields.Many2one(comodel_name='product.template',
+    product_id = fields.Many2one(comodel_name='product.product',
                                  string='Serviço / Produto Incluso')
     account_analytic_id = fields.Many2one(
         comodel_name='account.analytic.account',
@@ -62,20 +62,23 @@ class AccountAnalyticProductLine(models.Model):
 class AccountAnalyticLine(models.Model):
     _inherit = "account.analytic.line"
 
-    @api.onchange("end_date")
-    def _onchange_end_date(self):
-        if self.start_date and self.end_date:
-            start = datetime.strptime(self.start_date,
-                                      DEFAULT_SERVER_DATETIME_FORMAT)
-            end = datetime.strptime(self.end_date,
-                                    DEFAULT_SERVER_DATETIME_FORMAT)
-            total = (end - start)
-            total_hours = float(total.seconds)/3600
-            self.unit_amount = total_hours
+    @api.depends("start_date", "end_date")
+    def _compute_amount_time(self):
+        for item in self:
+            if item.start_date and item.end_date:
+                start = datetime.strptime(item.start_date,
+                                          DEFAULT_SERVER_DATETIME_FORMAT)
+                end = datetime.strptime(item.end_date,
+                                        DEFAULT_SERVER_DATETIME_FORMAT)
+                total = (end - start)
+                total_hours = float(total.seconds)/3600
+                item.unit_amount = total_hours
 
     start_date = fields.Datetime(string="Data Inicio")
     discount = fields.Float(string="Desconto %")
     end_date = fields.Datetime(string="Data Final")
     control_time_crm = fields.Many2one(comodel_name='crm.helpdesk',
                                        inverse_name='control_time')
-    time_open = fields.Boolean()
+    time_open = fields.Boolean("Contando tempo")
+    unit_amount = fields.Float(
+        'Quantity', default=0.0, compute=_compute_amount_time, store=True)
