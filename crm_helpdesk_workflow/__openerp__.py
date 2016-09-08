@@ -17,6 +17,7 @@
         'product_equipment', 'crm',
     ],
     'data': [
+        'data/crm_helpdesk_data.xml',
         'security/ir.model.access.csv',
         'views/crm_helpdesk.xml',
     ],

@@ -24,6 +24,7 @@ class CrmHelpdesk(models.Model):
                                                      order='sequence asc')
         return stage and stage[0]
 
+    sequence = fields.Char(string="Sequência", size=20)
     phone = fields.Char(max_length=30, string="Telefone")
     mobile = fields.Char(max_length=30, string="Celular")
     equip_tag = fields.Many2one(comodel_name='product.template',
@@ -38,6 +39,13 @@ class CrmHelpdesk(models.Model):
 
     stage_id = fields.Many2one(comodel_name='crm.helpdesk.type',
                                default=_default_stage_id, string="Estágio")
+
+    @api.model
+    def create(self, vals):
+        dummy, sequence_id = self.env['ir.model.data'].get_object_reference(
+            'crm_helpdesk_workflow', 'sequence_crm_helpdesk')
+        vals['sequence'] = self.env['ir.sequence'].next_by_id(sequence_id)
+        return super(CrmHelpdesk, self).create(vals)
 
     @api.multi
     def equipment_history(self):

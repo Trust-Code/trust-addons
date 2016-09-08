@@ -51,6 +51,12 @@
             <field eval="50" name="priority"/>
             <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk" />
             <field name="arch" type="xml">
+                <group position="before">
+                    <h1>
+                        <label string="Chamado "/>
+                        <field name="sequence" class="oe_inline" readonly="1" />
+                    </h1>
+                </group>
                 <field name="section_id" position="replace"></field>
                 <field name="user_id" position="replace"></field>
                 <field name="date" position="replace"></field>
