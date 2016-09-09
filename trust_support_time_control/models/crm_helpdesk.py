@@ -91,32 +91,22 @@ class CrmHelpdesk(models.Model):
                 u'Este Produto e a Categoria Não Possuem uma Conta de \
                 Receita Cadastrada')
         else:
+            account_id = categ_account.id
             if product_account:
-                self.env['account.analytic.line'].sudo().create(
-                    {'name': u'Tempo Automático (%s)' % (stage_name),
-                     'account_id': self.account_analytic_id.id,
-                     'journal_id': self.account_analytic_id.journal_id.id,
-                     'date': date.today(),
-                     'amount':  self.product_id.product_id.lst_price,
-                     'general_account_id': product_account.id,
-                     'user_id': user_id,
-                     'start_date':  datetime.now(),
-                     'control_time_crm': self.id,
-                     'time_open': True,
-                     'product_id': self.product_id.product_id.id})
-            else:
-                self.env['account.analytic.line'].sudo().create(
-                    {'name': u'Tempo Automático (%s)' % (stage_name),
-                     'account_id': self.account_analytic_id.id,
-                     'journal_id': self.account_analytic_id.journal_id.id,
-                     'date': date.today(),
-                     'amount':  self.product_id.product_id.lst_price,
-                     'general_account_id': categ_account.id,
-                     'user_id': user_id,
-                     'start_date':  datetime.now(),
-                     'control_time_crm': self.id,
-                     'time_open': True,
-                     'product_id': self.product_id.product_id.id})
+                account_id = product_account.id
+
+            self.env['account.analytic.line'].sudo().create(
+                {'name': u'Tempo Automático (%s)' % (stage_name),
+                 'account_id': self.account_analytic_id.id,
+                 'journal_id': self.account_analytic_id.journal_id.id,
+                 'date': date.today(),
+                 'general_account_id': account_id,
+                 'user_id': user_id,
+                 'start_date':  datetime.now(),
+                 'control_time_crm': self.id,
+                 'time_open': True,
+                 'product_id': self.product_id.product_id.id,
+                 'discount': self.product_id.discount})
 
         return
 
@@ -137,6 +127,8 @@ class CrmHelpdesk(models.Model):
 
             crm_support.hours = count_time.total_seconds() / 60.0 / 60.0
             crm_support.time_open = False
+            crm_support.amount = crm_support.unit_amount * \
+                crm_support.product_id.standard_price
         return
 
     @api.multi
