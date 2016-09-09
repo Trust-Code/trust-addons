@@ -20,7 +20,7 @@
                 </xpath>
                 <page string="Contract Information" position="after">
                     <page string="Serviços / Produtos Inclusos" attrs="{'invisible':[('contract_guarantee', '!=', True)]}">
-                        <field name="product_line_ids" widget="many2many" >
+                        <field name="product_line_ids">
                             <tree>
                                 <field name="product_id" />
                                 <field name="product_uom_id" readonly="1" />
@@ -49,6 +49,24 @@
                 <field name="unit_amount" position="attributes">
                     <field name="widget">'float_time'</field>
                 </field>
+            </field>
+        </record>
+
+        <record id="account_analytic_product_line_form" model="ir.ui.view">
+            <field name="name">account.analytic.product.line.form</field>
+            <field name="model">account.analytic.product.line</field>
+            <field name="arch" type="xml">
+                <form string="Produtos/Serviços">
+                    <group>
+                        <field name="product_id" />
+                        <field name="product_uom_id" />
+                        <field name="type_control" />
+                        <field name="discount" />
+                        <field name="expire" />
+                        <field name="quantity" />
+                        <field name="remaining_hours" />
+                    </group>
+                </form>
             </field>
         </record>
     </data>

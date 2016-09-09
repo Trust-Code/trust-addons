@@ -9,6 +9,7 @@
                 <field name="partner_id" position="after">
                     <field name="account_analytic_id" required="1" />
                     <field name="product_id" domain="[('account_analytic_id', '=', account_analytic_id)]" required="1"/>
+                    <field name="remaining_hours" widget="float_time" />
                 </field>
                 <page string="Extra Info" position="after">
                     <page string="Produtos / Serviço">
@@ -18,7 +19,7 @@
                                 <field name="date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
-                                <field name="unit_amount" />
+                                <field name="unit_amount" widget="float_time"/>
                                 <field name="user_id" />
                             </tree>
                         </field>

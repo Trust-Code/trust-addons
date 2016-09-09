@@ -6,6 +6,7 @@
 from openerp import api, fields, models
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
+from datetime import date
 
 
 class AccountAnalytic(models.Model):
@@ -45,6 +46,27 @@ class AccountAnalyticProductLine(models.Model):
         un = self.env['product.uom'].browse(un_id)
         self.product_uom_id = un.id
 
+    @api.multi
+    def _compute_remaining_hours(self):
+        for item in self:
+            anl_obj = self.env['account.analytic.line']
+            if item.type_control == 'total':
+                lines = anl_obj.search(
+                    [('product_id', '=', item.product_id.id),
+                     ('account_id', '=', item.account_analytic_id.id)])
+            else:
+                d = date.today()
+                lines = anl_obj.search([
+                    ('product_id', '=', item.product_id.id),
+                    ('account_id', '=', item.account_analytic_id.id),
+                    ('date', '>=', date(d.year, d.month, 1))
+                ])
+            total = sum([l.unit_amount for l in lines])
+            item.remaining_hours = item.quantity - total
+
+    type_control = fields.Selection([('total', 'Por total de horas'),
+                                     ('monthly', 'Mensal')],
+                                    string="Controle de horas")
     product_id = fields.Many2one(comodel_name='product.product',
                                  string='Serviço / Produto Incluso')
     account_analytic_id = fields.Many2one(
@@ -57,6 +79,9 @@ class AccountAnalyticProductLine(models.Model):
     expire = fields.Date(string="Data de Vencimento")
     crm_support_product_id = fields.One2many(comodel_name='crm.helpdesk',
                                              inverse_name='product_id')
+
+    remaining_hours = fields.Float(strign="Horas restantes",
+                                   compute=_compute_remaining_hours)
 
 
 class AccountAnalyticLine(models.Model):

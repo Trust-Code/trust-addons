@@ -50,6 +50,23 @@ class CrmHelpdesk(models.Model):
     product_id = fields.Many2one(comodel_name="account.analytic.product.line",
                                  inverse_name="product_line_ids",
                                  string="Produto")
+    remaining_hours = fields.Float(u'Horas Restantes',
+                                   related="product_id.remaining_hours")
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id and self.product_id.expire:
+            expire = datetime.strptime(self.product_id.expire,
+                                       DEFAULT_SERVER_DATE_FORMAT)
+            if expire.date() < datetime.now().date():
+                self.product_id = None
+                return {'warning': {
+                    'title': 'Atenção!',
+                    'message': 'O produto contratado já venceu!'}}
+            if self.product_id.remaining_hours <= 0.0:
+                return {'warning': {
+                    'title': 'Atenção!',
+                    'message': 'As horas contratadas acabaram!'}}
 
     def other_count_time_open(self, user_id):
         state = False
