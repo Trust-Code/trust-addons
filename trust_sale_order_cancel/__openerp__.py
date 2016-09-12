@@ -23,6 +23,7 @@ pedidos""",
     ],
     'data': [
         'views/trust_sale_order_cancel.xml',
+        'views/stock_picking.xml',
         'wizard/sale_order_cancel_action.xml'
     ],
     'application': True,

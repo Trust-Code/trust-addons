@@ -44,8 +44,7 @@ pedido original'
             proc_order = self.env['procurement.order'].search(
                 [('sale_line_id', '=', self.sale_order_line_id.id)])
 
-            self.sale_order_line_id.write({'product_uom_qty': to_cancel,
-                                           'state': 'cancel'})
+            self.sale_order_line_id.write({'state': 'cancel'})
 
             new_order_line = self.sale_order_line_id.copy({
                 'product_uom_qty': to_invoice, 'state': 'confirmed',
