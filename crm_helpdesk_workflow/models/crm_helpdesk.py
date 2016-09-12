@@ -36,6 +36,7 @@ class CrmHelpdesk(models.Model):
                                  ('2', 'Média'),
                                  ('3', 'Alta')],
                                 string="Prioridade")
+    date_deadline = fields.Datetime('Prazo Final')
 
     stage_id = fields.Many2one(comodel_name='crm.helpdesk.type',
                                default=_default_stage_id, string="Estágio")
