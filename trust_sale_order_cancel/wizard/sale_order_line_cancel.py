@@ -40,10 +40,22 @@ pedido original'
                 zero produtos.')
 
         if to_cancel < amount:
-            self.sale_order_line_id.\
-                copy({'product_uom_qty': to_cancel, 'state': 'cancel',
-                      'order_id': self.sale_order_line_id.order_id.id})
-            self.sale_order_line_id.write({'product_uom_qty': to_invoice})
+            # Cancelando aquisição e linha do pedido
+            proc_order = self.env['procurement.order'].search(
+                [('sale_line_id', '=', self.sale_order_line_id.id)])
+
+            self.sale_order_line_id.write({'product_uom_qty': to_cancel,
+                                           'state': 'cancel'})
+
+            new_order_line = self.sale_order_line_id.copy({
+                'product_uom_qty': to_invoice, 'state': 'confirmed',
+                'order_id': self.sale_order_line_id.order_id.id})
+
+            new = proc_order.copy({'product_qty': to_invoice,
+                                   'sale_line_id': new_order_line.id})
+            proc_order.write({'product_uom_qty': to_cancel})
+            proc_order.cancel()
+            new.run()
 
         elif to_cancel > amount:
             raise UserError(
@@ -51,10 +63,16 @@ pedido original'
                 'Quantidade a cancelar é maior que a original do pedido.')
 
         elif to_cancel == amount:
-            raise UserError(
-                'Movimentação Bloqueada',
-                'Você está tentando cancelar o pedido, para isto utilize o \
-                \botão "Cancelar Pedido"')
+            # Cancelando aquisição e linha do pedido
+            proc_order = self.env['procurement.order'].search(
+                [('sale_line_id', '=', self.sale_order_line_id.id)])
+            proc_order.cancel()
+            self.sale_order_line_id.write({'state': 'cancel'})
+
+        lines = self.sale_order_line_id.order_id.order_line
+        remaining = len(lines.filtered(lambda x: x.state != 'cancel'))
+        if remaining == 0:  # Cancelar pedido se todos os itens cancelaram
+            self.sale_order_line_id.order_id.action_cancel()
 
         return {
             'type': 'ir.actions.client',
