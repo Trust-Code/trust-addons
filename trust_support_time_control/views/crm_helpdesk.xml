@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="client_contract_res_partner_view" model="ir.ui.view">
+            <field name="name">client.contract.res.partner.view</field>
+            <field name="model">crm.helpdesk</field>
+            <field name="inherit_id" ref="crm_helpdesk_workflow.crm_helpdesk_workflow_helpdesk_view" />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="account_analytic_id" required="1" />
+                    <field name="product_id" domain="[('account_analytic_id', '=', account_analytic_id)]" required="1"/>
+                    <field name="remaining_hours" widget="float_time" />
+                </field>
+                <page string="Extra Info" position="after">
+                    <page string="Produtos / Serviço">
+                        <field name="control_time" widget="many2many" >
+                            <tree>
+                                <field name="name" />
+                                <field name="date" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="unit_amount" widget="float_time"/>
+                                <field name="user_id" />
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</openerp>

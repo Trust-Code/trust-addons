@@ -20,7 +20,7 @@
 from openerp import models, fields
 
 
-class sale_configuration(models.Model):
+class sale_configuration(models.TransientModel):
     _inherit = 'sale.config.settings'
 
     group_second_uom = fields.Boolean(

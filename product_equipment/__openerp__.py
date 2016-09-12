@@ -4,7 +4,7 @@
 
 {
     'name': 'Product Equipment',
-    'summary': """Adiciona alguns campos na visão de
+    'summary': """Adiciona alguns campos na visão de \
     produtos relacionados a TI.""",
     'version': '8.0.1.0.0',
     'category': 'Website',
@@ -15,10 +15,11 @@
         'Alessandro Fernandes Martini <alessandrofmartini@gmail.com>'
     ],
     'depends': [
-        'product', 'account'
+        'product', 'account',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/product_template.xml',
-        'views/sale_contact_template.xml',
+        'views/res_partner.xml',
     ],
 }

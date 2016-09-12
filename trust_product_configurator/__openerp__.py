@@ -21,7 +21,7 @@
     'name': 'Product Configurator for Manufacturing',
     'summary': """Create flexibility adding attributes to products that allow
                 to generate dynamic manufacturing orders""",
-    'version': '1.0',
+    'version': '8.0.1.0.0',
     'category': 'MRP',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -35,6 +35,7 @@
         'mrp_bom_through_attributes',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/product_view.xml',
         'views/configurator_view.xml',
         'views/sale_view.xml',

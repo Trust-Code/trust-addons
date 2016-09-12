@@ -20,6 +20,7 @@
         'account',
         'web_fields_masks'
     ],
-    'data': ['views/res_partner.xml',
-             ],
+    'data': [
+        'views/res_partner.xml',
+    ],
 }

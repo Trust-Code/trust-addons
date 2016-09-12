@@ -26,7 +26,7 @@
     'contributors': ['Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
                      'Danimar Ribeiro <danimaribeiro@gmail.com>'
                      ],
-    'version': '1.0',
+    'version': '8.0.1.0.0',
     'depends': ['sale', ],
     'data': ['views/sale_contact_view.xml', ],
     'installable': True,

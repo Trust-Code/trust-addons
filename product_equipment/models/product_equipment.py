@@ -54,10 +54,11 @@ class ProductTemplate(models.Model):
         ],
         string='Tipo de Equipamento')
 
-    tag_comp = fields.Integer(string="Etiqueta")
-    customer_id = fields.Many2one('res.partner', string="Cliente")
+    tag = fields.Integer(string="Etiqueta")
+    customer_id = fields.Many2one('res.partner', string="Usuário de Contato")
+    customer_phone = fields.Char(related='customer_id.mobile', store=True,
+                                 string="Celular")
     sector = fields.Char(max_length=30, string="Alocação")
-    employee_id = fields.Many2one('res.users', string="Usuário de contato")
     access_code = fields.Char(max_length=30,
                               string="Código de Acesso (ammyy)")
     remote_access_password = fields.Char(max_length=30,
@@ -146,10 +147,12 @@ class ProductTemplate(models.Model):
     op_system = fields.Char(max_length=30, string="Sistema Operacional")
     op_system_version = fields.Char(max_length=30,
                                     string="Versão do Sistema Operacional")
+    os_serial_number = fields.Char(
+        max_length=30,
+        string="Número Serial do Sistema Operacional")
     antivirus = fields.Char(max_length=30, string="Antivírus")
     antivirus_version = fields.Char(max_length=30,
                                     string="Versão do Antivírus")
-    tag_server = fields.Integer(string="Etiqueta")
     remote_acces_path_ts = fields.Char(max_length=30,
                                        string="Rota de Acesso Remoto via TS")
     ts_remote_access_door = fields.Integer(string="Porta de Acesso Remoto TS")
@@ -161,21 +164,24 @@ class ProductTemplate(models.Model):
     admin_user_password = fields.Char(max_length=30,
                                       string="Login do Usuário Administrador")
     other_info_and_obs = fields.Text(string="Outras Informações e Observações")
-    tag_mobile = fields.Integer(string="Etiqueta")
     mobile_equipment_type = fields.Char(max_length=30,
                                         string="Tipo de Equipamento")
-    tag_accessories = fields.Integer(string="Etiqueta")
     accessories_equipment_type = fields.Char(max_length=30,
                                              string="Tipo de Equipamento")
-    tag_net_equipment = fields.Integer(string="Etiqueta")
     net_equipment_type = fields.Char(max_length=30,
                                      string="Tipo de Equipamento")
-    tag_tel_equipment = fields.Integer(string="Etiqueta")
     tel_equipment_type = fields.Char(max_length=30,
                                      string="Tipo de Equipamento")
-    tag_cftv_equipment = fields.Integer(string="Etiqueta")
     cftv_equipment_type = fields.Char(max_length=30,
                                       string="Tipo de Equipamento")
-    tag_others = fields.Integer(string="Etiqueta")
     other_equipment_type = fields.Char(max_length=30,
                                        string="Tipo de Equipamento")
+    monitor = fields.Char(max_length=50,
+                          string="Monitor (fabricante / modelo / tamanho)")
+    printer_ip_address = fields.Char(
+        max_length=30,
+        string="End. IP para acesso à impressora (se houver)")
+    product_name = fields.Char(max_length=30, string="Nome do Produto")
+    product_version = fields.Char(max_length=30, string="Nome do Produto")
+    product_serial_num = fields.Char(max_length=30, string="Número Serial")
+    product_obs = fields.Char(max_length=60, string="Observações")
