@@ -4,6 +4,7 @@
 
 from openerp import api, fields, models
 from openerp.exceptions import Warning as UserError
+from openerp.tools.translate import _
 
 
 class SaleAdvancePaymentInv(models.TransientModel):
@@ -33,7 +34,15 @@ class SaleAdvancePaymentInv(models.TransientModel):
         return {"value": vals}
 
     @api.multi
-    def faturar_parcial(self):
+    def create_invoices(self):
+        self.ensure_one()
+        if self.advance_payment_method == 'lines':
+            return self.make_partial_invoice()
+        else:
+            return super(SaleAdvancePaymentInv, self).create_invoices()
+
+    @api.multi
+    def make_partial_invoice(self):
         error_message = ''
         lines = self.sale_order_line_id
         order_lines = self.env['sale.order.line'].browse(0)
@@ -57,8 +66,7 @@ cancelada\n"
                     error_message += message
 
             if line.a_faturar == 0:
-                message = "Você não pode faturar zero produtos.\n"
-                error_message += message
+                continue
 
             if len(error_message) == 0:
                 sale_order_line = self.env['sale.order.line'].\
@@ -82,5 +90,25 @@ cancelada\n"
         if order_lines:
             order = new_line[0].order_id
             invoice_line_ids = order_lines.invoice_line_create()
-            self.env['sale.order']._make_invoice(order,
-                                                 invoice_line_ids)
+            invoice_id = self.env['sale.order']._make_invoice(
+                order, invoice_line_ids)
+            self.env.cr.execute(
+                'insert into sale_order_invoice_rel (order_id,invoice_id) \
+                values (%s,%s)', (order.id, invoice_id))
+            order.invalidate_cache(['invoice_ids'], [order.id])
+
+            res = self.env['ir.model.data'].get_object_reference(
+                'account', 'invoice_form')
+            res_id = res and res[1] or False,
+            return {
+                'name': _('Customer Invoices'),
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': [res_id],
+                'res_model': 'account.invoice',
+                'context': "{'type':'out_invoice'}",
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'target': 'current',
+                'res_id': invoice_id or False,
+            }

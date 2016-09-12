@@ -18,25 +18,14 @@
                         </tree>
                     </field>
                 </field>
-                <button name="create_invoices" position="replace">
-                    <button string="Faturar Quantias" name="faturar_parcial" type="object" class="oe_highlight" attrs="{'invisible': [('advance_payment_method', '!=', 'lines')]}" />
+                <button string="Show Lines to Invoice" position="attributes">
+                    <attribute name="string">Faturar Parcial</attribute>
                 </button>
                 <label string="After clicking 'Show Lines to Invoice', select lines to invoice and create the invoice from the 'More' dropdown menu." position="attributes">
                     <attribute name="invisible">1</attribute>
                 </label>
                 <button name="create_invoices" position="attributes">
                     <attribute name="attrs">{'invisible': [('advance_payment_method', '=', 'lines')]}</attribute>
-                </button>
-            </field>
-        </record>
-
-        <record id="sale_order_partial_invoice_view" model="ir.ui.view">
-            <field name="name">sale.order.partial.invoice.view</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form" />
-            <field name="arch" type="xml">
-                <button name="action_view_invoice" position="after">
-                    <button string="Ver Faturas Parciais" name="action_view_parcial_invoice" type="object" class="oe_highlight" />
                 </button>
             </field>
         </record>
