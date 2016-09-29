@@ -24,51 +24,52 @@ class NfseExportInvoice(models.TransientModel):
         [('init', 'init'), ('done', 'done')], 'state',
         readonly=True, default='init')
 
-    def _invoice_vals(self, invoice):
+    def _invoice_vals(self, inv):
         tomador = {
-            'cnpj_cpf': re.sub('[^0-9]', '', invoice.partner_id.cnpj_cpf),
+            'cnpj_cpf': re.sub('[^0-9]', '', inv.partner_id.cnpj_cpf or ''),
             'inscricao_municipal': re.sub(
-                '[^0-9]', '', invoice.partner_id.inscr_mun or '0000000'),
-            'name': invoice.partner_id.legal_name,
-            'street': invoice.partner_id.street,
-            'number': invoice.partner_id.number,
-            'district': invoice.partner_id.district,
-            'zip': re.sub('[^0-9]', '', invoice.partner_id.zip),
+                '[^0-9]', '', inv.partner_id.inscr_mun or '0000000'),
+            'name': inv.partner_id.legal_name,
+            'street': inv.partner_id.street,
+            'number': inv.partner_id.number,
+            'district': inv.partner_id.district,
+            'zip': re.sub('[^0-9]', '', inv.partner_id.zip or ''),
             'city_code': '%s%s' % (
-                invoice.partner_id.state_id.ibge_code,
-                invoice.partner_id.l10n_br_city_id.ibge_code),
-            'uf_code': invoice.partner_id.state_id.code,
-            'email': invoice.partner_id.email,
-            'phone': re.sub('[^0-9]', '', invoice.partner_id.phone),
+                inv.partner_id.state_id.ibge_code,
+                inv.partner_id.l10n_br_city_id.ibge_code),
+            'uf_code': inv.partner_id.state_id.code,
+            'email': inv.partner_id.email,
+            'phone': re.sub('[^0-9]', '', inv.partner_id.phone or ''),
         }
         items = []
-        for line in invoice.invoice_line:
+        for line in inv.invoice_line:
             items.append({
                 'name': line.product_id.name,
                 'CNAE': re.sub('[^0-9]', '',
-                               invoice.company_id.cnae_main_id.code),
+                               inv.company_id.cnae_main_id.code or ''),
                 'CST': '1',
                 'aliquota': line.issqn_percent,
                 'valor_unitario': line.price_unit,
                 'quantidade': int(line.quantity),
                 'valor_total': line.price_total,
             })
-        emissao = datetime.strptime(invoice.date_hour_invoice,
+        emissao = datetime.strptime(inv.date_hour_invoice,
                                     DEFAULT_SERVER_DATETIME_FORMAT)
         cfps = '9201'
-        if invoice.company_id.l10n_br_city_id.id !=\
-           invoice.partner_id.l10n_br_city_id.id:
+        if inv.company_id.l10n_br_city_id.id !=\
+           inv.partner_id.l10n_br_city_id.id:
             cfps = '9202'
-        if invoice.company_id.state_id.id != invoice.partner_id.state_id.id:
+        if inv.company_id.state_id.id != inv.partner_id.state_id.id:
             cfps = '9203'
         return {
             'tomador': tomador,
             'items': items,
             'data_emissao': emissao.strftime('%Y-%m-%dZ'),
             'cfps': cfps,
-            'base_calculo': invoice.issqn_base,
-            'valor_issqn': invoice.issqn_value,
-            'valor_total': invoice.amount_total
+            'aedf': inv.company_id.numero_aedf,
+            'base_calculo': inv.issqn_base,
+            'valor_issqn': inv.issqn_value,
+            'valor_total': inv.amount_total
         }
 
     def _export(self, invoice):
@@ -97,7 +98,7 @@ class NfseExportInvoice(models.TransientModel):
             filename = os.path.join(tmp, xml['name'])
             with io.open(filename, 'w', encoding='utf8') as xml_file:
                 xml_file.write(xml['content'])
-            zipFile.write(filename)
+            zipFile.write(filename, xml['name'])
         zipFile.close()
         zip_base64.seek(0)
         return base64.b64encode(zip_base64.getvalue())

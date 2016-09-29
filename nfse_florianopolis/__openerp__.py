@@ -17,6 +17,7 @@
         'l10n_br_account_service', 'l10n_br_account_withholding'
     ],
     'data': [
+        'views/res_company.xml',
         'wizard/nfse_florianopolis_export_view.xml',
     ],
 }

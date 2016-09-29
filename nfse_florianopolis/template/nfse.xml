@@ -5,7 +5,7 @@
     <TipoSistema>1</TipoSistema>
     <Identificacao>M9D2N0</Identificacao>
     <AEDF>
-        <AEDF>290216</AEDF>
+        <AEDF>{{ aedf }}</AEDF>
         <TipoAedf>NORMAL</TipoAedf>
     </AEDF>
     <DataEmissao>{{ data_emissao }}</DataEmissao>
