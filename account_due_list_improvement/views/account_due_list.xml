@@ -6,9 +6,9 @@
             <field name="name">Account Due List Improvements</field>
             <field name="model">account.move.line</field>
             <field name="inherit_id" ref="account_due_list.view_payments_tree"/>
-            <field name="arch" type="xml">
+            <field name="arch" type="xml" >
                 <tree string="Payments" position="attributes">
-                    <attribute name="colors">red:date_maturity&lt;current_date;green:payment_type=='payable';blue:payment_type=='receivable'</attribute>
+                    <attribute name="colors">grey:reconcile_id!=False;red:date_maturity&lt;current_date;green:payment_type=='payable';blue:payment_type=='receivable'</attribute>
                     <attribute name="fonts">bold:date_maturity==current_date)</attribute>
                     <attribute name="default_order">date_maturity</attribute>
                 </tree>
