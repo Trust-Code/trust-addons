@@ -67,7 +67,7 @@
                                 <field name="os_serial_number"/>
                                 <field name="antivirus"/>
                                 <field name="antivirus_version"/>
-                                <field name="routine_prog_user"/>
+                                <field name="routine_prog_user" placeholder="informar nome do programa, caminho para acesso e demais informações para configuração futura,inclusive local do programa de instalação"/>
                             </group>
                             <group string="Impressoras">
                                 <field name="server_print"/>
@@ -97,7 +97,6 @@
                         </group>
                         <group string="Observações">
                             <field name="outlook_obs"/>
-                            <field name="other_obs"/>
                             <field name="other_gen_info"/>
                         </group>
                     </page>

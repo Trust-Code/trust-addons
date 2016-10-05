@@ -116,7 +116,8 @@ class ProductTemplate(models.Model):
     web_printer = fields.Char(
         max_length=30, string="Impressoras de Rede")
     routine_prog_user = fields.Char(
-        max_length=30, string="Programas de Rotina do Computador/Usuário")
+        max_length=30,
+        string="Programas de rotina do usuário deste computador")
     email_bool = fields.Selection([
         ('1', 'SIM'),
         ('2', 'NÃO'), ],
