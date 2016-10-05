@@ -112,5 +112,16 @@
             </field>
         </record>
 
+        <record id="view_crm_helpdesk_workflow_tree" model="ir.ui.view">
+            <field name="name">view.crm.helpdesk.workflow.tree</field>
+            <field name="model">crm.helpdesk</field>
+            <field name="inherit_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk" />
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="sequence" string="Chamado" />
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

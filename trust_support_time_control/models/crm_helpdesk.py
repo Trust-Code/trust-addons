@@ -105,6 +105,7 @@ class CrmHelpdesk(models.Model):
                  'start_date':  datetime.now(),
                  'control_time_crm': self.id,
                  'time_open': True,
+                 'ref': self.sequence,
                  'product_id': self.product_id.product_id.id,
                  'discount': self.product_id.discount})
 
