@@ -27,6 +27,7 @@
                                 <field name="quantity" />
                                 <field name="discount" />
                                 <field name="expire" />
+                                <field name="type_control" />
                             </tree>
                         </field>
                     </page>

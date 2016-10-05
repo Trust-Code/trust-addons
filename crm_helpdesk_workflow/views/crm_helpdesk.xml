@@ -93,6 +93,12 @@
                 <field name="priority" position="replace">
                     <field name="priority" widget="priority"/>
                 </field>
+                <separator string="Notes" position="attributes">
+                    <attribute name="string">Descrição do chamado</attribute>
+                </separator>
+                <field name="description" position="attributes">
+                    <attribute name="required">1</attribute>
+                </field>
                 <field name="description" position="after">
                     <separator string="Descrição do Atendimento" />
                     <field name="att_description" />
@@ -117,6 +123,12 @@
             <field name="model">crm.helpdesk</field>
             <field name="inherit_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk" />
             <field name="arch" type="xml">
+                <field name="state" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="state" position="after">
+                    <field name="stage_id" />
+                </field>
                 <field name="name" position="before">
                     <field name="sequence" string="Chamado" />
                 </field>

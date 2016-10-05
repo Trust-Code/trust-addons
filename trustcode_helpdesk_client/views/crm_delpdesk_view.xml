@@ -9,7 +9,7 @@
 				<form string="Chamados">
 					<header>
 						<field name="state" nolabel="1" widget="statusbar"
-							clickable="True" statusbar_colors="{'pending':'blue'}" />
+							clickable="True" statusbar_colors='{"pending":"blue"}' />
 					</header>
 					<sheet string="Helpdesk Support">
 						<group col="4" class="oe_header">
@@ -137,4 +137,3 @@
 
 	</data>
 </openerp>
-		
