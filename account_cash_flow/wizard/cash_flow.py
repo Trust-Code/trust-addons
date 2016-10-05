@@ -18,12 +18,15 @@ class CashFlowWizard(models.TransientModel):
     start_amount = fields.Float(string="Initial value",
                                 digits_compute=dp.get_precision('Account'))
 
+    company_id = fields.Many2one('res.company', string="Empresa")
+
     @api.multi
     def button_calculate(self):
         cashflow_id = self.env['account.cash.flow'].create({
             'start_date': self.start_date,
             'end_date': self.end_date,
             'start_amount': self.start_amount,
+            'company_id': self.company_id.id or self.env.user.company_id.id,
         })
         cashflow_id.action_calculate_report()
 

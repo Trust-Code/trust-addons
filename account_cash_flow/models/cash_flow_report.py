@@ -20,6 +20,7 @@ class CashFlowReport(models.TransientModel):
         balance += self.start_amount
         self.final_amount = balance
 
+    company_id = fields.Many2one('res.company', string="Empresa")
     start_date = fields.Date(string="Start Date", required=True,
                              default=fields.date.today())
     end_date = fields.Date(
@@ -36,7 +37,9 @@ class CashFlowReport(models.TransientModel):
 
     @api.multi
     def calculate_liquidity(self):
-        accs = self.env['account.account'].search([('type', '=', 'liquidity')])
+        accs = self.env['account.account'].search(
+            [('type', '=', 'liquidity'),
+             ('company_id', '=', self.company_id.id)])
         liquidity_lines = []
         for acc in accs:
             if acc.balance != 0:
@@ -59,7 +62,7 @@ class CashFlowReport(models.TransientModel):
             ('account_id.type', '=', 'payable'),
             ('reconcile_id', '=', False),
             ('state', '!=', 'draft'),
-            ('company_id', '=', self.env.user.company_id.id),
+            ('company_id', '=', self.company_id.id),
             ('date_maturity', '<=', self.end_date),
         ])
         moves = []

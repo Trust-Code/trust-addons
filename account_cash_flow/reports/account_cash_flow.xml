@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <template id="account_cash_flow_report">
+        <template id="account_cash_flow_report_template">
              <t t-call="report.html_container">
                 <t t-call="report.external_layout">
                     <div class="page">
