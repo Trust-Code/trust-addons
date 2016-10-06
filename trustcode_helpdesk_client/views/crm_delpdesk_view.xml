@@ -62,7 +62,7 @@
 				<form string="Interações">
 					<header>
 						<field name="state" nolabel="1" widget="statusbar"
-							statusbar_colors="{'new': 'blue'}" />
+							statusbar_colors='{"new":"blue"}' />
 					</header>
 					<group>
 						<field name="interacao_trustcode" invisible="1" />
