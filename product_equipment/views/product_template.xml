@@ -16,14 +16,14 @@
                                 <field name="create_uid" readonly="1"/>
                             </group>
                             <group>
+                                <field name="tag"/>
+                                <field name="customer_id" domain="[('customer', '=', True), ('parent_id' , '=', partner_id)]" />
                             </group>
                         </group>
                     </page>
                     <page attrs="{'invisible':[('group', '!=', '1')]}" string="Computadores">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag"/>
-                                <field name="customer_id" domain="[('customer', '=', True), ('parent_id' , '=', partner_id)]" />
                                 <field name="sector"/>
                             </group>
                             <group string="Dados do Produto">
@@ -102,10 +102,6 @@
                     </page>
                     <page attrs="{'invisible':[('group', '!=', '2')]}" string="Servidores">
                         <group>
-                            <group string="Dados de Cadastro">
-                                <field name="tag"/>
-                                <field name="customer_id" domain="[('customer', '=', True), ('parent_id' ,'=', partner_id)]" />
-                            </group>
                             <group string="Acesso Remoto">
                                 <field name="remote_acces_path_ts"/>
                                 <field name="ts_remote_access_door"/>
@@ -155,7 +151,6 @@
                     <page attrs="{'invisible':[('group', '!=', '3')]}" string="Dispositivos Móveis">
                         <group>
                             <group string="Dados do Equipamento">
-                                <field name="tag"/>
                                 <field name="mobile_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -177,7 +172,6 @@
                     <page attrs="{'invisible':[('group', '!=', '4')]}" string="Acessórios">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag"/>
                                 <field name="accessories_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -195,7 +189,6 @@
                     <page attrs="{'invisible':[('group', '!=', '5')]}" string="Equipamentos de Rede">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag"/>
                                 <field name="net_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -209,7 +202,6 @@
                     <page attrs="{'invisible':[('group', '!=', '6')]}" string="Equipamentos de Telefonia">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag"/>
                                 <field name="tel_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -223,7 +215,6 @@
                     <page attrs="{'invisible':[('group', '!=', '7')]}" string="Equipamentos de CFTV">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag"/>
                                 <field name="cftv_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>
@@ -237,7 +228,6 @@
                     <page attrs="{'invisible':[('group', '!=', '8')]}" string="Outros">
                         <group>
                             <group string="Dados de Cadastro">
-                                <field name="tag"/>
                                 <field name="other_equipment_type"/>
                                 <field name="manufacturer"/>
                                 <field name="model"/>

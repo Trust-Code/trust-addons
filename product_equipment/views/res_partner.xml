@@ -52,7 +52,7 @@
                  </group>
                </page>
                <page string="Equipamentos">
-                   <field name="equipment_ids" context="{'default_partner_id': active_id, 'default_sale_ok': False, 'default_purchase_ok': False}" widget="many2many" >
+                   <field name="equipment_ids" context="{'default_partner_id': active_id, 'default_sale_ok': False, 'default_purchase_ok': False}">
                        <tree>
                            <field name="tag" />
                            <field name="group" />
