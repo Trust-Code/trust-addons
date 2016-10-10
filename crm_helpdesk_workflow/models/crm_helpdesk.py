@@ -41,6 +41,12 @@ class CrmHelpdesk(models.Model):
     stage_id = fields.Many2one(comodel_name='crm.helpdesk.type',
                                default=_default_stage_id, string="Estágio")
 
+    @api.onchange('equip_tag')
+    def _onchange_equip_tag(self):
+        self.email_from = self.equip_tag.partner_id.email
+        self.phone = self.equip_tag.partner_id.phone
+        self.mobile = self.equip_tag.partner_id.mobile
+
     @api.model
     def create(self, vals):
         dummy, sequence_id = self.env['ir.model.data'].get_object_reference(

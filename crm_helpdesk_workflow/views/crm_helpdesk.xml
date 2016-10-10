@@ -82,10 +82,12 @@
                 <field name="state" position="before">
                     <field name="stage_id" widget="statusbar" clickable="1" />
                 </field>
+                <field name="email_from" position="before">
+                    <field name="equip_tag" widget="many2one" domain="[('partner_id', '=', partner_id)]" />
+                </field>
                 <field name="email_from" position="after">
                     <field name="phone" />
                     <field name="mobile" />
-                    <field name="equip_tag" widget="many2one" />
                     <group colspan="4">
                         <button string="Hist. do Equip." class="oe_inline oe_stat_button" icon="fa-clock-o" type="object" name="equipment_history"/>
                     </group>

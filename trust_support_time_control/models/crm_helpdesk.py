@@ -17,9 +17,6 @@ class CrmHelpdesk(models.Model):
     def _onchange_partner_id(self):
         vals = {}
         if self.partner_id:
-            self.email_from = self.partner_id.email
-            self.phone = self.partner_id.phone
-            self.mobile = self.partner_id.mobile
             account_analytic_id_search = self.env['account.analytic.account'].\
                 search([('partner_id', '=', self.partner_id.id)], limit=1)
 
