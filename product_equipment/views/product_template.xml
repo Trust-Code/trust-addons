@@ -20,223 +20,103 @@
                                 <field name="customer_id" domain="[('customer', '=', True), ('parent_id' , '=', partner_id)]" />
                             </group>
                         </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '1')]}" string="Computadores">
-                        <group>
-                            <group string="Dados de Cadastro">
-                                <field name="sector"/>
-                            </group>
-                            <group string="Dados do Produto">
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                                <field name="service_tag"/>
-                                <field name="buy_date"/>
-                                <field name="guarantee_control"/>
-                                <field name="gurantee_period" attrs="{'required':[('guarantee_control', '==', 'yes')]}"/>
-                            </group>
-                            <group string="Configurações de Rede">
-                                <field name="web_type"/>
-                                <field name="web_name"/>
-                                <field name="equipment_name"/>
-                                <field name="user_local_login"/>
-                                <field name="user_local_password"/>
-                                <field name="ip_type"/>
-                                <field name="mac_address"/>
-                                <field name="ip_address"/>
-                                <field name="sub_web_mask"/>
-                                <field name="gateway"/>
-                                <field name="dns1"/>
-                                <field name="dns2"/>
-                                <field name="remote_access_door"/>
-                            </group>
-                            <group string="Acesso Remoto">
-                                <field name="access_code"/>
-                                <field name="remote_access_password"/>
-                            </group>
-                            <group string="Hardware">
-                                <field name="processor"/>
-                                <field name="memory"/>
-                                <field name="hd"/>
-                                <field name="motherboard_manufacturer"/>
-                                <field name="monitor" />
-                            </group>
-                            <group string="Sistema">
-                                <field name="op_system"/>
-                                <field name="op_system_version"/>
-                                <field name="os_serial_number"/>
-                                <field name="antivirus"/>
-                                <field name="antivirus_version"/>
-                                <field name="routine_prog_user" placeholder="informar nome do programa, caminho para acesso e demais informações para configuração futura,inclusive local do programa de instalação"/>
-                            </group>
-                            <group string="Impressoras">
-                                <field name="server_print"/>
-                                <field name="printer_model"/>
-                                <field name="printer_path"/>
-                                <field name="web_printer"/>
-                                <field name="printer_ip_address"/>
-                            </group>
-                            <group string="Pacote de Aplicativos">
-                                <field name="product_name"/>
-                                <field name="product_version"/>
-                                <field name="product_serial_num"/>
-                                <field name="product_obs"/>
-                            </group>
-                            <group string="E-mail">
-                                <field name="email_bool"/>
-                                <field name="email_use_type" attrs="{'required':[('email_bool', '==', '1')]}"/>
-                                <field name="email_account"/>
-                                <field name="email_password"/>
-                            </group>
-                            <group string="Servidores de E-mail">
-                                <field name="pop_server"/>
-                                <field name="smtp_server"/>
-                                <field name="pop_door"/>
-                                <field name="smtp_door"/>
-                            </group>
-                        </group>
-                        <group string="Observações">
-                            <field name="outlook_obs"/>
-                            <field name="other_gen_info"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '2')]}" string="Servidores">
-                        <group>
-                            <group string="Acesso Remoto">
-                                <field name="remote_acces_path_ts"/>
-                                <field name="ts_remote_access_door"/>
-                                <field name="access_code"/>
-                                <field name="remote_access_password"/>
-                            </group>
-                            <group string="Dados do Produto">
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                                <field name="service_tag_server"/>
-                                <field name="buy_date"/>
-                                <field name="guarantee_control"/>
-                                <field name="gurantee_period" attrs="{'required':[('guarantee_control', '==', 'yes')]}"/>
-                                <field name="processor"/>
-                                <field name="memory"/>
-                                <field name="hd"/>
-                                <field name="motherboard_manufacturer"/>
-                                <field name="server_function"/>
-                                <field name="equipment_name"/>
-                            </group>
-                            <group string="Rede">
-                                <field name="web_type"/>
-                                <field name="web_name"/>
-                                <field name="admin_user_login"/>
-                                <field name="admin_user_password"/>
-                                <field name="mac_address"/>
-                                <field name="ip_address"/>
-                                <field name="sub_web_mask"/>
-                                <field name="gateway"/>
-                                <field name="dns1"/>
-                                <field name="dns2"/>
-                            </group>
-                            <group string="Sistema">
-                                <field name="op_system"/>
-                                <field name="op_system_version"/>
-                                <field name="antivirus"/>
-                                <field name="antivirus_version"/>
-                            </group>
-                            <group>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '3')]}" string="Dispositivos Móveis">
-                        <group>
-                            <group string="Dados do Equipamento">
-                                <field name="mobile_equipment_type"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                            </group>
-                            <group string="Dados de Rede">
-                                <field name="mac_address"/>
-                                <field name="ip_address"/>
-                            </group>
-                            <group string="Dados do Sistema">
-                                <field name="op_system"/>
-                                <field name="op_system_version"/>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '4')]}" string="Acessórios">
-                        <group>
-                            <group string="Dados de Cadastro">
-                                <field name="accessories_equipment_type"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                            </group>
-                            <group string="Dados de Rede">
-                                <field name="mac_address"/>
-                                <field name="ip_address"/>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '5')]}" string="Equipamentos de Rede">
-                        <group>
-                            <group string="Dados de Cadastro">
-                                <field name="net_equipment_type"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '6')]}" string="Equipamentos de Telefonia">
-                        <group>
-                            <group string="Dados de Cadastro">
-                                <field name="tel_equipment_type"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '7')]}" string="Equipamentos de CFTV">
-                        <group>
-                            <group string="Dados de Cadastro">
-                                <field name="cftv_equipment_type"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
-                    </page>
-                    <page attrs="{'invisible':[('group', '!=', '8')]}" string="Outros">
-                        <group>
-                            <group string="Dados de Cadastro">
-                                <field name="other_equipment_type"/>
-                                <field name="manufacturer"/>
-                                <field name="model"/>
-                                <field name="serial_num"/>
-                            </group>
-                        </group>
-                        <group string="Adendos">
-                            <field name="other_info_and_obs"/>
-                        </group>
+                        <notebook>
+                            <page string="Dados do Equipamento" attrs="{'invisible':[('group', '==', False)]}">
+                                <group>
+                                    <group string="Dados de Cadastro">
+                                        <field name="sector" attrs="{'invisible':[('group', '!=', '1')]}"/>
+                                        <field name="other_equipment_type"/>
+                                        <field name="manufacturer"/>
+                                        <field name="model"/>
+                                        <field name="serial_num"/>
+
+                                        <field name="service_tag" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="buy_date" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="guarantee_control" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="gurantee_period" attrs="{'required':[('guarantee_control', '==', 'yes')], 'invisible':[('group', 'not in', ('1', '2'))]}"/>
+
+                                        <field name="processor" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="memory" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="hd" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="motherboard_manufacturer" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="monitor" attrs="{'invisible':[('group', '!=', '1')]}" />
+                                        <field name="server_function" attrs="{'invisible':[('group', '!=', '2')]}"/>
+                                        <field name="equipment_name" attrs="{'invisible':[('group', '!=', '2')]}"/>
+                                    </group>
+                                    <group string="Dados de Rede" attrs="{'invisible':[('group', 'not in', ('1', '2', '3', '4'))]}">
+                                        <field name="web_type" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="web_name" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="equipment_name" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="user_local_login" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="user_local_password" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="ip_type" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="mac_address"/>
+                                        <field name="ip_address"/>
+                                        <field name="sub_web_mask" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="gateway" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="dns1" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="dns2" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="remote_access_door" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                    </group>
+                                    <group string="Dados do Sistema" attrs="{'invisible':[('group', 'not in', ('2', '3'))]}">
+                                        <field name="op_system"/>
+                                        <field name="op_system_version"/>
+                                        <field name="antivirus" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}" />
+                                        <field name="antivirus_version" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
+                                        <field name="routine_prog_user" attrs="{'invisible':[('group', '!=', '1')]}" placeholder="informar nome do programa, caminho para acesso e demais informações para configuração futura,inclusive local do programa de instalação"/>
+                                    </group>
+                                </group>
+                                <group string="Adendos">
+                                    <field name="other_info_and_obs"/>
+                                </group>
+                            </page>
+
+                            <page attrs="{'invisible':[('group', '!=', '1')]}" string="Dados Computador">
+                                <group>
+                                    <group string="Impressoras">
+                                        <field name="server_print"/>
+                                        <field name="printer_model"/>
+                                        <field name="printer_path"/>
+                                        <field name="web_printer"/>
+                                        <field name="printer_ip_address"/>
+                                    </group>
+                                    <group string="Pacote de Aplicativos">
+                                        <field name="product_name"/>
+                                        <field name="product_version"/>
+                                        <field name="product_serial_num"/>
+                                        <field name="product_obs"/>
+                                    </group>
+                                    <group string="E-mail">
+                                        <field name="email_bool"/>
+                                        <field name="email_use_type" attrs="{'required':[('email_bool', '==', '1')]}"/>
+                                        <field name="email_account"/>
+                                        <field name="email_password"/>
+                                    </group>
+                                    <group string="Servidores de E-mail">
+                                        <field name="pop_server"/>
+                                        <field name="smtp_server"/>
+                                        <field name="pop_door"/>
+                                        <field name="smtp_door"/>
+                                    </group>
+                                </group>
+                                <group string="Observações">
+                                    <field name="outlook_obs"/>
+                                    <field name="other_gen_info"/>
+                                </group>
+                            </page>
+
+                            <page attrs="{'invisible':[('group', 'not in', ('1', '2'))]}" string="Acesso Remoto">
+                                <group>
+                                    <group string="Acesso Remoto">
+                                        <field name="remote_acces_path_ts"/>
+                                        <field name="ts_remote_access_door"/>
+                                        <field name="access_code"/>
+                                        <field name="remote_access_password"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                        </notebook>
                     </page>
                 </page>
             </field>
