@@ -13,6 +13,7 @@ from zipfile import ZipFile
 from StringIO import StringIO
 from openerp import api, fields, models
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.exceptions import Warning as UserError
 
 
 class NfseExportInvoice(models.TransientModel):
@@ -111,6 +112,22 @@ class NfseExportInvoice(models.TransientModel):
         invoice_ids = self.env['account.invoice'].browse(active_ids)
         xmls = []
         for invoice in invoice_ids:
+            errors = []
+            if not invoice.partner_id.city_id:
+                errors += ['Munícipio incompleto.']
+            if not invoice.partner_id.zip:
+                errors += ['CEP incompleto.']
+            if not invoice.partner_id.cnpj_cpf:
+                errors += ['CPF / CNPJ incompleto.']
+            if not invoice.partner_id.street:
+                errors += ['Logradouro incompleto.']
+            if not invoice.partner_id.email:
+                errors += ['Email incompleto.']
+            if len(errors) > 0:
+                err = ''.join(errors)
+                error_msg = '%s\n' % invoice.move_name
+                error_msg += err
+                raise UserError(error_msg)
             xmls.append(self._export(invoice))
 
         self.file = self._save_zip(xmls)
