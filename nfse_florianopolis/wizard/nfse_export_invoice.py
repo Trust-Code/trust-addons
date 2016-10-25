@@ -121,7 +121,7 @@ class NfseExportInvoice(models.TransientModel):
             if not invoice.partner_id.phone and not invoice.\
                     partner_id.mobile:
                 errors += ['Telefone incompleto.']
-            if not invoice.partner_id.city_id:
+            if not invoice.partner_id.l10n_br_city_id:
                 errors += ['Munícipio incompleto.']
             if not invoice.partner_id.zip:
                 errors += ['CEP incompleto.']
