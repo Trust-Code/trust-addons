@@ -25,6 +25,7 @@ class CrmHelpdesk(models.Model):
         return stage and stage[0]
 
     sequence = fields.Char(string="Sequência", size=20)
+    contact_id = fields.Many2one('res.partner', string="Contato")
     phone = fields.Char(max_length=30, string="Telefone")
     mobile = fields.Char(max_length=30, string="Celular")
     equip_tag = fields.Many2one(comodel_name='product.template',
@@ -43,9 +44,10 @@ class CrmHelpdesk(models.Model):
 
     @api.onchange('equip_tag')
     def _onchange_equip_tag(self):
-        self.email_from = self.equip_tag.partner_id.email
-        self.phone = self.equip_tag.partner_id.phone
-        self.mobile = self.equip_tag.partner_id.mobile
+        self.email_from = self.equip_tag.customer_id.email
+        self.phone = self.equip_tag.customer_id.phone
+        self.mobile = self.equip_tag.customer_id.mobile
+        self.contact_id = self.equip_tag.customer_id.id
 
     @api.model
     def create(self, vals):

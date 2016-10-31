@@ -84,6 +84,7 @@
                 </field>
                 <field name="email_from" position="before">
                     <field name="equip_tag" widget="many2one" domain="[('partner_id', '=', partner_id)]" />
+                    <field name="contact_id" />
                 </field>
                 <field name="email_from" position="after">
                     <field name="phone" />

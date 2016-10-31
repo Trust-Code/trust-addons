@@ -41,7 +41,6 @@
                                         <field name="motherboard_manufacturer" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
                                         <field name="monitor" attrs="{'invisible':[('group', '!=', '1')]}" />
                                         <field name="server_function" attrs="{'invisible':[('group', '!=', '2')]}"/>
-                                        <field name="equipment_name" attrs="{'invisible':[('group', '!=', '2')]}"/>
                                     </group>
                                     <group string="Dados de Rede" attrs="{'invisible':[('group', 'not in', ('1', '2', '3', '4'))]}">
                                         <field name="web_type" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
