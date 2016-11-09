@@ -16,7 +16,7 @@ class AccountMoveLine(models.Model):
             amount = item.debit if item.payment_type == 'receivable' \
                 else item.credit
             item.amount_to_pay = amount
-            item.amount_paid = item.amount_to_pay - item.maturity_residual
+            item.amount_paid = abs(item.amount_to_pay) - abs(item.maturity_residual)
             if item.payment_type == 'payable':
                 item.amount_paid *= -1
 
