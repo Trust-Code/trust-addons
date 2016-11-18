@@ -115,25 +115,25 @@ class NfseExportInvoice(models.TransientModel):
             errors = []
             if invoice.partner_id.is_company and\
                     not invoice.partner_id.legal_name:
-                errors += ['Razão Social incompleta.']
+                errors += [u'Razão Social incompleta.']
             if not invoice.partner_id.phone and invoice.partner_id.mobile:
                 invoice.partner_id.phone = invoice.partner_id.mobile
             if not invoice.partner_id.phone and not invoice.\
                     partner_id.mobile:
-                errors += ['Telefone incompleto.']
+                errors += [u'Telefone incompleto.']
             if not invoice.partner_id.l10n_br_city_id:
-                errors += ['Munícipio incompleto.']
+                errors += [u'Munícipio incompleto.']
             if not invoice.partner_id.zip:
-                errors += ['CEP incompleto.']
+                errors += [u'CEP incompleto.']
             if not invoice.partner_id.cnpj_cpf:
-                errors += ['CPF / CNPJ incompleto.']
+                errors += [u'CPF / CNPJ incompleto.']
             if not invoice.partner_id.street:
-                errors += ['Logradouro incompleto.']
+                errors += [u'Logradouro incompleto.']
             if not invoice.partner_id.email:
-                errors += ['Email incompleto.']
+                errors += [u'Email incompleto.']
             if len(errors) > 0:
-                err = ''.join(errors)
-                error_msg = '%s\n' % invoice.move_name
+                err = u''.join(errors)
+                error_msg = u'%s\n' % invoice.move_name
                 error_msg += err
                 raise UserError(error_msg)
             invoice.date_invoice = date.today()
