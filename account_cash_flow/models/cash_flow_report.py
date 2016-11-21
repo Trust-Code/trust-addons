@@ -37,7 +37,7 @@ class CashFlowReport(models.TransientModel):
 
     @api.multi
     def calculate_liquidity(self):
-        accs = self.env['account.account'].search(
+        accs = self.env['account.account'].with_context(state='posted').search(
             [('type', '=', 'liquidity'),
              ('company_id', '=', self.company_id.id)])
         liquidity_lines = []
