@@ -5,6 +5,10 @@
 from openerp import http
 from openerp.http import request
 import openerp.addons.website_sale.controllers.main as main
+from openerp.addons.l10n_br_base.tools.fiscal import (
+    validate_cnpj,
+    validate_cpf
+)
 
 
 class L10nBrWebsiteSale(main.website_sale):
@@ -46,4 +50,18 @@ class L10nBrWebsiteSale(main.website_sale):
 
     def checkout_form_validate(self, data):
         error = super(L10nBrWebsiteSale, self).checkout_form_validate(data)
+        if "cnpj_cpf" in data:
+            cnpj_cpf = data["cnpj_cpf"]
+            if len(cnpj_cpf) == 18:
+                if not validate_cnpj(cnpj_cpf):
+                    error["cnpj_cpf"] = u"CNPJ inválido"
+            elif len(cnpj_cpf) == 14:
+                if not validate_cpf(cnpj_cpf):
+                    error["cnpj_cpf"] = u"CPF inválido"
+            else:
+                error["cnpj_cpf"] = u"CNPJ/CPF inválido"
+            existe = request.env["res.partner"].sudo().search_count(
+                [('cnpj_cpf', '=', cnpj_cpf)])
+            if existe > 0:
+                error["cnpj_cpf"] = u"CNPJ/CPF já cadastrado"
         return error
