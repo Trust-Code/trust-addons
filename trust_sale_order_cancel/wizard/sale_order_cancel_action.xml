@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="sale_order_cancel">
+            <field name="name">sale.order.cancel.form</field>
+            <field name="model">sale.order.line.cancel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <group>
+                    <form string="Cancelar Pedido Parcial">
+                        <group>
+                            <field name="sale_order_line_id" readonly='1'/>
+                            <field name="cancel_amount" />
+                            <field name="invoice_amount" />
+                        </group>
+                    </form>
+            </group>
+                <button string="Confirmar" type="object" class="oe_highlight"
+                    name="cancel_sale_order_line" />
+            </field>
+        </record>
+
+
+        <act_window id="sale_order_cancel_action"
+                    name="Cancelar Parcial"
+                    src_model="sale.order.line"
+                    res_model="sale.order.line"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+
+    </data>
+</openerp>
