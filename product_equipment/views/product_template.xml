@@ -57,9 +57,10 @@
                                         <field name="dns2" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
                                         <field name="remote_access_door" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
                                     </group>
-                                    <group string="Dados do Sistema" attrs="{'invisible':[('group', 'not in', ('2', '3'))]}">
+                                    <group string="Dados do Sistema" attrs="{'invisible':[('group', 'not in', ('1', '2', '3'))]}">
                                         <field name="op_system"/>
                                         <field name="op_system_version"/>
+                                        <field name="os_serial_number" />
                                         <field name="antivirus" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}" />
                                         <field name="antivirus_version" attrs="{'invisible':[('group', 'not in', ('1', '2'))]}"/>
                                         <field name="routine_prog_user" attrs="{'invisible':[('group', '!=', '1')]}" placeholder="informar nome do programa, caminho para acesso e demais informações para configuração futura,inclusive local do programa de instalação"/>

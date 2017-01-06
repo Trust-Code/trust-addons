@@ -73,7 +73,8 @@ class ProductTemplate(models.Model):
         ('yes', 'Sim'),
         ('no', 'Não'), ],
         string="Controla Garantia?")
-    gurantee_period = fields.Char(max_length=30, string="Prazo de Garantia")
+    gurantee_period = fields.Char(
+        max_length=30, string="Prazo de Garantia (dias)")
     processor = fields.Char(max_length=30, string="Processador")
     memory = fields.Char(max_length=30, string="Memória")
     hd = fields.Char(max_length=30, string="HD")
@@ -183,6 +184,6 @@ class ProductTemplate(models.Model):
         max_length=30,
         string="End. IP para acesso à impressora (se houver)")
     product_name = fields.Char(max_length=30, string="Nome do Produto")
-    product_version = fields.Char(max_length=30, string="Nome do Produto")
+    product_version = fields.Char(max_length=30, string="Versão do Produto")
     product_serial_num = fields.Char(max_length=30, string="Número Serial")
     product_obs = fields.Char(max_length=60, string="Observações")
