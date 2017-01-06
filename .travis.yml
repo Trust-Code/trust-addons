@@ -27,6 +27,7 @@ install:
   - pip install boto
   - pip install oerplib
   - pip install odoorpc
+  - pip install pillow==3.4.2
   - pip install reportlab
   - pip install python-ldap
   - pip install suds
