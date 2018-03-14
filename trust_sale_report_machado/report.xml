@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report 
+            id="report_sale_order"
+            string="Cotação / Pedido"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="trust_sale_report_machado.report_sale" 
+            name="trust_sale_report_machado.report_sale" 
+        />
+    </data>
+</openerp>

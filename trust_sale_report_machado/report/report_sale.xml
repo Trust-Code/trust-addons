@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<record id="paperformat_sale_report" model="report.paperformat">
+			<field name="name">Cotação / Pedido</field>
+			<field name="default" eval="True" />
+			<field name="orientation">Portrait</field>
+			<field name="margin_top">40</field>
+			<field name="margin_bottom">50</field>
+			<field name="header_spacing">24</field>
+		</record>
+
+		<record id="report_sale_order" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="paperformat_sale_report" />
+			<field name="name">Cotação / Pedido</field>
+		</record>
+
+
+		<template id="external_layout_footer">
+			<div class="header">
+				<div class="row" style="border-bottom:1px solid black">
+					<div class="col-xs-2">
+						<img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo"
+							style="max-height: 95px; padding-top: 2px; text-align:center" />
+					</div>
+					<div class="col-xs-6" style="text-align:center;">
+						<div class="oe_structure small">
+							<strong style="font-size:14px;">MACHADO PRÉ-MOLDADOS</strong>
+							<br />
+							<span>
+								Rua São Sebastião, 6245 – B: Sul do Rio
+								<br />
+								CEP:88140-000 Santo Amaro da Imperatriz/SC
+								<br />
+								www.machadopremoldados.com.br
+								<br />
+								Fone: (48) 3245 6504
+							</span>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<div class="row">
+							<div class="col-xs-12" style="text-align:center">
+								<p style="font-size: 18px">
+									<span t-if="o.state not in ['draft','sent']">Pedido N°</span>
+									<span t-if="o.state in ['draft','sent']">Cotação N°</span>
+									<span t-field="o.name" />
+								</p>
+								<strong>de </strong>
+								<span t-field="o.write_date" t-field-options='{"format": "dd/MM/yy"}' />
+								<br />
+								<strong>Ref OC.:</strong>
+								<span t-field="o.client_order_ref" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<t t-raw="0" />
+			<div class="footer" style="text-align:center">
+				<div class="row" style="margin-bottom:45px;">
+					<div class="col-xs-4 col-xs-offset-1">
+						<hr style="color:black;height:2px;background-color:black;" />
+						<strong>Vendedor:</strong>
+						<span t-field="o.user_id.name"></span>
+						<br />
+						<span t-field="o.company_id.phone"></span>
+					</div>
+					<div class="col-xs-4 col-xs-offset-2">
+						<hr style="color:black;height:2px;background-color:black;" />
+						<strong>Rep. Compradora:</strong>
+						<span t-field="o.partner_id.name"></span>
+						<br />
+						<span t-field="o.partner_id.phone"></span>
+					</div>
+				</div>
+				<div class="oe_structure small">
+					<span>JOSÉ SALÉSIO MACHADO - ME CNPJ.: 17.350.787/0001-14 I.E.:
+						256922284
+					</span>
+					<br></br>
+					<span>Rua São Sebastião, 6245 – B: Sul do Rio - Santo Amaro da
+						Imperatriz/SC – Fone: (48) 3245 6504 – email:
+						contato@machadopremoldados.com.br
+					</span>
+				</div>
+				<span style="font-size:10px;">Desenvolvido por trustcode.com.br</span>
+			</div>
+		</template>
+
+		<template id="report_saleorder_document">
+			<t t-call="trust_sale_report_machado.external_layout_footer">
+				<div class="page">
+					<div class="oe_structure">
+						<div class="row" style="border-bottom:1px solid black;padding-bottom:4px;">
+							<div class="col-xs-6">
+								<strong class="small">Cliente: </strong>
+								<span t-field="o.partner_id.name"></span>
+								<br />
+								<strong class="small">Telefone: </strong>
+								<span t-field="o.partner_id.phone"></span>
+								<br />
+								<strong class="small">Email: </strong>
+								<span t-field="o.partner_id.email"></span>
+							</div>
+							<div class="col-xs-6 small">
+								<strong>Vendedor: </strong>
+								<span t-field="o.user_id.name"></span>
+								<br />
+								<strong class="small">Telefone: </strong>
+								<span t-field="o.user_id.phone"></span>
+								<br />
+								<strong class="small">Email: </strong>
+								<span t-field="o.user_id.email"></span>
+							</div>
+						</div>
+						<div class="row" style="border-bottom:1px solid black;padding-bottom:4px;">
+							<div class="col-xs-5">
+								<strong class="small">Dados para Faturamento:</strong>
+								<br />
+								<span t-field="o.partner_invoice_id.legal_name" />
+								<br />
+								<span t-field="o.partner_invoice_id.street" />
+								<span>,</span>
+								<span t-field="o.partner_invoice_id.number" />
+								<br />
+								<span t-field="o.partner_invoice_id.city">--</span>
+								<span>/</span>
+								<span t-field="o.partner_invoice_id.state_id.code" />
+								<span> - </span>
+								<span t-field="o.partner_invoice_id.zip" />
+								<br />
+								<strong class="small">Cnpj: </strong>
+								<span t-field="o.partner_invoice_id.cnpj_cpf" />
+								<strong class="small">IE: </strong>
+								<span t-field="o.partner_invoice_id.inscr_est" />
+							</div>
+							<div class="col-xs-4">
+								<strong class="small">Endereço de Entrega:</strong>
+								<br />
+								<span t-field="o.partner_shipping_id.name" />
+								<br />
+								<span t-field="o.partner_shipping_id.street" />
+								<span>,</span>
+								<span t-field="o.partner_shipping_id.number" />
+								<br />
+								<span t-field="o.partner_shipping_id.street2" />
+								<br />
+								<span t-field="o.partner_shipping_id.city">--</span>
+								<span>/</span>
+								<span t-field="o.partner_shipping_id.state_id.code" />
+								<span> - </span>
+								<span t-field="o.partner_shipping_id.zip" />
+							</div>
+						</div>
+						<div class="row" style="padding-bottom: 10px; padding-top: 10px;">
+							<div class="col-xs-3">
+								<strong class="small">Cond. Pagamento: </strong>
+								<span t-field="o.payment_term"></span>
+								<br></br>
+								<strong class="small">Frete: </strong>
+								<span t-field="o.incoterm.code"></span>
+								<br></br>
+								<strong class="small">Entrega até: </strong>
+								<span>
+									<t
+										t-esc="(datetime.date.today() + relativedelta(days=o.delivery_after)).strftime('%d/%m/%Y')"></t>
+								</span>
+								<br />
+								<span t-field="o.partner_shipping_id.name"></span>
+							</div>
+							<div class="col-xs-9">
+								<strong class="small">Atenção:</strong>
+								<br></br>
+								<ul class="small">
+									<li>Os pallets utilizados na entrega dos produtos são
+										retornáveis e ficam sob a guarda e responsabilidade do
+										cliente.
+									</li>
+									<li>
+										Cabe ao cliente comunicar a desocupação dos pallets
+										através
+										do
+										Telefone (48) 3245-6504 para que a empresa possa os
+										recolher.
+									</li>
+								</ul>
+							</div>
+						</div>
+						<table class="table table-condensed" style="padding-top: 10px">
+							<thead>
+								<tr>
+									<th>Descrição</th>
+									<th class="text-right">Quantidade</th>
+									<th class="text-right">Preço Unitário</th>
+									<th groups="sale.group_discount_per_so_line">Desc.(%)</th>
+									<th class="text-right">Preço</th>
+								</tr>
+							</thead>
+							<tbody class="sale_tbody">
+								<tr t-foreach="o.order_line" t-as="l" class="small">
+									<td>
+										<span t-field="l.name" />
+									</td>
+									<td class="text-right">
+										<span t-field="l.product_uom_qty" />
+										<span groups="product.group_uom" t-field="l.product_uom" />
+									</td>
+									<td class="text-right">
+										<span t-field="l.price_unit" />
+									</td>
+									<td groups="sale.group_discount_per_so_line">
+										<span t-field="l.discount" />
+									</td>
+									<td class="text-right">
+										<span t-field="l.price_subtotal"
+											t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}' />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="row">
+							<div class="col-xs-8">
+								<strong class="small">Observações:</strong>
+								<ul class="small">
+									<span t-field="o.note">
+									</span>
+								</ul>
+							</div>
+							<div class="col-xs-4">
+								<table class="table table-condensed">
+									<tr class="border-black">
+										<td>
+											<strong>SubTotal</strong>
+										</td>
+										<td class="text-right">
+											<span t-field="o.amount_untaxed"
+												t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}' />
+										</td>
+									</tr>
+									<tr>
+										<td>Frete</td>
+										<td class="text-right">
+											<span t-field="o.amount_freight"
+												t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}' />
+										</td>
+									</tr>
+									<tr class="border-black">
+										<td>
+											<strong>Total</strong>
+										</td>
+										<td class="text-right">
+											<span t-field="o.amount_total"
+												t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}' />
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+		</template>
+
+
+
+		<template id="report_sale">
+			<t t-call="report.html_container">
+				<t t-foreach="doc_ids" t-as="doc_id">
+					<t
+						t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'trust_sale_report_machado.report_saleorder_document')" />
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>
+
