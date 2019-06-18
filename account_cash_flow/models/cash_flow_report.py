@@ -44,7 +44,7 @@ class CashFlowReport(models.TransientModel):
         for acc in accs:
             if acc.balance != 0:
                 liquidity_lines.append({
-                    'name': acc.name,
+                    'name': acc.name or '-',
                     'cashflow_id': self.id,
                     'account_id': acc.id,
                     'debit': acc.credit,
@@ -78,7 +78,7 @@ class CashFlowReport(models.TransientModel):
                 amount = credit - debit
 
             moves.append({
-                'name': move.ref,
+                'name': move.ref or '-',
                 'cashflow_id': self.id,
                 'partner_id': move.partner_id.id,
                 'journal_id': move.journal_id.id,
